@@ -48,3 +48,4 @@ if conn is not None:
     create_table(conn,sql_create_users_table)
     create_table(conn,sql_create_creatures_table)
     create_table(conn,sql_create_items_table)
+    conn.close()
