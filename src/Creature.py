@@ -17,10 +17,11 @@ class Creature:
             incremented from parent
 
     """
-    def __init__(self,name,owner,generation=0,creatureId=0,date=time.localtime()):
+    def __init__(self,name,owner,imageLink = "",generation=0,creatureId=None,date=time.localtime()):
         self.name = name
         self.createDate = [date.tm_year,date.tm_mon,date.tm_mday]
         self.owner = owner
+        self.imageLink = imageLink
         self.generation = generation
         print(generation)
         self.creatureId = creatureId
