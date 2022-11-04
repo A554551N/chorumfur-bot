@@ -1,3 +1,4 @@
+import os
 import sqlite3
 from sqlite3 import Error
 
@@ -19,15 +20,15 @@ def create_table(conn, create_table_sql):
         print(e)
 
 sql_create_users_table = """CREATE TABLE IF NOT EXISTS users (
-                            userId integer PRIMARY KEY,
+                            userId integer PRIMARY KEY AUTOINCREMENT,
                             name text NOT NULL,
                             level integer NOT NULL,
                             warnings_issued integer NOT NULL)
                         """
 sql_create_creatures_table = """CREATE TABLE IF NOT EXISTS creatures (
-                                creatureId integer PRIMARY KEY,
+                                creatureId integer PRIMARY KEY AUTOINCREMENT,
                                 name text NOT NULL,
-                                age integer NOT NULL,
+                                createDate integer NOT NULL,
                                 imageLink text NOT NULL,
                                 generation integer NOT NULL,
                                 owner integer NOT NULL,
@@ -35,7 +36,7 @@ sql_create_creatures_table = """CREATE TABLE IF NOT EXISTS creatures (
                                     REFERENCES users (userId)
                             )"""
 sql_create_items_table = """CREATE TABLE IF NOT EXISTS items (
-                            itemID integer PRIMARY KEY,
+                            itemID integer PRIMARY KEY AUTOINCREMENT,
                             name text NOT NULL,
                             description text NOT NULL,
                             value integer NOT NULL,
@@ -43,7 +44,17 @@ sql_create_items_table = """CREATE TABLE IF NOT EXISTS items (
                             FOREIGN KEY (owner)
                                 REFERENCES users (userId)
                         )"""
-conn = create_connection('database.db')
+db_file_prod=os.path.abspath(os.path.join(os.path.dirname(__file__), '../database.db'))
+conn = create_connection(db_file_prod)
+if conn is not None:
+    create_table(conn,sql_create_users_table)
+    create_table(conn,sql_create_creatures_table)
+    create_table(conn,sql_create_items_table)
+    conn.close()
+    conn = None
+
+db_file_test=os.path.abspath(os.path.join(os.path.dirname(__file__), 'tests/database.db'))
+conn = create_connection(db_file_test)
 if conn is not None:
     create_table(conn,sql_create_users_table)
     create_table(conn,sql_create_creatures_table)
