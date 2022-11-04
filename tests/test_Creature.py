@@ -22,7 +22,8 @@ def createCreature(testCreatureAttributes):
                                     owner = testCreatureAttributes["owner"],
                                     generation = testCreatureAttributes["generation"],
                                     creatureId = testCreatureAttributes["creatureId"],
-                                    date=testCreatureAttributes["date"])
+                                    date=testCreatureAttributes["date"],
+                                    isNew=True)
     return testCreature
 
 def test_createCreature(testCreatureAttributes):
@@ -30,7 +31,8 @@ def test_createCreature(testCreatureAttributes):
                                     owner = testCreatureAttributes["owner"],
                                     generation = testCreatureAttributes["generation"],
                                     creatureId = testCreatureAttributes["creatureId"],
-                                    date=testCreatureAttributes["date"])
+                                    date=testCreatureAttributes["date"],
+                                    isNew=True)
     assert testCreature
 
 def test_createDate(createCreature,testCreatureAttributes):

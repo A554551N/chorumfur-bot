@@ -26,7 +26,8 @@ def createCreature(testCreatureAttributes):
                                     imageLink = testCreatureAttributes["imageLink"],
                                     generation = testCreatureAttributes["generation"],
                                     creatureId = testCreatureAttributes["creatureId"],
-                                    date=testCreatureAttributes["date"])
+                                    date=testCreatureAttributes["date"],
+                                    isNew=True)
     return testCreature
 
 def test_database_connection_prod():
@@ -44,4 +45,4 @@ def test_addCreatureToDB(createCreature):
 
 def test_getCreatureFromDB(testCreatureAttributes):
     testCreature = Database.getCreatureFromDB(1,True)
-    print(testCreature)
+    assert testCreature[0][1] == 'Test Creature'
