@@ -21,7 +21,6 @@ def create_table(conn, create_table_sql):
 
 sql_create_users_table = """CREATE TABLE IF NOT EXISTS users (
                             userId integer PRIMARY KEY AUTOINCREMENT,
-                            name text NOT NULL,
                             level integer NOT NULL,
                             warnings_issued integer NOT NULL)
                         """
