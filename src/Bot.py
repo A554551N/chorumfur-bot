@@ -24,11 +24,16 @@ async def shop(ctx):
 
 @client.command()
 async def me(ctx):
-    await ctx.send(f'Hi {ctx.author}, profiles are a work in progress.\nStand by!')
+    await ctx.send('Hi {}, profiles are a work in progress.\nStand by!'.format(ctx.message.author.mention))
 
 @client.command()
 async def inventory(ctx):
     await ctx.send(f"Oh no, you forgot your bag!  Don't worry, we'll find it.")
+
+@client.command()
+async def getID(ctx):
+    userId = ctx.message.author.id
+    await ctx.send(f"Your unique ID is {userId}")
 
 # END OF COMMANDS SECTION
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__), '../token.txt')))
