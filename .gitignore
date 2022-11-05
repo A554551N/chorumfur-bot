@@ -157,3 +157,6 @@ cython_debug/
 
 # Removes temp test files
 src/temp_MAIN.py
+
+# Removes token file
+token.txt
