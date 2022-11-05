@@ -158,5 +158,5 @@ cython_debug/
 # Removes temp test files
 src/temp_MAIN.py
 
-# Removes token file
+# Removes Discord bot token
 token.txt
