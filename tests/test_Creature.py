@@ -9,7 +9,8 @@ def testCreatureAttributes():
                             "owner" : 99999,
                             "generation" : 0,
                             "creatureId" : 99999,
-                            "createDate" : datetime.datetime.today()
+                            "createDate" : datetime.datetime.today(),
+                            "imageLink" : "https://fakesite.com"
                         }
     return testCreatureAttrs
 
@@ -19,7 +20,8 @@ def createCreature(testCreatureAttributes):
                                     owner = testCreatureAttributes["owner"],
                                     generation = testCreatureAttributes["generation"],
                                     creatureId = testCreatureAttributes["creatureId"],
-                                    createDate=str(testCreatureAttributes["createDate"]))
+                                    createDate=str(testCreatureAttributes["createDate"]),
+                                    imageLink=testCreatureAttributes['imageLink'])
     return testCreature
 
 def test_createCreature(testCreatureAttributes):
@@ -37,5 +39,6 @@ def test_outputCreature(createCreature,testCreatureAttributes):
                     f"""Owner: {testCreatureAttributes["owner"]}\n"""\
                     f"""Age: {datetime.datetime.today() - testCreatureAttributes["createDate"]}\n"""\
                     f"""Create Date: {testCreatureAttributes['createDate']}\n"""\
-                    f"""Generation: {testCreatureAttributes["generation"]}"""    
+                    f"""Generation: {testCreatureAttributes["generation"]}\n"""\
+                    f"""Image: {testCreatureAttributes['imageLink']}"""
     assert createCreature.outputCreature() == outputString
