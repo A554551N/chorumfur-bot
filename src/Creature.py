@@ -26,7 +26,7 @@ class Creature:
     def __init__(self,name,owner,imageLink = "",generation=0,creatureId=None,createDate=None):
         self.name = name
         if not createDate:
-            createDate= time.localtime()
+            createDate= time.time()
         self.owner = owner
         self.imageLink = imageLink
         self.generation = generation
@@ -37,6 +37,6 @@ class Creature:
         output = f"ID: {self.creatureId}\n"\
                 f"Name: {self.name}\n"\
                 f"Owner: {self.owner}\n"\
-                f"Create Date: {self.createDate}\n"\
+                f"Create Date: {time.ctime(int(self.createDate))}\n"\
                 f"Generation: {self.generation}"
         return output

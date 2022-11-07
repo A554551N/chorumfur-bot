@@ -9,7 +9,7 @@ def testCreatureAttributes():
                             "owner" : 99999,
                             "generation" : 0,
                             "creatureId" : 99999,
-                            "createDate" : time.localtime()
+                            "createDate" : time.time()
                         }
     return testCreatureAttrs
 
@@ -38,6 +38,6 @@ def test_outputCreature(createCreature,testCreatureAttributes):
     outputString = f"""ID: {testCreatureAttributes["creatureId"]}\n"""\
                     f"""Name: {testCreatureAttributes["name"]}\n"""\
                     f"""Owner: {testCreatureAttributes["owner"]}\n"""\
-                    f"""Create Date: {testCreatureAttributes['createDate']}\n"""\
+                    f"""Create Date: {time.ctime(int(testCreatureAttributes['createDate']))}\n"""\
                     f"""Generation: {testCreatureAttributes["generation"]}"""    
     assert createCreature.outputCreature() == outputString
