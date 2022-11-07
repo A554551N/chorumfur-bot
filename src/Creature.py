@@ -1,4 +1,4 @@
-import time
+import datetime
 class Creature:
     """
         A class to represent a Creature
@@ -26,7 +26,9 @@ class Creature:
     def __init__(self,name,owner,imageLink = "",generation=0,creatureId=None,createDate=None):
         self.name = name
         if not createDate:
-            createDate= time.time()
+            createDate= datetime.datetime.today()
+        else:
+            createDate = datetime.datetime.strptime(createDate,'''%Y-%m-%d %H:%M:%S.%f''')
         self.owner = owner
         self.imageLink = imageLink
         self.generation = generation
@@ -34,9 +36,11 @@ class Creature:
         self.createDate = createDate
     
     def outputCreature(self):
+        age = datetime.datetime.today() - self.createDate
         output = f"ID: {self.creatureId}\n"\
                 f"Name: {self.name}\n"\
                 f"Owner: {self.owner}\n"\
-                f"Create Date: {time.ctime(int(self.createDate))}\n"\
+                f"Age: {age}\n"\
+                f"Create Date: {self.createDate}\n"\
                 f"Generation: {self.generation}"
         return output

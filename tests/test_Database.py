@@ -1,5 +1,5 @@
 import pytest
-import time
+import datetime
 from .context import Database
 from .context import Creature
 
@@ -11,7 +11,7 @@ def testCreatureAttributes():
                             "imageLink" : "",
                             "generation" : 0,
                             "creatureId" : 99999,
-                            "createDate" : time.localtime()
+                            "createDate" : datetime.datetime.today()
                         }
     return testCreatureAttrs
 
@@ -22,7 +22,7 @@ def createCreature(testCreatureAttributes):
                                     imageLink = testCreatureAttributes["imageLink"],
                                     generation = testCreatureAttributes["generation"],
                                     creatureId = testCreatureAttributes["creatureId"],
-                                    createDate=testCreatureAttributes["createDate"]
+                                    createDate=str(testCreatureAttributes["createDate"])
                                     )
     return testCreature
 
