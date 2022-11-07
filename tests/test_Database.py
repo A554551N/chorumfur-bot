@@ -42,3 +42,7 @@ def test_addCreatureToDB(createCreature):
 def test_getCreatureFromDB(testCreatureAttributes):
     testCreature = Database.getCreatureFromDB(1,True)
     assert testCreature.name == 'Test Creature'
+
+def test_getCreatureFromDBThatDoesntExist(testCreatureAttributes):
+    testCreature = Database.getCreatureFromDB(99999,True)
+    assert not testCreature

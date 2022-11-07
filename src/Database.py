@@ -1,4 +1,5 @@
 import os
+import Creature
 import sqlite3
 from sqlite3 import Error
 
@@ -11,7 +12,6 @@ def create_connection(test=False):
     conn = None
     try:
         conn = sqlite3.connect(db_file)
-        print(sqlite3.version)
     except Error as e:
         print(e)
     return conn
@@ -53,7 +53,7 @@ def addCreatureToDB(creatureToAdd,test=False):
     return creatureId
 
 def getCreatureFromDB(creatureId,test=False):
-    """Collects a creature record from the DB by Creature ID
+    """Collects a creature record from the DB by Creature ID and returns a Creature Object
 
         Parameters
         ----------
@@ -61,6 +61,10 @@ def getCreatureFromDB(creatureId,test=False):
             the desired CreatureId
         test : bool
             flag True to direct to Test DB
+        
+        Returns
+        -------
+        Creature
     """
     sql = '''SELECT
                 creatureId,
@@ -77,7 +81,15 @@ def getCreatureFromDB(creatureId,test=False):
     c.execute(sql,(creatureId,))
     result = c.fetchall()
     conn.close()
-    return result
+    if result:
+        return Creature.Creature(name=result[0][1],
+                            owner=result[0][5],
+                            imageLink=result[0][3],
+                            generation=result[0][4],
+                            creatureId=result[0][0],
+                            createDate=result[0][2]
+                            )
+    return None
 
 
     

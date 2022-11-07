@@ -40,7 +40,12 @@ async def getID(ctx):
 @client.command(require_var_positional=True)
 async def getCreature(ctx,creatureId):
     requestedCreature = Database.getCreatureFromDB(creatureId)
-    await ctx.send(requestedCreature.outputCreature())
+    if requestedCreature:
+        msg=requestedCreature.outputCreature()
+    else:
+        msg=f"ID Number {creatureId} not found"
+    await ctx.send(msg)
+
 
 
 
