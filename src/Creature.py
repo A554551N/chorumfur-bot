@@ -17,6 +17,11 @@ class Creature:
             link to an image of the creature
         generation: int
             incremented from parent
+
+        Methods
+        ---------
+        outputCreature()
+            returns a formatted string with date about creature
     """
     def __init__(self,name,owner,imageLink = "",generation=0,creatureId=None,createDate=None):
         self.name = name

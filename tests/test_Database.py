@@ -1,5 +1,4 @@
 import pytest
-import os
 import time
 from .context import Database
 from .context import Creature
