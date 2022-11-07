@@ -43,7 +43,7 @@ sql_create_items_table = """CREATE TABLE IF NOT EXISTS items (
                             FOREIGN KEY (owner)
                                 REFERENCES users (userId)
                         )"""
-db_file_prod=os.path.abspath(os.path.join(os.path.dirname(__file__), '../database.db'))
+db_file_prod=os.path.abspath(os.path.join(os.path.dirname(__file__), './database.db'))
 conn = create_connection(db_file_prod)
 if conn is not None:
     create_table(conn,sql_create_users_table)
