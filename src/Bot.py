@@ -1,5 +1,7 @@
 import os
 import discord
+import Database
+import Creature
 from discord.ext import commands
 discord.app_commands.CommandTree
 
@@ -34,6 +36,13 @@ async def inventory(ctx):
 async def getID(ctx):
     userId = ctx.message.author.id
     await ctx.send(f"Your unique ID is {userId}")
+
+@client.command(require_var_positional=True)
+async def getCreature(ctx,creatureId):
+    requestedCreature = Database.getCreatureFromDB(creatureId)
+    await ctx.send(requestedCreature.outputCreature())
+
+
 
 # END OF COMMANDS SECTION
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__), '../token.txt')))
