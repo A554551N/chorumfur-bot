@@ -46,6 +46,12 @@ async def getCreature(ctx,creatureId):
         msg=f"ID Number {creatureId} not found"
     await ctx.send(msg)
 
+@client.command()
+async def makeCreature(ctx,creatureName):
+    userId = ctx.message.author.id
+    creatureToAdd = Creature.Creature(creatureName,userId)
+    creatureId = Database.addCreatureToDB(creatureToAdd)
+    await ctx.send(f"{creatureName} created with Id #{creatureId}")
 
 
 
