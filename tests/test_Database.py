@@ -41,4 +41,4 @@ def test_addCreatureToDB(createCreature):
 
 def test_getCreatureFromDB(testCreatureAttributes):
     testCreature = Database.getCreatureFromDB(1,True)
-    assert testCreature[0][1] == 'Test Creature'
+    assert testCreature.name == 'Test Creature'
