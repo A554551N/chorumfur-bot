@@ -4,15 +4,12 @@ import pytest
 
 @pytest.fixture
 def testCreatureAttributes():
-    rawDate = time.localtime()
-    formattedDate = [rawDate.tm_year,rawDate.tm_mon,rawDate.tm_mday]
     testCreatureAttrs = {
                             "name" : "Test Creature",
                             "owner" : 99999,
                             "generation" : 0,
                             "creatureId" : 99999,
-                            "date" : rawDate,
-                            "fdate" : formattedDate
+                            "createDate" : time.localtime()
                         }
     return testCreatureAttrs
 
@@ -22,8 +19,7 @@ def createCreature(testCreatureAttributes):
                                     owner = testCreatureAttributes["owner"],
                                     generation = testCreatureAttributes["generation"],
                                     creatureId = testCreatureAttributes["creatureId"],
-                                    date=testCreatureAttributes["date"],
-                                    isNew=True)
+                                    createDate=testCreatureAttributes["createDate"])
     return testCreature
 
 def test_createCreature(testCreatureAttributes):
@@ -31,18 +27,17 @@ def test_createCreature(testCreatureAttributes):
                                     owner = testCreatureAttributes["owner"],
                                     generation = testCreatureAttributes["generation"],
                                     creatureId = testCreatureAttributes["creatureId"],
-                                    date=testCreatureAttributes["date"],
-                                    isNew=True)
+                                    createDate=testCreatureAttributes["createDate"])
     assert testCreature
 
 def test_createDate(createCreature,testCreatureAttributes):
     """Tests that createDate is being formatted properly before storage"""
-    assert createCreature.createDate == testCreatureAttributes["fdate"]
+    assert createCreature.createDate == testCreatureAttributes["createDate"]
 
 def test_outputCreature(createCreature,testCreatureAttributes):
     outputString = f"""ID: {testCreatureAttributes["creatureId"]}\n"""\
                     f"""Name: {testCreatureAttributes["name"]}\n"""\
                     f"""Owner: {testCreatureAttributes["owner"]}\n"""\
-                    f"""Create Date: {testCreatureAttributes["fdate"][1]} {testCreatureAttributes["fdate"][2]} {testCreatureAttributes["fdate"][0]}\n"""\
+                    f"""Create Date: {testCreatureAttributes['createDate']}\n"""\
                     f"""Generation: {testCreatureAttributes["generation"]}"""    
     assert createCreature.outputCreature() == outputString

@@ -6,16 +6,13 @@ from .context import Creature
 
 @pytest.fixture
 def testCreatureAttributes():
-    rawDate = time.localtime()
-    formattedDate = [rawDate.tm_year,rawDate.tm_mon,rawDate.tm_mday]
     testCreatureAttrs = {
                             "name" : "Test Creature",
                             "owner" : 99999,
                             "imageLink" : "",
                             "generation" : 0,
                             "creatureId" : 99999,
-                            "date" : rawDate,
-                            "fdate" : formattedDate
+                            "createDate" : time.localtime()
                         }
     return testCreatureAttrs
 
@@ -26,8 +23,8 @@ def createCreature(testCreatureAttributes):
                                     imageLink = testCreatureAttributes["imageLink"],
                                     generation = testCreatureAttributes["generation"],
                                     creatureId = testCreatureAttributes["creatureId"],
-                                    date=testCreatureAttributes["date"],
-                                    isNew=True)
+                                    createDate=testCreatureAttributes["createDate"]
+                                    )
     return testCreature
 
 def test_database_connection_prod():

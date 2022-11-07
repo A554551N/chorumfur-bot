@@ -9,35 +9,29 @@ class Creature:
             creatureID created by database
         name: string
             name of the creature
-        date: array
-            Date creature instantiated stored as a year/month/day array
+        createDate : Date
+            Date creature was created
         owner: int
             User ID of the creating user
         imageLink: string
             link to an image of the creature
         generation: int
             incremented from parent
-        isNew: bool
-            flagged if this is a new creature (false by default)
-
     """
-    def __init__(self,name,owner,imageLink = "",generation=0,creatureId=None,date=None,isNew=False):
+    def __init__(self,name,owner,imageLink = "",generation=0,creatureId=None,createDate=None):
         self.name = name
-        if isNew:
-            date= time.localtime()
-            self.createDate = [date.tm_year,date.tm_mon,date.tm_mday]
-        else:
-            self.createDate = date
+        if not createDate:
+            createDate= time.localtime()
         self.owner = owner
         self.imageLink = imageLink
         self.generation = generation
-        print(generation)
         self.creatureId = creatureId
+        self.createDate = createDate
     
     def outputCreature(self):
         output = f"ID: {self.creatureId}\n"\
                 f"Name: {self.name}\n"\
                 f"Owner: {self.owner}\n"\
-                f"Create Date: {self.createDate[1]} {self.createDate[2]} {self.createDate[0]}\n"\
+                f"Create Date: {self.createDate}\n"\
                 f"Generation: {self.generation}"
         return output
