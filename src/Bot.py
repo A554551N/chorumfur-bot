@@ -21,6 +21,11 @@ def is_guild_owner():
 async def on_ready():
     print(f'We have logged in as {client.user}')
 
+@client.event
+async def on_command_error(ctx, error):
+    await ctx.send(f"Command {ctx.message.content} is not recognized or you"\
+        " do not have permission to perform this action.")
+
 # BEGIN COMMANDS SECTION
 @client.command()
 async def hello(ctx):
@@ -65,7 +70,6 @@ async def makeCreature(ctx,creatureName):
         creatureId = Database.addCreatureToDB(creatureToAdd)
         msg=f"{creatureName} created with Id #{creatureId}"
     await ctx.send(msg)
-
 
 # END OF COMMANDS SECTION
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__), '../token.txt')))
