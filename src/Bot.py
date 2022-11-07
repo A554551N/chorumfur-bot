@@ -41,6 +41,8 @@ async def getID(ctx):
 async def getCreature(ctx,creatureId):
     requestedCreature = Database.getCreatureFromDB(creatureId)
     if requestedCreature:
+        user = await client.fetch_user(requestedCreature.owner)
+        requestedCreature.owner = user.name
         msg=requestedCreature.outputCreature()
     else:
         msg=f"ID Number {creatureId} not found"
