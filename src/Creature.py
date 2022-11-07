@@ -42,5 +42,6 @@ class Creature:
                 f"Owner: {self.owner}\n"\
                 f"Age: {age}\n"\
                 f"Create Date: {self.createDate}\n"\
-                f"Generation: {self.generation}"
+                f"Generation: {self.generation}\n"\
+                f"Image: {self.imageLink}"
         return output

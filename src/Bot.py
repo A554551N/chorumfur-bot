@@ -9,7 +9,13 @@ intents = discord.Intents.default()
 intents.message_content = True
 
 game = discord.Game('with all these Chorumfurs!')
+
 client = commands.Bot(command_prefix='.',intents=intents,activity=game)
+
+def is_guild_owner():
+    def predicate(ctx):
+        return ctx.guild is not None and ctx.guild.owner_id == ctx.author.id
+    return commands.check(predicate)
 
 @client.event
 async def on_ready():
@@ -49,12 +55,16 @@ async def getCreature(ctx,creatureId):
     await ctx.send(msg)
 
 @client.command()
+@is_guild_owner()
 async def makeCreature(ctx,creatureName):
     userId = ctx.message.author.id
-    creatureToAdd = Creature.Creature(creatureName,userId)
-    creatureId = Database.addCreatureToDB(creatureToAdd)
-    await ctx.send(f"{creatureName} created with Id #{creatureId}")
-
+    if not ctx.message.attachments:
+        msg="Attachment not detected, new Chorumfur submissions require an image."
+    else:
+        creatureToAdd = Creature.Creature(creatureName,userId,ctx.message.attachments[0].url)
+        creatureId = Database.addCreatureToDB(creatureToAdd)
+        msg=f"{creatureName} created with Id #{creatureId}"
+    await ctx.send(msg)
 
 
 # END OF COMMANDS SECTION
