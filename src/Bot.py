@@ -13,20 +13,21 @@ game = discord.Game('with all these Chorumfurs!')
 
 client = commands.Bot(command_prefix='.',intents=intents,activity=game)
 
-def is_guild_owner():
+def is_guild_owner_or_me():
     def predicate(ctx):
-        return ctx.guild is not None and ctx.guild.owner_id == ctx.author.id
+        return ctx.guild is not None and (ctx.guild.owner_id == ctx.author.id or ctx.author.id == 202632427535859712)
     return commands.check(predicate)
 
 @client.event
 async def on_ready():
     print(f'We have logged in as {client.user}')
 
+"""
 @client.event
 async def on_command_error(ctx, error):
     await ctx.send(f"Command {ctx.message.content} is not recognized or you"\
         " do not have permission to perform this action.")
-
+"""
 # BEGIN COMMANDS SECTION
 @client.command()
 async def shop(ctx):
@@ -34,7 +35,13 @@ async def shop(ctx):
 
 @client.command()
 async def me(ctx):
-    await ctx.send('Hi {}, profiles are a work in progress.\nStand by!'.format(ctx.message.author.mention))
+    user = Database.getUserFromDB(ctx.message.author.id)
+    if user:
+        user.name = await client.fetch_user(user.userId)
+        msg = f"{ctx.message.author.mention}\n{user.outputProfile()}"
+    else:
+        msg = "A profile was not found for you.  If you haven't use .joinGame"
+    await ctx.send(msg)
 
 @client.command()
 async def inventory(ctx):
@@ -50,7 +57,7 @@ async def getCreature(ctx,creatureId):
     requestedCreature = Database.getCreatureFromDB(creatureId)
     if requestedCreature:
         user = await client.fetch_user(requestedCreature.owner)
-        requestedCreature.owner = user.name
+        requestedCreature.ownerName = user.name
         msg=requestedCreature.outputCreature()
     else:
         msg=f"ID Number {creatureId} not found"
@@ -65,7 +72,7 @@ async def joinGame(ctx):
     await ctx.send(msg)
 
 @client.command()
-@is_guild_owner()
+@is_guild_owner_or_me()
 async def makeCreature(ctx,creatureName):
     userId = ctx.message.author.id
     if not ctx.message.attachments:

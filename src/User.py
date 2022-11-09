@@ -1,4 +1,5 @@
-import datetime
+from datetime import datetime
+from ConstantData import Constants
 import math
 import os
 class User:
@@ -9,6 +10,8 @@ class User:
         ----------
         userId : integer
             Unique Discord ID for User
+        name : string
+            a friendly name for User
         level : integer
             User's level (currently unused)
         lastBreed : datetime
@@ -33,9 +36,14 @@ class User:
         4 : "https://media.discordapp.net/attachments/1039966957799211109/1039967099948376094/Breeding_Crystal5.png",
         5 : "https://media.discordapp.net/attachments/1039966957799211109/1039967100392980540/Breeding_Crystal6.png"
     }
-    def __init__(self,userId,level=1,lastBreed=None,warningsIssued=0):
+    def __init__(self,userId,level=1,lastBreed=None,warningsIssued=0,name=""):
         self.userId = userId
+        self.name = name
         self.level = level
+        if lastBreed == "None":
+            lastBreed = None
+        elif type(lastBreed) == 'str':
+            lastBreed = datetime.strptime(lastBreed,Constants.DATETIMEFORMAT)
         self.lastBreed = lastBreed
         self.warningsIssued = warningsIssued
     
@@ -46,11 +54,11 @@ class User:
         (in days) floor((today's date - last breed date)/5)
         """
         if test:
-            today = datetime.datetime(2022,12,31)
+            today = datetime(2022,12,31)
         elif not self.lastBreed:
             return 5
         else:
-            today = datetime.datetime.today()
+            today = datetime.today()
         daysSinceLastBreed = today - self.lastBreed
         breedingLevel = math.floor(daysSinceLastBreed.days/6)
         if breedingLevel > 5:
@@ -61,7 +69,7 @@ class User:
     
     def outputProfile(self):
         """outputs a profile string to display in server"""
-        output = f"User Name: {self.userId}\n"\
+        output = f"User Name: {self.name}\n"\
                 f"Level: {self.level}\n"\
                 f"Last Breeding: {self.lastBreed}\n"\
                 f"Breeding Crystal:\n{self.BREEDINGSTONELINKS[self.breedingLevel()]}"

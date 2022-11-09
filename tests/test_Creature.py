@@ -1,5 +1,5 @@
 from .context import Creature
-import datetime
+from datetime import datetime
 import pytest
 
 @pytest.fixture
@@ -7,9 +7,10 @@ def testCreatureAttributes():
     testCreatureAttrs = {
                             "name" : "Test Creature",
                             "owner" : 99999,
+                            "ownerName" : "Test Owner",
                             "generation" : 0,
                             "creatureId" : 99999,
-                            "createDate" : datetime.datetime.today(),
+                            "createDate" : datetime.today(),
                             "imageLink" : "https://fakesite.com"
                         }
     return testCreatureAttrs
@@ -21,7 +22,8 @@ def createCreature(testCreatureAttributes):
                                     generation = testCreatureAttributes["generation"],
                                     creatureId = testCreatureAttributes["creatureId"],
                                     createDate=str(testCreatureAttributes["createDate"]),
-                                    imageLink=testCreatureAttributes['imageLink'])
+                                    imageLink=testCreatureAttributes['imageLink'],
+                                    ownerName=testCreatureAttributes["ownerName"])
     return testCreature
 
 def test_createCreature(testCreatureAttributes):
@@ -34,10 +36,10 @@ def test_createCreature(testCreatureAttributes):
     assert testCreature
 
 def test_outputCreature(createCreature,testCreatureAttributes):
-    age = datetime.datetime.today() - testCreatureAttributes['createDate']
+    age = datetime.today() - testCreatureAttributes['createDate']
     outputString = f"""ID: {testCreatureAttributes["creatureId"]}\n"""\
                     f"""Name: {testCreatureAttributes["name"]}\n"""\
-                    f"""Owner: {testCreatureAttributes["owner"]}\n"""\
+                    f"""Owner: {testCreatureAttributes["ownerName"]}\n"""\
                     f"""Age: {age}\n"""\
                     f"""Create Date: {testCreatureAttributes['createDate']}\n"""\
                     f"""Generation: {testCreatureAttributes["generation"]}\n"""\

@@ -1,5 +1,5 @@
 import pytest
-import datetime
+from datetime import datetime
 import random
 from .context import Database
 from .context import Creature
@@ -13,7 +13,7 @@ def testCreatureAttributes():
                             "imageLink" : "",
                             "generation" : 0,
                             "creatureId" : 99999,
-                            "createDate" : datetime.datetime.today()
+                            "createDate" : datetime.today()
                         }
     return testCreatureAttrs
 
@@ -33,7 +33,7 @@ def testUserAttributes():
     testUserAttributes = {
         "userId" : random.randint(1,1000000),
         "level" : 99,
-        "lastBreed" : datetime.datetime(2022,12,31),
+        "lastBreed" : datetime(2022,12,31),
         "warningsIssued" : 0
     }
     return testUserAttributes
@@ -85,7 +85,7 @@ def test_getUserFromDB():
 
 """
 def test_updateLastBreed(createUser):
-    lastBreed = datetime.datetime(2021,1,1)
+    lastBreed = datetime(2021,1,1)
     createUser.userId = 99999
     createUser.updateLastBreed(lastBreed)
     returnedUser = Database.getUserFromDB(createUser.userId)
