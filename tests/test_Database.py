@@ -1,7 +1,9 @@
 import pytest
 import datetime
+import random
 from .context import Database
 from .context import Creature
+from .context import User
 
 @pytest.fixture
 def testCreatureAttributes():
@@ -26,6 +28,26 @@ def createCreature(testCreatureAttributes):
                                     )
     return testCreature
 
+@pytest.fixture
+def testUserAttributes():
+    testUserAttributes = {
+        "userId" : random.randint(1,1000000),
+        "level" : 99,
+        "lastBreed" : datetime.datetime(2022,12,31),
+        "warningsIssued" : 0
+    }
+    return testUserAttributes
+
+@pytest.fixture
+def createUser(testUserAttributes):
+    testUser = User.User(
+        testUserAttributes["userId"],
+        testUserAttributes["level"],
+        testUserAttributes["lastBreed"],
+        testUserAttributes["warningsIssued"]
+    )
+    return testUser
+
 def test_database_connection_prod():
     conn = Database.create_connection()
     assert conn
@@ -39,6 +61,7 @@ def test_database_connection_nonprod():
 def test_addCreatureToDB(createCreature):
     assert Database.addCreatureToDB(createCreature,test=True)
 
+# Creature DB tests
 def test_getCreatureFromDB(testCreatureAttributes):
     testCreature = Database.getCreatureFromDB(1,True)
     assert testCreature.name == 'Test Creature'
@@ -46,3 +69,11 @@ def test_getCreatureFromDB(testCreatureAttributes):
 def test_getCreatureFromDBThatDoesntExist(testCreatureAttributes):
     testCreature = Database.getCreatureFromDB(99999,True)
     assert not testCreature
+
+#User DB Tests
+def test_addNewUserToDB(createUser):
+    assert Database.addUserToDB(createUser,True)
+
+def test_rejectExistingUserInDB(createUser):
+    createUser.userId = 99999
+    assert not Database.addUserToDB(createUser,True)
