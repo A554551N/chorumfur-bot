@@ -18,6 +18,8 @@ class User:
             last date the breeding power was used
         warningsIssued : integer
             number of warnings issued to this user (currently unused)
+        daysSinceLastBreed : timedelta
+            determines time since last breeding
         BREEDINGSTONELINKS : dict
             dictionary containing links to Breeding Stone images
         Methods
@@ -36,7 +38,7 @@ class User:
         4 : "https://media.discordapp.net/attachments/1039966957799211109/1039967099948376094/Breeding_Crystal5.png",
         5 : "https://media.discordapp.net/attachments/1039966957799211109/1039967100392980540/Breeding_Crystal6.png"
     }
-    def __init__(self,userId,level=1,lastBreed=None,warningsIssued=0,name=""):
+    def __init__(self,userId,level=1,lastBreed=None,warningsIssued=0,name="",daysSinceLastBreed=None):
         self.userId = userId
         self.name = name
         self.level = level
@@ -44,6 +46,8 @@ class User:
             lastBreed = None
         elif type(lastBreed) == 'str':
             lastBreed = datetime.strptime(lastBreed,Constants.DATETIMEFORMAT)
+            daysSinceLastBreed = (datetime.today() - lastBreed).days
+        self.daysSinceLastBreed = daysSinceLastBreed
         self.lastBreed = lastBreed
         self.warningsIssued = warningsIssued
     
@@ -71,5 +75,13 @@ class User:
         """outputs a profile string to display in server"""
         output = f"User Name: {self.name}\n"\
                 f"Level: {self.level}\n"\
-                f"Last Breeding: {self.lastBreed}\n"\
-                f"Breeding Crystal:\n{self.BREEDINGSTONELINKS[self.breedingLevel()]}"
+                f"Last Breeding: {self.lastBreed}\n"
+        return output
+    
+    def daysUntilFull(self):
+        if self.lastBreed:
+            daysUntilFull = self.daysSinceLastBreed = datetime.today() - self.lastBreed
+            if daysUntilFull.days > 0:
+                return 0
+            return 30 - self.daysSinceLastBreed
+        return 0

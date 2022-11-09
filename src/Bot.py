@@ -44,6 +44,15 @@ async def me(ctx):
     await ctx.send(msg)
 
 @client.command()
+async def crystal(ctx):
+    user = Database.getUserFromDB(ctx.message.author.id)
+    if user:
+        msg=f"**Last Breeding:** {user.lastBreed}\n"\
+        f"Crystal Full in {user.daysUntilFull()} days"
+        await ctx.send(msg)
+        await ctx.send(user.BREEDINGSTONELINKS[user.breedingLevel()])
+
+@client.command()
 async def inventory(ctx):
     await ctx.send(f"Oh no, you forgot your bag!  Don't worry, we'll find it.")
 
@@ -58,10 +67,11 @@ async def getCreature(ctx,creatureId):
     if requestedCreature:
         user = await client.fetch_user(requestedCreature.owner)
         requestedCreature.ownerName = user.name
-        msg=requestedCreature.outputCreature()
+        await ctx.send(requestedCreature.outputCreature())
+        await ctx.send(requestedCreature.imageLink)
     else:
-        msg=f"ID Number {creatureId} not found"
-    await ctx.send(msg)
+        await ctx.send(f"ID Number {creatureId} not found")
+
 @client.command()
 async def joinGame(ctx):
     newUser = User.User(ctx.message.author.id)
