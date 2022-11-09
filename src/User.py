@@ -1,3 +1,5 @@
+import datetime
+import math
 class User:
     """
         A class to represent a User
@@ -26,4 +28,21 @@ class User:
         self.level = level
         self.lastBreed = lastBreed
         self.warningsIssued = warningsIssued
-        
+    
+    def breedingLevel(self,test=False):
+        """
+        calculates the breeding readiness of an account and returns an integer.
+        Breeding level is calculated as follows:
+        (in days) floor((today's date - last breed date)/5)
+        """
+        if test:
+            today = datetime.datetime(2022,12,31)
+        else:
+            today = datetime.datetime.today()
+        daysSinceLastBreed = today - self.lastBreed
+        breedingLevel = math.floor(daysSinceLastBreed.days/6)
+        if breedingLevel > 5:
+            breedingLevel = 5
+        elif breedingLevel < 0:
+            breedingLevel = 0
+        return breedingLevel
