@@ -91,6 +91,36 @@ def getCreatureFromDB(creatureId,test=False):
                             )
     return None
 
+def addUserToDB(userToAdd,test=False):
+    """
+    Adds a new user to the user database
+
+    Paramters
+    ---------
+    userToAdd : User object
+        a user object to add to the DB
+    test : bool
+        flag True to use Test Route
+    """
+    userAttributes = (f"{userToAdd.userId}",
+                        f"{userToAdd.level}",
+                        f"{userToAdd.lastBreed}",
+                        f"{userToAdd.warningsIssued}"
+                    )
+
+    sql =  f'''INSERT INTO users(userId,level,lastBreed,warnings_issued)
+            VALUES(?,?,?,?)'''
+    conn = create_connection(test)
+    c = conn.cursor()
+    try:
+        c.execute(sql,userAttributes)
+        conn.commit()
+    except Error as e:
+        return None
+    userId = c.lastrowid
+    conn.close()
+    return userId
+
 
     
 

@@ -28,10 +28,6 @@ async def on_command_error(ctx, error):
 
 # BEGIN COMMANDS SECTION
 @client.command()
-async def hello(ctx):
-    await ctx.send(f'Hello {ctx.author}')
-
-@client.command()
 async def shop(ctx):
     await ctx.send(f'The shop is still under construction, stay tuned!')
 

@@ -11,7 +11,7 @@ class User:
             Unique Discord ID for User
         level : integer
             User's level (currently unused)
-        lastBreed : integer (Date)
+        lastBreed : datetime
             last date the breeding power was used
         warningsIssued : integer
             number of warnings issued to this user (currently unused)

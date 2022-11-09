@@ -22,7 +22,7 @@ def create_table(conn, create_table_sql):
 sql_create_users_table = """CREATE TABLE IF NOT EXISTS users (
                             userId integer PRIMARY KEY AUTOINCREMENT,
                             level integer NOT NULL,
-                            lastBreed integer NOT NULL,
+                            lastBreed string,
                             warnings_issued integer NOT NULL)
                         """
 sql_create_creatures_table = """CREATE TABLE IF NOT EXISTS creatures (
@@ -59,4 +59,9 @@ if conn is not None:
     create_table(conn,sql_create_users_table)
     create_table(conn,sql_create_creatures_table)
     create_table(conn,sql_create_items_table)
+    sql =  f'''INSERT INTO users(userId,level,lastBreed,warnings_issued)
+            VALUES(?,?,?,?)'''
+    c = conn.cursor()
+    c.execute(sql,(99999,99,"",0))
+    conn.commit()
     conn.close()
