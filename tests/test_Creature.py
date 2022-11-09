@@ -1,3 +1,4 @@
+from src.ConstantData import Constants
 from .context import Creature
 from datetime import datetime
 import pytest
@@ -41,7 +42,6 @@ def test_outputCreature(createCreature,testCreatureAttributes):
                     f"""Name: {testCreatureAttributes["name"]}\n"""\
                     f"""Owner: {testCreatureAttributes["ownerName"]}\n"""\
                     f"""Age: {age}\n"""\
-                    f"""Create Date: {testCreatureAttributes['createDate']}\n"""\
-                    f"""Generation: {testCreatureAttributes["generation"]}\n"""\
-                    f"""Image: {testCreatureAttributes['imageLink']}"""
+                    f"""Create Date: {datetime.strftime(testCreatureAttributes['createDate'],Constants.DATEONLYFORMAT)}\n"""\
+                    f"""Generation: {testCreatureAttributes["generation"]}\n"""
     assert createCreature.outputCreature() == outputString

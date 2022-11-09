@@ -46,6 +46,5 @@ class Creature:
                 f"Owner: {self.ownerName}\n"\
                 f"Age: {age}\n"\
                 f"Create Date: {datetime.strftime(self.createDate,Constants.DATEONLYFORMAT)}\n"\
-                f"Generation: {self.generation}\n"\
-                f"Image: {self.imageLink}"
+                f"Generation: {self.generation}\n"
         return output
