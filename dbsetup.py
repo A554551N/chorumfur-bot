@@ -22,6 +22,7 @@ def create_table(conn, create_table_sql):
 sql_create_users_table = """CREATE TABLE IF NOT EXISTS users (
                             userId integer PRIMARY KEY AUTOINCREMENT,
                             level integer NOT NULL,
+                            lastBreed integer NOT NULL,
                             warnings_issued integer NOT NULL)
                         """
 sql_create_creatures_table = """CREATE TABLE IF NOT EXISTS creatures (
