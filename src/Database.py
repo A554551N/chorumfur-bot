@@ -1,5 +1,6 @@
 import os
 import Creature
+import User
 import sqlite3
 from sqlite3 import Error
 
@@ -121,9 +122,33 @@ def addUserToDB(userToAdd,test=False):
     conn.close()
     return userId
 
+def getUserFromDB(userId,test=False):
+    """
+    Collects User record from Database and returns a User object
 
-    
-
+    Parameters
+    ----------
+    userId : int
+        userId to search database for
+    test : bool
+        flag True to use test route
+    """
+    sql = '''SELECT
+                userId,
+                level,
+                lastBreed,
+                warnings_issued
+            FROM users
+            WHERE userId=?
+            '''
+    conn = create_connection(test)
+    c = conn.cursor()
+    c.execute(sql,(userId,))
+    result = c.fetchall()
+    conn.close()
+    if result:
+        return User.User(result[0][0],result[0][1],result[0][2],result[0][3])
+    return None
 #if conn is not None:
 #    take DB actions here
 #conn.close()
