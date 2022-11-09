@@ -34,10 +34,11 @@ def test_createCreature(testCreatureAttributes):
     assert testCreature
 
 def test_outputCreature(createCreature,testCreatureAttributes):
+    age = datetime.datetime.today() - testCreatureAttributes['createDate']
     outputString = f"""ID: {testCreatureAttributes["creatureId"]}\n"""\
                     f"""Name: {testCreatureAttributes["name"]}\n"""\
                     f"""Owner: {testCreatureAttributes["owner"]}\n"""\
-                    f"""Age: {datetime.datetime.today() - testCreatureAttributes["createDate"]}\n"""\
+                    f"""Age: {age}\n"""\
                     f"""Create Date: {testCreatureAttributes['createDate']}\n"""\
                     f"""Generation: {testCreatureAttributes["generation"]}\n"""\
                     f"""Image: {testCreatureAttributes['imageLink']}"""

@@ -21,5 +21,9 @@ class User:
         breedingLevel()
             returns an int (1-6) indicating User readiness for breeding
     """
-    def __init__(self):
-        pass
+    def __init__(self,userId,level=1,lastBreed=None,warningsIssued=0):
+        self.userId = userId
+        self.level = level
+        self.lastBreed = lastBreed
+        self.warningsIssued = warningsIssued
+        
