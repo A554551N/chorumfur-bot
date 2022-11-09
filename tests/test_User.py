@@ -65,3 +65,10 @@ def test_breedingLevelAbove5(userAttributes):
                         datetime.datetime(2021,1,1),
                         userAttributes["warningsIssued"])
     assert testUser.breedingLevel(True) == 5
+
+def test_breedingLevelImage(userAttributes):
+    testUser = User.User(userAttributes["ID"],
+                        userAttributes["level"],
+                        datetime.datetime(2022,12,31),
+                        userAttributes["warningsIssued"])
+    assert "https://media.discordapp.net/attachments/1039966957799211109/1039967098174185552/Breeding_Crystal.png" == User.User.BREEDINGSTONELINKS[testUser.breedingLevel(True)]
