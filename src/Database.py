@@ -120,7 +120,7 @@ def addUserToDB(userToAdd,test=False):
         return None
     userId = c.lastrowid
     conn.close()
-    return userId
+    return True
 
 def getUserFromDB(userId,test=False):
     """

@@ -47,6 +47,8 @@ class User:
         """
         if test:
             today = datetime.datetime(2022,12,31)
+        elif not self.lastBreed:
+            return 5
         else:
             today = datetime.datetime.today()
         daysSinceLastBreed = today - self.lastBreed
@@ -56,3 +58,10 @@ class User:
         elif breedingLevel < 0:
             breedingLevel = 0
         return breedingLevel
+    
+    def outputProfile(self):
+        """outputs a profile string to display in server"""
+        output = f"User Name: {self.userId}\n"\
+                f"Level: {self.level}\n"\
+                f"Last Breeding: {self.lastBreed}\n"\
+                f"Breeding Crystal:\n{self.BREEDINGSTONELINKS[self.breedingLevel()]}"

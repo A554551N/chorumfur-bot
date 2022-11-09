@@ -2,6 +2,7 @@ import os
 import discord
 import Database
 import Creature
+import User
 from discord.ext import commands
 discord.app_commands.CommandTree
 
@@ -53,6 +54,14 @@ async def getCreature(ctx,creatureId):
         msg=requestedCreature.outputCreature()
     else:
         msg=f"ID Number {creatureId} not found"
+    await ctx.send(msg)
+@client.command()
+async def joinGame(ctx):
+    newUser = User.User(ctx.message.author.id)
+    if Database.addUserToDB(newUser):
+        msg=f"Welcome to Chorumfur {await client.fetch_user(ctx.message.author.id)}"
+    else:
+        msg=f"Failed to add new user, perhaps you are already registered?  Try .me"
     await ctx.send(msg)
 
 @client.command()
