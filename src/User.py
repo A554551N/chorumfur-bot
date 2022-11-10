@@ -1,4 +1,5 @@
 from datetime import datetime
+from operator import contains
 from ConstantData import Constants
 import math
 import os
@@ -15,6 +16,10 @@ class User:
             a friendly name for User
         level : integer
             User's level (currently unused)
+        wallet : integer
+            A user's quantity of money
+        inventory : dict (itemId : quantity)
+            all itemIDs associated with this user
         lastBreed : datetime
             last date the breeding power was used
         warningsIssued : integer
@@ -39,10 +44,12 @@ class User:
         4 : "https://media.discordapp.net/attachments/1039966957799211109/1039967099948376094/Breeding_Crystal5.png",
         5 : "https://media.discordapp.net/attachments/1039966957799211109/1039967100392980540/Breeding_Crystal6.png"
     }
-    def __init__(self,userId,level=1,lastBreed=None,warningsIssued=0,name="",daysSinceLastBreed=None,wallet=0):
+    def __init__(self,userId,level=1,lastBreed=None,warningsIssued=0,name="",daysSinceLastBreed=None,wallet=0,inventory={}):
         self.userId = userId
         self.name = name
         self.level = level
+        self.wallet = wallet
+        self.inventory = inventory
         if lastBreed == "None":
             lastBreed = None
         elif type(lastBreed) == 'str':
@@ -51,7 +58,6 @@ class User:
         self.daysSinceLastBreed = daysSinceLastBreed
         self.lastBreed = lastBreed
         self.warningsIssued = warningsIssued
-        self.wallet = wallet
     
     def breedingLevel(self,test=False):
         """
@@ -88,3 +94,22 @@ class User:
                 return 0
             return 30 - self.daysSinceLastBreed
         return 0
+    
+    def addToInventory(self,itemToAdd):
+        if itemToAdd in self.inventory.keys():
+            self.inventory[itemToAdd] += 1
+        else:
+            self.inventory[itemToAdd] = 1
+    
+    def listInventory(self):
+        output = ""
+        for item in self.inventory.keys():
+            output += f"{item}: {self.inventory[item]}\n"
+        return output
+
+if __name__ == '__main__':
+    testUser = User(1)
+    testUser.addToInventory(99)
+    testUser.addToInventory(99)
+    testUser.addToInventory(2)
+    print(testUser.listInventory())

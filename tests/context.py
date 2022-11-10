@@ -6,4 +6,4 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../s
 from src import Creature
 from src import Database
 from src.User import User
-from src import Item
+from src.Item import Item

@@ -1,5 +1,6 @@
 from .context import User
 from .context import Database
+from .context import Item
 import random
 import pytest
 from datetime import datetime
@@ -74,6 +75,18 @@ def test_breedingLevelImage(userAttributes):
                         datetime(2022,12,31),
                         userAttributes["warningsIssued"])
     assert "https://media.discordapp.net/attachments/1039966957799211109/1039967098174185552/Breeding_Crystal.png" == User.BREEDINGSTONELINKS[testUser.breedingLevel(True)]
+
+def test_addToInventory(createTestUser):
+    createTestUser.addToInventory(99)
+    assert createTestUser.inventory[99] == 1
+
+def test_listInventory(createTestUser):
+    createTestUser.inventory = {}
+    createTestUser.addToInventory(99)
+    createTestUser.addToInventory(99)
+    createTestUser.addToInventory(1)
+    
+    assert createTestUser.listInventory() == "99: 2\n1: 1\n"
 
 # DB Read/Write Tests
 

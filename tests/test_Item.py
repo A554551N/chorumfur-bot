@@ -15,7 +15,7 @@ def testItemAttributes():
     return testItemAttrs
 
 def test_createItem(testItemAttributes):
-    testItem = Item.Item(testItemAttributes['name'],
+    testItem = Item(testItemAttributes['name'],
                         testItemAttributes['description'],
                         testItemAttributes['value'],
                         testItemAttributes['imageLink'],
@@ -24,7 +24,7 @@ def test_createItem(testItemAttributes):
     assert testItem
 
 def test_addItemToDB(testItemAttributes):
-    testItem = Item.Item(testItemAttributes['name'],
+    testItem = Item(testItemAttributes['name'],
                         testItemAttributes['description'],
                         testItemAttributes['value'],
                         testItemAttributes['imageLink'])
