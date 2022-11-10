@@ -1,4 +1,5 @@
 import pytest
+from .context import Database
 from .context import Item
 
 @pytest.fixture
@@ -21,3 +22,11 @@ def test_createItem(testItemAttributes):
                         testItemAttributes['id'])
 
     assert testItem
+
+def test_addItemToDB(testItemAttributes):
+    testItem = Item.Item(testItemAttributes['name'],
+                        testItemAttributes['description'],
+                        testItemAttributes['value'],
+                        testItemAttributes['imageLink'])
+    assert Database.addItemToDB(testItem,True)
+    

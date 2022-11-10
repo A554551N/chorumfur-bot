@@ -20,7 +20,7 @@ def create_table(conn, create_table_sql):
         print(e)
 
 sql_create_users_table = """CREATE TABLE IF NOT EXISTS users (
-                            userId integer PRIMARY KEY AUTOINCREMENT,
+                            userId integer PRIMARY KEY,
                             level integer NOT NULL,
                             lastBreed string,
                             warnings_issued integer NOT NULL)
@@ -40,9 +40,7 @@ sql_create_items_table = """CREATE TABLE IF NOT EXISTS items (
                             name text NOT NULL,
                             description text NOT NULL,
                             value integer NOT NULL,
-                            owner integer NOT NULL,
-                            FOREIGN KEY (owner)
-                                REFERENCES users (userId)
+                            imageLink string
                         )"""
 db_file_prod=os.path.abspath(os.path.join(os.path.dirname(__file__), './database.db'))
 conn = create_connection(db_file_prod)

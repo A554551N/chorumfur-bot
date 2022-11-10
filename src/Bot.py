@@ -3,6 +3,7 @@ import discord
 import Database
 import Creature
 import User
+from Item import Item
 from discord.ext import commands
 discord.app_commands.CommandTree
 
@@ -92,6 +93,20 @@ async def makeCreature(ctx,creatureName):
         creatureId = Database.addCreatureToDB(creatureToAdd)
         msg=f"{creatureName} created with Id #{creatureId}"
     await ctx.send(msg)
+
+@client.command()
+@is_guild_owner_or_me()
+async def makeItem(ctx,itemName,itemDesc,itemValue):
+    if ctx.message.attachments:
+        imageLink = ctx.message.attachments[0].url
+    else:
+        imageLink = ""
+    itemToAdd = Item(itemName,itemDesc,itemValue,imageLink)
+    itemId = Database.addItemToDB(itemToAdd)
+    if itemId:
+        await ctx.send(f'{itemName} created with ID # {itemId}')
+    else:
+        await ctx.send(f'{itemName} cannot be created, an error occurred.')
 
 # END OF COMMANDS SECTION
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__), '../token.txt')))

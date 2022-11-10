@@ -149,6 +149,38 @@ def getUserFromDB(userId,test=False):
     if result:
         return User.User(result[0][0],result[0][1],result[0][2],result[0][3])
     return None
+
+# Add/Get Item from DB
+
+def addItemToDB(itemToAdd,test=False):
+    """
+    Adds a new Item to the user database
+
+    Paramters
+    ---------
+    itemToAdd : Item object
+        an item object to add to the DB
+    test : bool
+        flag True to use Test Route
+    """
+    userAttributes = (f"{itemToAdd.name}",
+                        f"{itemToAdd.description}",
+                        f"{itemToAdd.value}",
+                        f"{itemToAdd.imageLink}"
+                    )
+
+    sql =  f'''INSERT INTO users(name,description,value,imageLink)
+            VALUES(?,?,?,?)'''
+    conn = create_connection(test)
+    c = conn.cursor()
+    try:
+        c.execute(sql,userAttributes)
+        conn.commit()
+    except Error as e:
+        return None
+    itemId = c.lastrowid
+    conn.close()
+    return itemId
 #if conn is not None:
 #    take DB actions here
 #conn.close()
