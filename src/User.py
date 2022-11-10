@@ -2,6 +2,7 @@ from datetime import datetime
 from ConstantData import Constants
 import math
 import os
+
 class User:
     """
         A class to represent a User
@@ -38,7 +39,7 @@ class User:
         4 : "https://media.discordapp.net/attachments/1039966957799211109/1039967099948376094/Breeding_Crystal5.png",
         5 : "https://media.discordapp.net/attachments/1039966957799211109/1039967100392980540/Breeding_Crystal6.png"
     }
-    def __init__(self,userId,level=1,lastBreed=None,warningsIssued=0,name="",daysSinceLastBreed=None):
+    def __init__(self,userId,level=1,lastBreed=None,warningsIssued=0,name="",daysSinceLastBreed=None,wallet=0):
         self.userId = userId
         self.name = name
         self.level = level
@@ -50,6 +51,7 @@ class User:
         self.daysSinceLastBreed = daysSinceLastBreed
         self.lastBreed = lastBreed
         self.warningsIssued = warningsIssued
+        self.wallet = wallet
     
     def breedingLevel(self,test=False):
         """
@@ -79,6 +81,7 @@ class User:
         return output
     
     def daysUntilFull(self):
+        """calculates how many days until the breeding crystal is ready to be used."""
         if self.lastBreed:
             daysUntilFull = self.daysSinceLastBreed = datetime.today() - self.lastBreed
             if daysUntilFull.days > 0:
