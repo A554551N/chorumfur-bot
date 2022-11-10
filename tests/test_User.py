@@ -1,11 +1,13 @@
 from .context import User
+from .context import Database
+import random
 import pytest
 from datetime import datetime
 
 @pytest.fixture
 def userAttributes():
     userAttributes = {
-                    "ID" : 99999,
+                    "ID" : random.randint(1,1000000),
                     "level" : 99,
                     "lastBreed" : datetime(2022,12,31),
                     "warningsIssued" : 0
@@ -72,3 +74,18 @@ def test_breedingLevelImage(userAttributes):
                         datetime(2022,12,31),
                         userAttributes["warningsIssued"])
     assert "https://media.discordapp.net/attachments/1039966957799211109/1039967098174185552/Breeding_Crystal.png" == User.BREEDINGSTONELINKS[testUser.breedingLevel(True)]
+
+# DB Read/Write Tests
+
+def test_addNewUserToDB(createTestUser):
+    assert Database.addUserToDB(createTestUser,True)
+
+
+def test_rejectExistingUserInDB(createTestUser):
+    createTestUser.userId = 99999
+    assert not Database.addUserToDB(createTestUser,True)
+
+def test_getUserFromDB():
+    returnedUser = Database.getUserFromDB(99999,True)
+    assertValues = (returnedUser.userId,returnedUser.level)
+    assert assertValues == (99999,99)
