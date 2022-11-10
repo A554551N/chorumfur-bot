@@ -218,6 +218,31 @@ def getItemFromDB(itemID,test=False):
         return Item(result[0][1],result[0][2],result[0][3],result[0][4],result[0][0])
     return None
 
+def getAllItemsInDB(test=False):
+    sql = '''SELECT
+                itemId,
+                name,
+                description,
+                value
+                FROM items
+            '''
+    conn = create_connection(test)
+    c = conn.cursor()
+    c.execute(sql)
+    result = c.fetchall()
+    output = "**ID/Name/Description/Value**\n"
+    count=0
+    for i in range(len(result)):
+        for x in range(len(result[i])):
+            output+= f"{result[i][x]}/"
+        output+="\n"
+        count+=1
+    output+= f"**Total Records Returned:** {count}"
+    return output
+    
 #if conn is not None:
 #    take DB actions here
 #conn.close()
+
+if __name__ == '__main__':
+    print(getAllItemsInDB())
