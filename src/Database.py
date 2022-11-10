@@ -1,6 +1,7 @@
 import os
 import Creature
 import User
+import pickle
 from Item import Item
 import sqlite3
 from sqlite3 import Error
@@ -107,12 +108,13 @@ def addUserToDB(userToAdd,test=False):
     """
     userAttributes = (f"{userToAdd.userId}",
                         f"{userToAdd.level}",
+                        f"{userToAdd.wallet}",
                         f"{userToAdd.lastBreed}",
                         f"{userToAdd.warningsIssued}"
                     )
 
-    sql =  f'''INSERT INTO users(userId,level,lastBreed,warnings_issued)
-            VALUES(?,?,?,?)'''
+    sql =  f'''INSERT INTO users(userId,level,wallet,lastBreed,warnings_issued)
+            VALUES(?,?,?,?,?)'''
     conn = create_connection(test)
     c = conn.cursor()
     try:
@@ -139,8 +141,10 @@ def getUserFromDB(userId,test=False):
     sql = '''SELECT
                 userId,
                 level,
+                wallet,
                 lastBreed,
-                warnings_issued
+                warnings_issued,
+                inventory
             FROM users
             WHERE userId=?
             '''
@@ -150,7 +154,43 @@ def getUserFromDB(userId,test=False):
     result = c.fetchall()
     conn.close()
     if result:
-        return User.User(result[0][0],result[0][1],result[0][2],result[0][3])
+        storedInventory = {}
+        if result[0][5]:
+            storedInventory = pickle.loads(result[0][5])
+        return User.User(
+            userId=result[0][0],
+            level=result[0][1],
+            wallet=result[0][2],
+            lastBreed=result[0][3],
+            warningsIssued=result[0][4],
+            inventory=storedInventory)
+    return None
+
+# STORE/GET INVENTORY
+def storeInventory(user,test=False):
+    sql='''UPDATE users SET inventory = ? WHERE userId = ?;'''
+    inventoryToStore = pickle.dumps(user.inventory)
+    conn = create_connection(test)
+    c = conn.cursor()
+    try:
+        c.execute(sql,(inventoryToStore,user.userId))
+        conn.commit()
+    except Error as e:
+        conn.close()
+        return None
+    conn.close()
+    return True
+
+def getInventory(user,test=False):
+    sql='''SELECT inventory FROM users WHERE userId = ?'''
+    conn = create_connection(test)
+    c = conn.cursor()
+    c.execute(sql,(user.userId,))
+    result = c.fetchall()
+    conn.close()
+    if result:
+        user.inventory = pickle.loads(result[0][0])
+        return user
     return None
 
 # Add/Get Item from DB
@@ -243,6 +283,3 @@ def getAllItemsInDB(test=False):
 #if conn is not None:
 #    take DB actions here
 #conn.close()
-
-if __name__ == '__main__':
-    print(getAllItemsInDB())

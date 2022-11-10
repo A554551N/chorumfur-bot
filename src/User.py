@@ -1,5 +1,4 @@
 from datetime import datetime
-from operator import contains
 from ConstantData import Constants
 import math
 import os
@@ -96,10 +95,10 @@ class User:
         return 0
     
     def addToInventory(self,itemToAdd):
-        if itemToAdd in self.inventory.keys():
-            self.inventory[itemToAdd] += 1
+        if itemToAdd.id in self.inventory.keys():
+            self.inventory[itemToAdd.id] += 1
         else:
-            self.inventory[itemToAdd] = 1
+            self.inventory[itemToAdd.id] = 1
     
     def listInventory(self):
         output = ""
@@ -107,9 +106,4 @@ class User:
             output += f"{item}: {self.inventory[item]}\n"
         return output
 
-if __name__ == '__main__':
-    testUser = User(1)
-    testUser.addToInventory(99)
-    testUser.addToInventory(99)
-    testUser.addToInventory(2)
-    print(testUser.listInventory())
+

@@ -10,6 +10,7 @@ def userAttributes():
     userAttributes = {
                     "ID" : random.randint(1,1000000),
                     "level" : 99,
+                    "wallet" : 0,
                     "lastBreed" : datetime(2022,12,31),
                     "warningsIssued" : 0
                     }
@@ -17,10 +18,12 @@ def userAttributes():
 
 @pytest.fixture
 def createTestUser(userAttributes):
-    testUser = User(userAttributes["ID"],
-                        userAttributes["level"],
-                        userAttributes["lastBreed"],
-                        userAttributes["warningsIssued"])
+    testUser = User(userId=userAttributes["ID"],
+                    level=userAttributes["level"],
+                    lastBreed=userAttributes["lastBreed"],
+                    warningsIssued=userAttributes["warningsIssued"],
+                    wallet=userAttributes['wallet'],
+                    inventory={99:2,1:1})
     return testUser
 
 def test_createUserDefault(userAttributes):
@@ -78,7 +81,7 @@ def test_breedingLevelImage(userAttributes):
 
 def test_addToInventory(createTestUser):
     createTestUser.addToInventory(99)
-    assert createTestUser.inventory[99] == 1
+    assert createTestUser.inventory[99] == 3
 
 def test_listInventory(createTestUser):
     createTestUser.inventory = {}
@@ -102,3 +105,11 @@ def test_getUserFromDB():
     returnedUser = Database.getUserFromDB(99999,True)
     assertValues = (returnedUser.userId,returnedUser.level)
     assert assertValues == (99999,99)
+
+def test_storeInventory(createTestUser):
+    createTestUser.userId = 99999
+    assert Database.storeInventory(createTestUser,True)
+
+def test_getInventory(createTestUser):
+    createTestUser.userId = 99999
+    assert Database.getInventory(createTestUser,True)
