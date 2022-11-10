@@ -75,9 +75,9 @@ class User:
     
     def outputProfile(self):
         """outputs a profile string to display in server"""
-        output = f"User Name: {self.name}\n"\
-                f"Level: {self.level}\n"\
-                f"Last Breeding: {self.lastBreed}\n"
+        output = f"**{self.name}**\n"\
+                f"**Level:** {self.level}\n"\
+                f"**Last Breeding:** {self.lastBreed}\n"
         return output
     
     def daysUntilFull(self):
