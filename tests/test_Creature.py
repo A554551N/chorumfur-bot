@@ -1,5 +1,6 @@
 from src.ConstantData import Constants
 from .context import Creature
+from .context import Database
 from datetime import datetime
 import pytest
 
@@ -45,3 +46,15 @@ def test_outputCreature(createCreature,testCreatureAttributes):
                     f"""Create Date: {datetime.strftime(testCreatureAttributes['createDate'],Constants.DATEONLYFORMAT)}\n"""\
                     f"""Generation: {testCreatureAttributes["generation"]}\n"""
     assert createCreature.outputCreature() == outputString
+
+# Database Read/Write
+def test_addCreatureToDB(createCreature):
+    assert Database.addCreatureToDB(createCreature,test=True)
+
+def test_getCreatureFromDB(testCreatureAttributes):
+    testCreature = Database.getCreatureFromDB(1,True)
+    assert testCreature.name == 'Test Creature'
+
+def test_getCreatureFromDBThatDoesntExist(testCreatureAttributes):
+    testCreature = Database.getCreatureFromDB(99999,True)
+    assert not testCreature

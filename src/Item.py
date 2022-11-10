@@ -15,8 +15,8 @@ class Item:
     id : int
         ID number in Database
     """
-    
-    def __init__(self,name,description,value,imageLink,id=None):
+
+    def __init__(self,name,description,value,imageLink="",id=None):
         self.name = name
         self.description = description
         self.value = value

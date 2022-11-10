@@ -1,6 +1,7 @@
 import os
 import Creature
 import User
+from Item import Item
 import sqlite3
 from sqlite3 import Error
 
@@ -48,7 +49,8 @@ def addCreatureToDB(creatureToAdd,test=False):
         c.execute(sql,creatureAttributes)
         conn.commit()
     except Error as e:
-        print(e)
+        conn.close()
+        return None
     creatureId = c.lastrowid
     conn.close()
     return creatureId
@@ -117,6 +119,7 @@ def addUserToDB(userToAdd,test=False):
         c.execute(sql,userAttributes)
         conn.commit()
     except Error as e:
+        conn.close()
         return None
     userId = c.lastrowid
     conn.close()
@@ -163,24 +166,27 @@ def addItemToDB(itemToAdd,test=False):
     test : bool
         flag True to use Test Route
     """
-    userAttributes = (f"{itemToAdd.name}",
+    itemAttributes = (f"{itemToAdd.name}",
                         f"{itemToAdd.description}",
                         f"{itemToAdd.value}",
                         f"{itemToAdd.imageLink}"
                     )
 
-    sql =  f'''INSERT INTO users(name,description,value,imageLink)
+    sql =  f'''INSERT INTO items(name,description,value,imageLink)
             VALUES(?,?,?,?)'''
     conn = create_connection(test)
     c = conn.cursor()
     try:
-        c.execute(sql,userAttributes)
+        c.execute(sql,itemAttributes)
         conn.commit()
     except Error as e:
+        conn.close()
         return None
     itemId = c.lastrowid
     conn.close()
+    print("Successful Add")
     return itemId
+
 #if conn is not None:
 #    take DB actions here
 #conn.close()
