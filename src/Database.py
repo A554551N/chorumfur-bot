@@ -187,6 +187,37 @@ def addItemToDB(itemToAdd,test=False):
     print("Successful Add")
     return itemId
 
+def getItemFromDB(itemID,test=False):
+    '''
+    Get an existing item from the database and return an Item object
+    
+    Parameters
+    ----------
+    itemID : int
+        the requested itemID
+    test : bool
+        flag True to use Test Route
+    '''
+
+    sql = '''SELECT
+                itemId,
+                name,
+                description,
+                value,
+                imageLink
+                FROM items
+                WHERE itemId = ?
+            '''
+
+    conn = create_connection(test)
+    c = conn.cursor()
+    c.execute(sql,(itemID,))
+    result = c.fetchall()
+    conn.close()
+    if result:
+        return Item(result[0][1],result[0][2],result[0][3],result[0][4],result[0][0])
+    return None
+
 #if conn is not None:
 #    take DB actions here
 #conn.close()

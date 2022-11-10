@@ -29,4 +29,9 @@ def test_addItemToDB(testItemAttributes):
                         testItemAttributes['value'],
                         testItemAttributes['imageLink'])
     assert Database.addItemToDB(testItem,True)
+
+def test_getItemFromDB(testItemAttributes):
+    receivedItem = Database.getItemFromDB(testItemAttributes['id'],True)
+    assertPair = (receivedItem.id,receivedItem.name)
+    assert assertPair == (testItemAttributes['id'],testItemAttributes['name'])
     

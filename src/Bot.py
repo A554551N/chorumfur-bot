@@ -108,6 +108,11 @@ async def makeItem(ctx,itemName,itemDesc,itemValue):
     else:
         await ctx.send(f'{itemName} cannot be created, an error occurred.')
 
+@client.command()
+async def getItem(ctx,itemId):
+    item=Database.getItemFromDB(itemId)
+    await ctx.send(f"{ctx.message.author.mention}\n{item.outputItem()}")
+    await ctx.send(item.imageLink)
 # END OF COMMANDS SECTION
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__), '../token.txt')))
 token = f.readline()
