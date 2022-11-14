@@ -23,14 +23,14 @@ def test_createItem(testItemAttributes):
 
     assert testItem
 
-def test_addItemToDB(testItemAttributes):
+def test_addItemToTypeDB(testItemAttributes):
     testItem = Item(testItemAttributes['name'],
                         testItemAttributes['description'],
                         testItemAttributes['value'],
                         testItemAttributes['imageLink'])
     assert Database.addItemToDB(testItem,True)
 
-def test_getItemFromDB(testItemAttributes):
+def test_getItemFromTypeDB(testItemAttributes):
     receivedItem = Database.getItemFromDB(testItemAttributes['id'],True)
     assertPair = (receivedItem.id,receivedItem.name)
     assert assertPair == (testItemAttributes['id'],testItemAttributes['name'])

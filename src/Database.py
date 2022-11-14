@@ -143,8 +143,7 @@ def getUserFromDB(userId,test=False):
                 level,
                 wallet,
                 lastBreed,
-                warnings_issued,
-                inventory
+                warnings_issued
             FROM users
             WHERE userId=?
             '''
@@ -154,19 +153,43 @@ def getUserFromDB(userId,test=False):
     result = c.fetchall()
     conn.close()
     if result:
-        storedInventory = {}
-        if result[0][5]:
-            storedInventory = pickle.loads(result[0][5])
         return User.User(
             userId=result[0][0],
             level=result[0][1],
             wallet=result[0][2],
             lastBreed=result[0][3],
-            warningsIssued=result[0][4],
-            inventory=storedInventory)
+            warningsIssued=result[0][4])
     return None
 
 # STORE/GET INVENTORY
+def addToUserInventory(ownerId,itemId,test):
+    '''Add an item to the ownedItem DB and associate it with a given owner
+    Parameters
+    ---------
+    ownerId : int
+        the owner Id to insert
+    itemId : int
+        the id of the item from the items DB
+    test: bool
+        flag true to route to test DB'''
+
+    sql='''INSERT INTO ownedItems (itemID,quantity,owner)
+            VALUES (?,?,?)'''
+    conn = create_connection(test)
+    c = conn.cursor()
+    try:
+        c.execute(sql,(itemId,1,ownerId))
+        conn.commit()
+    except Error as e:
+        conn.close()
+        return e
+        #return None
+    conn.close()
+    return "Record has been successfully added"
+    #return True
+
+# Mothballing this method while code is refactored.
+"""
 def storeInventory(user,test=False):
     sql='''UPDATE users SET inventory = ? WHERE userId = ?;'''
     inventoryToStore = pickle.dumps(user.inventory)
@@ -180,7 +203,7 @@ def storeInventory(user,test=False):
         return None
     conn.close()
     return True
-
+"""
 def getInventory(user,test=False):
     sql='''SELECT inventory FROM users WHERE userId = ?'''
     conn = create_connection(test)
@@ -283,3 +306,5 @@ def getAllItemsInDB(test=False):
 #if conn is not None:
 #    take DB actions here
 #conn.close()
+
+print(addToUserInventory(99999,800,True))

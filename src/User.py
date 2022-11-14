@@ -17,8 +17,8 @@ class User:
             User's level (currently unused)
         wallet : integer
             A user's quantity of money
-        inventory : dict (itemId : quantity)
-            all itemIDs associated with this user
+        inventory : dict (itemId : (Item object,quantity integer))
+            all inventory items currently associated with this user and their quantity.
         lastBreed : datetime
             last date the breeding power was used
         warningsIssued : integer
@@ -93,17 +93,19 @@ class User:
                 return 0
             return 30 - self.daysSinceLastBreed
         return 0
-    
+
+    # Retconning this inventory code for now.
+    """
     def addToInventory(self,itemToAdd):
         if itemToAdd.id in self.inventory.keys():
             self.inventory[itemToAdd.id] += 1
         else:
             self.inventory[itemToAdd.id] = 1
-    
+    """
+    """
     def listInventory(self):
         output = ""
         for item in self.inventory.keys():
             output += f"{item}: {self.inventory[item]}\n"
         return output
-
-
+    """
