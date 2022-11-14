@@ -1,7 +1,6 @@
 import os
 import Creature
 import User
-import pickle
 from Item import Item
 import sqlite3
 from sqlite3 import Error
@@ -153,21 +152,22 @@ def getUserFromDB(userId,test=False):
     result = c.fetchall()
     conn.close()
     if result:
-        return User.User(
+        user = User.User(
             userId=result[0][0],
             level=result[0][1],
             wallet=result[0][2],
             lastBreed=result[0][3],
             warningsIssued=result[0][4])
+        return getUserInventory(user)
     return None
 
 # STORE/GET INVENTORY
-def addToUserInventory(ownerId,itemId,test):
+def addToUserInventory(userId,itemId,test=False):
     '''Add an item to the ownedItem DB and associate it with a given owner
     Parameters
     ---------
-    ownerId : int
-        the owner Id to insert
+    userId : int
+        user ID to update
     itemId : int
         the id of the item from the items DB
     test: bool
@@ -178,7 +178,7 @@ def addToUserInventory(ownerId,itemId,test):
     conn = create_connection(test)
     c = conn.cursor()
     try:
-        c.execute(sql,(itemId,1,ownerId))
+        c.execute(sql,(itemId,1,userId))
         conn.commit()
     except Error as e:
         conn.close()
@@ -188,34 +188,67 @@ def addToUserInventory(ownerId,itemId,test):
     return "Record has been successfully added"
     #return True
 
-# Mothballing this method while code is refactored.
-"""
-def storeInventory(user,test=False):
-    sql='''UPDATE users SET inventory = ? WHERE userId = ?;'''
-    inventoryToStore = pickle.dumps(user.inventory)
-    conn = create_connection(test)
-    c = conn.cursor()
-    try:
-        c.execute(sql,(inventoryToStore,user.userId))
-        conn.commit()
-    except Error as e:
-        conn.close()
-        return None
-    conn.close()
-    return True
-"""
-def getInventory(user,test=False):
-    sql='''SELECT inventory FROM users WHERE userId = ?'''
+def getUserInventory(user,test=False):
+    """Collects all items on the ownedItems table that belong to a given User
+    and returns an updated User object
+    
+    PARAMETERS
+    ----------
+    user : User Object
+        User object to update
+    test : bool
+        flag True to use test environment
+    
+    Returns a User"""
+
+    sql='''SELECT items.itemId,
+            name,
+            description,
+            value,
+            imageLink
+        FROM
+            items
+        INNER JOIN
+    ownedItems ON items.itemID = ownedItems.itemID
+    WHERE ownedItems.owner = ?'''
     conn = create_connection(test)
     c = conn.cursor()
     c.execute(sql,(user.userId,))
-    result = c.fetchall()
+    results = c.fetchall()
     conn.close()
-    if result:
-        user.inventory = pickle.loads(result[0][0])
-        return user
-    return None
+    if results:
+        inventory = {}
+        for result in results:
+            if result[0] in inventory.keys():
+                inventory[result[0]][1] = inventory[result[0]][1] + 1
+            else:
+                inventory[result[0]] = [Item(result[1],result[2],result[3],result[4],result[0]),1]
+        user.inventory = inventory
+    return user
 
+def removeFromUserInventory(userId,itemId,test=False):
+    """Removes an item from a given user's inventory
+    userId : int
+        userId to remove item from
+    itemId : int
+        itemId to remove
+    test : bool
+        flag True to use test database.
+    """
+
+    findItem = '''SELECT id FROM ownedItems
+            WHERE owner = ? AND itemID = ?'''
+    
+    conn = create_connection(test)
+    c = conn.cursor()
+    c.execute(findItem,(userId,itemId))
+    res = c.fetchone()
+    if not res:
+        return None
+    c.execute('DELETE FROM ownedItems WHERE id = ?',res)
+    conn.commit()
+    conn.close()
+    return True
 # Add/Get Item from DB
 
 def addItemToDB(itemToAdd,test=False):
@@ -307,4 +340,4 @@ def getAllItemsInDB(test=False):
 #    take DB actions here
 #conn.close()
 
-print(addToUserInventory(99999,800,True))
+removeFromUserInventory(202632427535859712,1)

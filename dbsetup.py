@@ -78,6 +78,10 @@ if conn is not None:
     sql = '''INSERT INTO items(name,description,value,imageLink)
         VALUES (?,?,?,?)'''
     c.execute(sql,("Test Item","A Test Description",1,"https://fakesite.com"))
+    sql = '''INSERT INTO ownedItems(itemID,quantity,owner)
+            VALUES (?,1,?)'''
+    listOfValues = [(1,99998),(1,99998),(2,99998),(1,99997)]
+    c.executemany(sql,listOfValues)
     c.execute("PRAGMA foreign_keys = ON;")
     conn.commit()
     conn.close()

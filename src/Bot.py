@@ -55,8 +55,10 @@ async def crystal(ctx):
 
 @client.command()
 async def inventory(ctx):
+    await ctx.send(f"Fetching Inventory {ctx.message.author.mention}")
     user = Database.getUserFromDB(ctx.message.author.id)
-    await ctx.send(user.listInventory())
+    await ctx.send(user.outputInventory())
+    await ctx.send("For more information on an item, use .getItem <ID Number>")
 
 @client.command()
 async def getID(ctx):
@@ -116,17 +118,28 @@ async def getAllItems(ctx):
 
 @client.command()
 @is_guild_owner_or_me()
-async def addItemToInv(ctx,itemToAdd):
+async def addItemToInv(ctx,itemIDToAdd):
     user = Database.getUserFromDB(ctx.message.author.id)
-    item = Database.getItemFromDB(itemToAdd)
-    user.addToInventory(item)
-    Database.storeInventory(user)
+    if Database.addToUserInventory(user.userId,itemIDToAdd):
+        await ctx.send(f"Item {Database.getItemFromDB(itemIDToAdd).name} added to your user.")
+    else:
+        await ctx.send(f"Adding Item {Database.getItemFromDB(itemIDToAdd).name}failed.")
+
+@client.command()
+@is_guild_owner_or_me()
+async def removeItemFromInv(ctx,itemIDToRemove):
+    user = Database.getUserFromDB(ctx.message.author.id)
+    if Database.removeFromUserInventory(user.userId,itemIDToRemove):
+        await ctx.send("Item removed from User Inventory")
+    else:
+        await ctx.send(f"Item not found, or not successfully removed.")
 
 @client.command()
 async def getItem(ctx,itemId):
     item=Database.getItemFromDB(itemId)
     await ctx.send(f"{ctx.message.author.mention}\n{item.outputItem()}")
-    await ctx.send(item.imageLink)
+    if item.imageLink != "":
+        await ctx.send(item.imageLink)
 # END OF COMMANDS SECTION
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__), '../token.txt')))
 token = f.readline()

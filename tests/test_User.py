@@ -22,8 +22,7 @@ def createTestUser(userAttributes):
                     level=userAttributes["level"],
                     lastBreed=userAttributes["lastBreed"],
                     warningsIssued=userAttributes["warningsIssued"],
-                    wallet=userAttributes['wallet'],
-                    inventory={99:2,1:1})
+                    wallet=userAttributes['wallet'])
     return testUser
 
 def test_createUserDefault(userAttributes):
@@ -79,20 +78,6 @@ def test_breedingLevelImage(userAttributes):
                         userAttributes["warningsIssued"])
     assert "https://media.discordapp.net/attachments/1039966957799211109/1039967098174185552/Breeding_Crystal.png" == User.BREEDINGSTONELINKS[testUser.breedingLevel(True)]
 
-#Mothballing This while inventory code is refactored.
-"""
-def test_addToInventory(createTestUser):
-    createTestUser.addToInventory(99)
-    assert createTestUser.inventory[99] == 3
-
-def test_listInventory(createTestUser):
-    createTestUser.inventory = {}
-    createTestUser.addToInventory(99)
-    createTestUser.addToInventory(99)
-    createTestUser.addToInventory(1)
-    
-    assert createTestUser.listInventory() == "99: 2\n1: 1\n"
-"""
 # DB Read/Write Tests
 
 def test_addNewUserToDB(createTestUser):
@@ -113,8 +98,19 @@ def test_getUserFromDB():
 def test_addToUserInventory():
     assert Database.addToUserInventory(99999,800,True)
 
-"""
 def test_getInventory(createTestUser):
+    createTestUser.userId = 99998
+    testUser = Database.getUserInventory(createTestUser,True)
+    assert testUser.inventory[1][1] == 2
+
+def test_emptyInventoryReturnsNone(createTestUser):
+    createTestUser.userId = 123
+    testUser = Database.getUserInventory(createTestUser,True)
+    assert not testUser.inventory
+
+def test_removeItemFromInventory(createTestUser):
     createTestUser.userId = 99999
-    assert Database.getInventory(createTestUser,True)
-"""
+    Database.addToUserInventory(99999,1000,True)
+    Database.removeFromUserInventory(99999,1000,True)
+    testUser = Database.getUserInventory(createTestUser,True)
+    assert 1000 not in testUser.inventory.keys()

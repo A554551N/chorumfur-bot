@@ -1,5 +1,6 @@
 from datetime import datetime
 from ConstantData import Constants
+import Database
 import math
 import os
 
@@ -94,6 +95,11 @@ class User:
             return 30 - self.daysSinceLastBreed
         return 0
 
+    def outputInventory(self):
+        output="Item ID | Item Name | Quantity\n"
+        for item in self.inventory.keys():
+            output+=f"{item} | {self.inventory[item][0].name} | {self.inventory[item][1]}\n"
+        return output
     # Retconning this inventory code for now.
     """
     def addToInventory(self,itemToAdd):
