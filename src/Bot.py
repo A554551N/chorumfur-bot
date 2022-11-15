@@ -1,8 +1,9 @@
 import os
 import discord
 import Database
-import Creature
-import User
+from Creature import Creature
+from User import User
+from Item import Item
 from discord.ext import commands
 discord.app_commands.CommandTree
 
@@ -21,13 +22,13 @@ def is_guild_owner_or_me():
 @client.event
 async def on_ready():
     print(f'We have logged in as {client.user}')
-
 """
 @client.event
 async def on_command_error(ctx, error):
     await ctx.send(f"Command {ctx.message.content} is not recognized or you"\
         " do not have permission to perform this action.")
 """
+
 # BEGIN COMMANDS SECTION
 @client.command()
 async def shop(ctx):
@@ -54,7 +55,10 @@ async def crystal(ctx):
 
 @client.command()
 async def inventory(ctx):
-    await ctx.send(f"Oh no, you forgot your bag!  Don't worry, we'll find it.")
+    await ctx.send(f"Fetching Inventory {ctx.message.author.mention}")
+    user = Database.getUserFromDB(ctx.message.author.id)
+    await ctx.send(user.outputInventory())
+    await ctx.send("For more information on an item, use .getItem <ID Number>")
 
 @client.command()
 async def getID(ctx):
@@ -74,7 +78,7 @@ async def getCreature(ctx,creatureId):
 
 @client.command()
 async def joinGame(ctx):
-    newUser = User.User(ctx.message.author.id)
+    newUser = User(ctx.message.author.id)
     if Database.addUserToDB(newUser):
         msg=f"Welcome to Chorumfur {await client.fetch_user(ctx.message.author.id)}"
     else:
@@ -88,11 +92,54 @@ async def makeCreature(ctx,creatureName):
     if not ctx.message.attachments:
         msg="Attachment not detected, new Chorumfur submissions require an image."
     else:
-        creatureToAdd = Creature.Creature(creatureName,userId,ctx.message.attachments[0].url)
+        creatureToAdd = Creature(creatureName,userId,ctx.message.attachments[0].url)
         creatureId = Database.addCreatureToDB(creatureToAdd)
         msg=f"{creatureName} created with Id #{creatureId}"
     await ctx.send(msg)
 
+@client.command()
+@is_guild_owner_or_me()
+async def makeItem(ctx,itemName,itemDesc,itemValue):
+    if ctx.message.attachments:
+        imageLink = ctx.message.attachments[0].url
+    else:
+        imageLink = ""
+    itemToAdd = Item(itemName,itemDesc,itemValue,imageLink)
+    itemId = Database.addItemToDB(itemToAdd)
+    if itemId:
+        await ctx.send(f'{itemName} created with ID # {itemId}')
+    else:
+        await ctx.send(f'{itemName} cannot be created, an error occurred.')
+
+@client.command()
+@is_guild_owner_or_me()
+async def getAllItems(ctx):
+    await ctx.send(f"{ctx.message.author.mention}\n{Database.getAllItemsInDB()}")
+
+@client.command()
+@is_guild_owner_or_me()
+async def addItemToInv(ctx,itemIDToAdd):
+    user = Database.getUserFromDB(ctx.message.author.id)
+    if Database.addToUserInventory(user.userId,itemIDToAdd):
+        await ctx.send(f"Item {Database.getItemFromDB(itemIDToAdd).name} added to your user.")
+    else:
+        await ctx.send(f"Adding Item {Database.getItemFromDB(itemIDToAdd).name}failed.")
+
+@client.command()
+@is_guild_owner_or_me()
+async def removeItemFromInv(ctx,itemIDToRemove):
+    user = Database.getUserFromDB(ctx.message.author.id)
+    if Database.removeFromUserInventory(user.userId,itemIDToRemove):
+        await ctx.send("Item removed from User Inventory")
+    else:
+        await ctx.send(f"Item not found, or not successfully removed.")
+
+@client.command()
+async def getItem(ctx,itemId):
+    item=Database.getItemFromDB(itemId)
+    await ctx.send(f"{ctx.message.author.mention}\n{item.outputItem()}")
+    if item.imageLink != "":
+        await ctx.send(item.imageLink)
 # END OF COMMANDS SECTION
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__), '../token.txt')))
 token = f.readline()

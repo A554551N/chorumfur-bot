@@ -1,7 +1,9 @@
 from datetime import datetime
 from ConstantData import Constants
+import Database
 import math
 import os
+
 class User:
     """
         A class to represent a User
@@ -14,6 +16,10 @@ class User:
             a friendly name for User
         level : integer
             User's level (currently unused)
+        wallet : integer
+            A user's quantity of money
+        inventory : dict (itemId : (Item object,quantity integer))
+            all inventory items currently associated with this user and their quantity.
         lastBreed : datetime
             last date the breeding power was used
         warningsIssued : integer
@@ -38,10 +44,12 @@ class User:
         4 : "https://media.discordapp.net/attachments/1039966957799211109/1039967099948376094/Breeding_Crystal5.png",
         5 : "https://media.discordapp.net/attachments/1039966957799211109/1039967100392980540/Breeding_Crystal6.png"
     }
-    def __init__(self,userId,level=1,lastBreed=None,warningsIssued=0,name="",daysSinceLastBreed=None):
+    def __init__(self,userId,level=1,lastBreed=None,warningsIssued=0,name="",daysSinceLastBreed=None,wallet=0,inventory={}):
         self.userId = userId
         self.name = name
         self.level = level
+        self.wallet = wallet
+        self.inventory = inventory
         if lastBreed == "None":
             lastBreed = None
         elif type(lastBreed) == 'str':
@@ -73,15 +81,37 @@ class User:
     
     def outputProfile(self):
         """outputs a profile string to display in server"""
-        output = f"User Name: {self.name}\n"\
-                f"Level: {self.level}\n"\
-                f"Last Breeding: {self.lastBreed}\n"
+        output = f"**{self.name}**\n"\
+                f"**Level:** {self.level}\n"\
+                f"**Last Breeding:** {self.lastBreed}\n"
         return output
     
     def daysUntilFull(self):
+        """calculates how many days until the breeding crystal is ready to be used."""
         if self.lastBreed:
             daysUntilFull = self.daysSinceLastBreed = datetime.today() - self.lastBreed
             if daysUntilFull.days > 0:
                 return 0
             return 30 - self.daysSinceLastBreed
         return 0
+
+    def outputInventory(self):
+        output="Item ID | Item Name | Quantity\n"
+        for item in self.inventory.keys():
+            output+=f"{item} | {self.inventory[item][0].name} | {self.inventory[item][1]}\n"
+        return output
+    # Retconning this inventory code for now.
+    """
+    def addToInventory(self,itemToAdd):
+        if itemToAdd.id in self.inventory.keys():
+            self.inventory[itemToAdd.id] += 1
+        else:
+            self.inventory[itemToAdd.id] = 1
+    """
+    """
+    def listInventory(self):
+        output = ""
+        for item in self.inventory.keys():
+            output += f"{item}: {self.inventory[item]}\n"
+        return output
+    """
