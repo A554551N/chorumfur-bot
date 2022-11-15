@@ -22,12 +22,13 @@ def is_guild_owner_or_me():
 @client.event
 async def on_ready():
     print(f'We have logged in as {client.user}')
-"""
+
 @client.event
 async def on_command_error(ctx, error):
+    print(f"{ctx.message.author}: {error}")
     await ctx.send(f"Command {ctx.message.content} is not recognized or you"\
         " do not have permission to perform this action.")
-"""
+
 
 # BEGIN COMMANDS SECTION
 @client.command()
