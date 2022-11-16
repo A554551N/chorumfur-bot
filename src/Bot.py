@@ -1,11 +1,10 @@
 import os
 import discord
-import Database
+from discord.ext import commands
 from Creature import Creature
 from User import User
 from Item import Item
-from discord.ext import commands
-discord.app_commands.CommandTree
+import Database
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -15,16 +14,19 @@ game = discord.Game('with all these Chorumfurs!')
 client = commands.Bot(command_prefix='.',intents=intents,activity=game)
 
 def is_guild_owner_or_me():
+    """Checks to see if the author of a message is guild_owner or bot creator"""
     def predicate(ctx):
         return ctx.guild is not None and (ctx.guild.owner_id == ctx.author.id or ctx.author.id == 202632427535859712)
     return commands.check(predicate)
 
 @client.event
 async def on_ready():
+    """Called when discord bot is ready to use"""
     print(f'We have logged in as {client.user}')
 
 @client.event
 async def on_command_error(ctx, error):
+    """Triggers when a command is not processed successfully"""
     print(f"{ctx.message.author}: {error}")
     await ctx.send(f"Command {ctx.message.content} is not recognized or you"\
         " do not have permission to perform this action.")
@@ -33,10 +35,12 @@ async def on_command_error(ctx, error):
 # BEGIN COMMANDS SECTION
 @client.command()
 async def shop(ctx):
-    await ctx.send(f'The shop is still under construction, stay tuned!')
+    """Command triggers the shop interface"""
+    await ctx.send('The shop is still under construction, stay tuned!')
 
 @client.command()
 async def me(ctx):
+    """gets user profile and displays it in chat"""
     user = Database.getUserFromDB(ctx.message.author.id)
     if user:
         user.name = await client.fetch_user(user.userId)
@@ -47,6 +51,7 @@ async def me(ctx):
 
 @client.command()
 async def crystal(ctx):
+    """gets the status of the user's breeding crystal and displays it in in chat"""
     user = Database.getUserFromDB(ctx.message.author.id)
     if user:
         msg=f"**Last Breeding:** {user.lastBreed}\n"\
