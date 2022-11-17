@@ -20,7 +20,7 @@ def database_connection(func):
             print(error)
         finally:
             if conn is not None:
-                conn.close
+                conn.close()
                 print("DB Closed")
         return output
     return inner
