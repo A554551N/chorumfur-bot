@@ -1,6 +1,7 @@
 class Constants:
     DATETIMEFORMAT='''%Y-%m-%d %H:%M:%S.%f'''
     DATEONLYFORMAT='%Y-%m-%d'
+    DB_TABLES = ['users','creatures','items','ownedItems']
     MAIN_HORN_TYPES = {
         1 : "Standard",
         2 : "Jacobs",
