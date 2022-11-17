@@ -6,7 +6,7 @@ database_connection(func)
 """
 import psycopg2
 
-def database_connection(func):
+def make_database_connection(func):
     def inner(*args,**kwargs):
         try:
             conn = psycopg2.connect(
@@ -24,3 +24,4 @@ def database_connection(func):
                 print("DB Closed")
         return output
     return inner
+
