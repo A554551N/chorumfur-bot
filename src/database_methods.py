@@ -17,13 +17,15 @@ def make_database_connection(func):
                 password="postgres"
             )
             output = func(conn = conn,*args,**kwargs)
+            if output:
+                return output
+            return False
         except psycopg2.DatabaseError as error:
             print(error)
         finally:
             if conn is not None:
                 conn.close()
                 print("DB Closed")
-            return output
     return inner
 
 @make_database_connection
@@ -36,10 +38,10 @@ def is_database_connected(conn=None):
 @make_database_connection
 def add_user_to_database(
     user_id,
-    user_level,
-    user_wallet,
-    user_last_breed,
-    user_warnings_issued,
+    user_level=1,
+    user_wallet=0,
+    user_last_breed="",
+    user_warnings_issued=0,
     conn=None,):
     sql = """INSERT INTO users (
         user_id,
