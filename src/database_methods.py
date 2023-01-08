@@ -5,6 +5,7 @@ database_connection(func)
     Decorator that safely constructs and destructs the database
 """
 import psycopg2
+from User import User
 
 def make_database_connection(func):
     """Connects database connection and runs code passed from decorator"""
@@ -57,5 +58,16 @@ def add_user_to_database(
     return True
 
 @make_database_connection
-def get_user_from_db(user_id,Conn=None):
+def get_user_from_db(user_id,conn=None):
     """Retrieves a user from the database with a given ID"""
+    sql = """SELECT user_level,user_wallet,user_lastBreed,user_warnings_issued
+                FROM users WHERE user_id = %s
+            """
+    cur = conn.cursor()
+    cur.execute(sql,(user_id,))
+    user_data = cur.fetchall()
+    return User(userId = user_id,
+        level=user_data[0][0],
+        wallet=user_data[0][1],
+        lastBreed=user_data[0][2],
+        warningsIssued=user_data[0][3])
