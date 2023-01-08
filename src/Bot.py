@@ -90,6 +90,8 @@ async def joinGame(ctx):
 @client.command()
 @is_guild_owner_or_me()
 async def makeCreature(ctx,creatureName):
+    """Creates a new creature (Admin Restricted Command).  Requires an image attachment.
+    SYNTAX: .makeCreature <creature name>"""
     userId = ctx.message.author.id
     if not ctx.message.attachments:
         msg="Attachment not detected, new Chorumfur submissions require an image."
