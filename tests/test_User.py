@@ -1,5 +1,5 @@
 from .context import User
-from .context import Database
+from .context import database_methods
 from .context import Item
 import random
 import pytest
@@ -72,6 +72,7 @@ def test_breedingLevelAbove5(userAttributes):
     assert testUser.breedingLevel(True) == 5
 
 def test_breedingLevelImage(userAttributes):
+    """Confirms that the correct art is shown for breeding item level"""
     testUser = User(userAttributes["ID"],
                         userAttributes["level"],
                         datetime(2022,12,31),
@@ -80,15 +81,17 @@ def test_breedingLevelImage(userAttributes):
 
 # DB Read/Write Tests
 
-def test_addNewUserToDB(createTestUser):
-    assert Database.addUserToDB(createTestUser,True)
+def test_add_new_user_to_db(userAttributes):
+    """Attempts to add a user to the database and asserts that it completed successfully"""
+    assert database_methods.add_user_to_database(userAttributes["ID"])
 
 
-def test_rejectExistingUserInDB(createTestUser):
+def test_reject_existing_user_in_db(createTestUser):
+    """Asserts that duplicate users are not added to database"""
     createTestUser.userId = 99999
-    assert not Database.addUserToDB(createTestUser,True)
+    assert not database_methods.add_user_to_database(createTestUser.userId)
 
-def test_getUserFromDB():
+def test_get_user_from_db():
     returnedUser = Database.getUserFromDB(99999,True)
     assertValues = (returnedUser.userId,returnedUser.level)
     assert assertValues == (99999,99)
