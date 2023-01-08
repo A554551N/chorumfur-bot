@@ -37,6 +37,7 @@ async def shop(ctx):
 
 @client.command()
 async def me(ctx):
+    """Displays information about the user that entered the command."""
     user = Database.getUserFromDB(ctx.message.author.id)
     if user:
         user.name = await client.fetch_user(user.userId)
