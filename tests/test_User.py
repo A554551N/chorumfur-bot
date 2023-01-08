@@ -92,7 +92,8 @@ def test_reject_existing_user_in_db(createTestUser):
     assert not database_methods.add_user_to_database(createTestUser.userId)
 
 def test_get_user_from_db():
-    returnedUser = Database.getUserFromDB(99999,True)
+    """asserts that a user can be retreived from the database"""
+    returnedUser = database_methods.get_user_from_db(99999)
     assertValues = (returnedUser.userId,returnedUser.level)
     assert assertValues == (99999,99)
 
