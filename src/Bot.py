@@ -104,6 +104,8 @@ async def makeCreature(ctx,creatureName):
 @client.command()
 @is_guild_owner_or_me()
 async def makeItem(ctx,itemName,itemDesc,itemValue):
+    """Creates a new item and adds it to the global items database.
+    SYNTAX: .makeItem <Item Name> <Item Description> <Item Value>"""
     if ctx.message.attachments:
         imageLink = ctx.message.attachments[0].url
     else:
