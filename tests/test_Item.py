@@ -1,5 +1,5 @@
 import pytest
-from .context import Database
+from .context import database_methods
 from .context import Item
 
 @pytest.fixture

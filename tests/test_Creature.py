@@ -1,6 +1,6 @@
 from src.ConstantData import Constants
 from .context import Creature
-from .context import Database
+from .context import database_methods
 from datetime import datetime
 import pytest
 
