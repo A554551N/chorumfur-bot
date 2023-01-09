@@ -13,7 +13,6 @@ intents.message_content = True
 game = discord.Game('with all these Chorumfurs!')
 
 client = commands.Bot(command_prefix='.',intents=intents,activity=game)
-
 def is_guild_owner_or_me():
     def predicate(ctx):
         return ctx.guild is not None and (ctx.guild.owner_id == ctx.author.id or ctx.author.id == 202632427535859712)
@@ -103,7 +102,8 @@ async def requestBreed(ctx,parent_a,parent_b):
     parent_b_output = Database.getCreatureFromDB(parent_b)
     if parent_a_output and parent_b_output:
         channel = client.get_channel(1061868480086941716)
-        msg = f"""{client.get_user(ctx.guild.owner_id).mention}
+        owner = client.get_user(ctx.guild.owner_id)
+        msg = f"""{owner.mention}
         User {author} has requested the following breeding:
         **Parent A:** {parent_a_output.name} ({parent_a})
         **Parent B:** {parent_b_output.name} ({parent_b})"""
