@@ -6,6 +6,7 @@ database_connection(func)
 """
 import psycopg2
 from User import User
+from Item import Item
 
 def make_database_connection(func):
     """Connects database connection and runs code passed from decorator"""
@@ -120,4 +121,20 @@ def remove_item_from_user(user_id,item_id,quantity_to_remove=1,conn=None):
         cur.execute(update_quantity,(quantity_remaining,row_id))
         conn.commit()
         return True
+    return False
+
+@make_database_connection
+def get_item_from_db(item_id,conn=None):
+    """Retreives a record from the items database and returns an Item object"""
+    get_item = '''SELECT item_id,item_name,item_desc,item_value,item_image_link
+                FROM items WHERE item_id=%s'''
+    cur = conn.cursor()
+    cur.execute(get_item,(item_id,))
+    retreived_row = cur.fetchone()
+    if retreived_row:
+        return Item(id=retreived_row[0],
+                    name=retreived_row[1],
+                    description=retreived_row[2],
+                    value=retreived_row[3],
+                    imageLink=retreived_row[4])
     return False

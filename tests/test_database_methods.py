@@ -1,6 +1,7 @@
 """Includes tests to ensure the database is functioning"""
 import random
 import pytest
+from .context import Item
 from .context import database_methods
 
 @pytest.fixture
@@ -51,3 +52,8 @@ def test_remove_item_from_user():
 def test_cannot_remove_unowned_item():
     """Tests to confirm that items not associated with a user are not removed"""
     assert not database_methods.remove_item_from_user(99999,1000)
+
+def test_get_item_from_db():
+    """Tests to confirm that an item can be retreived from the database"""
+    test_item = database_methods.get_item_from_db(1)
+    assert test_item.id == 1
