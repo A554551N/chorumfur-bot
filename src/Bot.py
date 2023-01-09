@@ -106,10 +106,10 @@ async def requestBreed(ctx,parent_a,parent_b):
         msg = f"""User {author} has requested the following breeding:
         **Parent A:** {parent_a_output.name} ({parent_a})
         **Parent B:** {parent_b_output.name} ({parent_b})"""
-        channel.send(msg)
-        ctx.send("Your request for breeding has been successfully submitted.")
+        await channel.send(msg)
+        await ctx.send("Your request for breeding has been successfully submitted.")
     else:
-        ctx.send("Parent ID not found in database.")
+        await ctx.send("Parent ID not found in database.")
 
 @client.command()
 @is_guild_owner_or_me()
