@@ -71,3 +71,27 @@ def get_user_from_db(user_id,conn=None):
         wallet=user_data[0][1],
         lastBreed=user_data[0][2],
         warningsIssued=user_data[0][3])
+
+@make_database_connection
+def add_item_to_user(user_id,item_id,new_quantity=1,conn=None):
+    """Adds an item to the owned_items database associated to user_id"""
+    check_if_item_type_owned = '''SELECT owned_item_id,owned_item_quantity FROM owned_items
+                                    WHERE owned_item_type_id = %s AND owned_item_owner = %s'''
+    insert_new_item_row='''INSERT INTO owned_items (owned_item_type_id,owned_item_quantity,owned_item_owner)
+            VALUES (%s,%s,%s)'''
+    update_existing_item_row='''UPDATE owned_items
+                                SET owned_item_quantity = %s
+                                WHERE owned_item_id = %s'''
+    cur = conn.cursor()
+    cur.execute(check_if_item_type_owned,(item_id,user_id))
+    retreived_row = cur.fetchone()
+    if retreived_row:
+        print(retreived_row)
+        updated_quantity = retreived_row[1] + new_quantity
+        owned_item_id = retreived_row[0]
+        cur.execute(update_existing_item_row,(updated_quantity,owned_item_id))
+        conn.commit()
+    else:
+        cur.execute(insert_new_item_row,(item_id,new_quantity,user_id))
+        conn.commit()
+    return True

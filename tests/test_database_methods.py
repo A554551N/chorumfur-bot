@@ -1,6 +1,6 @@
 """Includes tests to ensure the database is functioning"""
-import pytest
 import random
+import pytest
 from .context import database_methods
 
 @pytest.fixture
@@ -38,3 +38,7 @@ def test_add_user_to_database(random_user_constants):
 def test_add_user_with_defaults(random_user_constants):
     """Tests to confirm that the database correctly rejects a duplicate user."""
     assert database_methods.add_user_to_database(random_user_constants['user_id'])
+
+def test_add_item_to_user():
+    """Tests to confirm an item can be added to owned_items and associated to a user"""
+    assert database_methods.add_item_to_user(99999,1)
