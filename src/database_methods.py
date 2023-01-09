@@ -138,3 +138,31 @@ def get_item_from_db(item_id,conn=None):
                     value=retreived_row[3],
                     imageLink=retreived_row[4])
     return False
+
+@make_database_connection
+def get_user_inventory(user_id,conn=None):
+    """Retreives all items associated with user and returns an array of tuples
+    (Item object,quantity)"""
+    get_inventory = '''SELECT items.item_id,
+	                   items.item_name,
+                       items.item_desc,
+                       items.item_value,
+                       items.item_image_link,
+                       owned_items.owned_item_quantity
+                       FROM items
+                       INNER JOIN owned_items ON items.item_id = owned_items.owned_item_type_id
+                       WHERE owned_items.owned_item_owner = %s'''
+    cur = conn.cursor()
+    cur.execute(get_inventory,(user_id,))
+    retreived_rows = cur.fetchall()
+    inventory = []
+    if retreived_rows:
+        for row in retreived_rows:
+            item = Item(id=row[0],
+                        name=row[1],
+                        description=row[2],
+                        value=row[3],
+                        imageLink=row[4])
+            inventory.append((item,row[5]))
+        return inventory
+    return None
