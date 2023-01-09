@@ -101,9 +101,10 @@ async def requestBreed(ctx,parent_a,parent_b):
     parent_a_output = Database.getCreatureFromDB(parent_a)
     parent_b_output = Database.getCreatureFromDB(parent_b)
     if parent_a_output and parent_b_output:
-        channel = client.get_channel(1061868480086941716)
-        owner = client.get_user(101509826588205056)
-        msg = f"""User {author} has requested the following breeding:
+        channel = await client.fetch_channel(1061868480086941716)
+        owner = await client.fetch_user(101509826588205056)
+        msg = f"""{owner.mention}
+        User {author} has requested the following breeding:
         **Parent A:** {parent_a_output.name} ({parent_a})
         **Parent B:** {parent_b_output.name} ({parent_b})"""
         await channel.send(msg)
