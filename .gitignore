@@ -160,3 +160,6 @@ src/temp_MAIN.py
 
 # Removes Discord bot token
 token.txt
+
+# Isolates test database
+*.db
