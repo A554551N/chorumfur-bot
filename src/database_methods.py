@@ -71,7 +71,8 @@ def get_user_from_db(user_id,conn=None):
         level=user_data[0],
         wallet=user_data[1],
         lastBreed=user_data[2],
-        warningsIssued=user_data[3])
+        warningsIssued=user_data[3],
+        inventory=get_user_inventory(user_id))
 
 @make_database_connection
 def add_item_to_user(user_id,item_id,new_quantity=1,conn=None):
@@ -155,14 +156,18 @@ def get_user_inventory(user_id,conn=None):
     cur = conn.cursor()
     cur.execute(get_inventory,(user_id,))
     retreived_rows = cur.fetchall()
-    inventory = []
+    inventory = {}
     if retreived_rows:
         for row in retreived_rows:
-            item = Item(id=row[0],
+            item_object = Item(id=row[0],
                         name=row[1],
                         description=row[2],
                         value=row[3],
                         imageLink=row[4])
-            inventory.append((item,row[5]))
+            inventory[item_object.id] = (item_object,row[5])
         return inventory
     return None
+
+if __name__ == "__main__":
+    test_user = get_user_from_db(99999)
+    print(test_user.outputInventory())

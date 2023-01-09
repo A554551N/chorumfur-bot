@@ -100,18 +100,3 @@ class User:
         for item in self.inventory.keys():
             output+=f"{item} | {self.inventory[item][0].name} | {self.inventory[item][1]}\n"
         return output
-    # Retconning this inventory code for now.
-    """
-    def addToInventory(self,itemToAdd):
-        if itemToAdd.id in self.inventory.keys():
-            self.inventory[itemToAdd.id] += 1
-        else:
-            self.inventory[itemToAdd.id] = 1
-    """
-    """
-    def listInventory(self):
-        output = ""
-        for item in self.inventory.keys():
-            output += f"{item}: {self.inventory[item]}\n"
-        return output
-    """

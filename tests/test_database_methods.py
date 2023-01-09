@@ -13,7 +13,7 @@ def random_user_constants():
     'user_last_breed' : 'date',
     'user_warnings_issued' : random.randint(1,100)
     }
-def test_database_connection_prod():
+def test_database_connection():
     """Tests to confirm that a database connetion is successfully formed."""
     assert database_methods.is_database_connected()
 
@@ -65,5 +65,5 @@ def test_cannot_get_nonexistant_item():
 def test_get_user_inventory():
     """Tests that a user can retreive their inventory"""
     returned_inventory = database_methods.get_user_inventory(99999)
-    assert (1,1) == (len(returned_inventory),returned_inventory[0][0].id)
+    assert returned_inventory[1][0].name == "Test Item"
     
