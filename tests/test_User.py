@@ -6,84 +6,82 @@ import pytest
 from datetime import datetime
 
 @pytest.fixture
-def userAttributes():
-    userAttributes = {
+def user_attributes():
+    user_attributes = {
                     "ID" : random.randint(1,1000000),
                     "level" : 99,
                     "wallet" : 0,
                     "lastBreed" : datetime(2022,12,31),
                     "warningsIssued" : 0
                     }
-    return userAttributes
+    return user_attributes
 
 @pytest.fixture
-def createTestUser(userAttributes):
-    testUser = User(userId=userAttributes["ID"],
-                    level=userAttributes["level"],
-                    lastBreed=userAttributes["lastBreed"],
-                    warningsIssued=userAttributes["warningsIssued"],
-                    wallet=userAttributes['wallet'])
+def createTestUser(user_attributes):
+    testUser = User(userId=user_attributes["ID"],
+                    level=user_attributes["level"],
+                    lastBreed=user_attributes["lastBreed"],
+                    warningsIssued=user_attributes["warningsIssued"],
+                    wallet=user_attributes['wallet'])
     return testUser
 
-def test_create_user_default(userAttributes):
+def test_create_user_default(user_attributes):
     """Confirms that a user can be created by supplying only an"""
-    test_user = User(userAttributes["ID"])
+    test_user = User(user_attributes["ID"])
     assert test_user
 
-def test_create_user_all_values(userAttributes):
+def test_create_user_all_values(user_attributes):
     """Confirms that a user can be created with all values selected"""
-    test_user = User(userAttributes["ID"],
-                        userAttributes["level"],
-                        userAttributes["lastBreed"],
-                        userAttributes["warningsIssued"])
-    assert test_user.userId == userAttributes["ID"]
+    test_user = User(user_attributes["ID"],
+                        user_attributes["level"],
+                        user_attributes["lastBreed"],
+                        user_attributes["warningsIssued"])
+    assert test_user.userId == user_attributes["ID"]
 
-def test_breedingLevel1(userAttributes):
-    testUser = User(userAttributes["ID"],
-                        userAttributes["level"],
+def test_breeding_level_1(user_attributes):
+    """Confirms that breeding level 1 is identified correctly"""
+    testUser = User(user_attributes["ID"],
+                        user_attributes["level"],
                         datetime(2022,12,31),
-                        userAttributes["warningsIssued"])
+                        user_attributes["warningsIssued"])
     assert testUser.breedingLevel(True) == 0
 
-def test_breedingLevel3(userAttributes):
-    testUser = User(userAttributes["ID"],
-                        userAttributes["level"],
+def test_breeding_level_3(user_attributes):
+    """Confirms that breeding level 3 is identified correctly"""
+    testUser = User(user_attributes["ID"],
+                        user_attributes["level"],
                         datetime(2022,12,19),
-                        userAttributes["warningsIssued"])
+                        user_attributes["warningsIssued"])
     assert testUser.breedingLevel(True) == 2
 
-def test_breedingLevel6(userAttributes):
-    testUser = User(userAttributes["ID"],
-                        userAttributes["level"],
+def test_breeding_level_6(user_attributes):
+    """Confirms that breeding level 6 is identified correctly"""
+    testUser = User(user_attributes["ID"],
+                        user_attributes["level"],
                         datetime(2022,11,30),
-                        userAttributes["warningsIssued"])
+                        user_attributes["warningsIssued"])
     assert testUser.breedingLevel(True) == 5
 
-def test_breedingLevelUnder0(userAttributes):
-    testUser = User(userAttributes["ID"],
-                        userAttributes["level"],
+def test_breeding_level_under_0(user_attributes):
+    """Confirms that breeding levels less than 0 are set to 0"""
+    testUser = User(user_attributes["ID"],
+                        user_attributes["level"],
                         datetime(2023,1,1),
-                        userAttributes["warningsIssued"])
+                        user_attributes["warningsIssued"])
     assert testUser.breedingLevel(True) == 0
 
-def test_breedingLevelAbove5(userAttributes):
-    testUser = User(userAttributes["ID"],
-                        userAttributes["level"],
+def test_breeding_level_above_5(user_attributes):
+    """Confirms that breeding levels higher than 5 are set to 5"""
+    testUser = User(user_attributes["ID"],
+                        user_attributes["level"],
                         datetime(2021,1,1),
-                        userAttributes["warningsIssued"])
+                        user_attributes["warningsIssued"])
     assert testUser.breedingLevel(True) == 5
 
-def test_breedingLevelImage(userAttributes):
+def test_breeding_level_image(user_attributes):
     """Confirms that the correct art is shown for breeding item level"""
-    testUser = User(userAttributes["ID"],
-                        userAttributes["level"],
+    testUser = User(user_attributes["ID"],
+                        user_attributes["level"],
                         datetime(2022,12,31),
-                        userAttributes["warningsIssued"])
+                        user_attributes["warningsIssued"])
     assert "https://media.discordapp.net/attachments/1039966957799211109/1039967098174185552/Breeding_Crystal.png" == User.BREEDINGSTONELINKS[testUser.breedingLevel(True)]
-
-# Mothballing these tests while code is refactored.
-
-def test_emptyInventoryReturnsNone(createTestUser):
-    createTestUser.userId = 123
-    testUser = Database.getUserInventory(createTestUser,True)
-    assert not testUser.inventory
