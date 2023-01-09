@@ -42,3 +42,12 @@ def test_add_user_with_defaults(random_user_constants):
 def test_add_item_to_user():
     """Tests to confirm an item can be added to owned_items and associated to a user"""
     assert database_methods.add_item_to_user(99999,1)
+
+def test_remove_item_from_user():
+    """Tests to confirm items can be removed from a user in owned_items"""
+    database_methods.add_item_to_user(99999,2)
+    assert database_methods.remove_item_from_user(99999,2)
+
+def test_cannot_remove_unowned_item():
+    """Tests to confirm that items not associated with a user are not removed"""
+    assert not database_methods.remove_item_from_user(99999,1000)

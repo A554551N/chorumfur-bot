@@ -65,12 +65,12 @@ def get_user_from_db(user_id,conn=None):
             """
     cur = conn.cursor()
     cur.execute(sql,(user_id,))
-    user_data = cur.fetchall()
+    user_data = cur.fetchone()
     return User(userId = user_id,
-        level=user_data[0][0],
-        wallet=user_data[0][1],
-        lastBreed=user_data[0][2],
-        warningsIssued=user_data[0][3])
+        level=user_data[0],
+        wallet=user_data[1],
+        lastBreed=user_data[2],
+        warningsIssued=user_data[3])
 
 @make_database_connection
 def add_item_to_user(user_id,item_id,new_quantity=1,conn=None):
@@ -95,3 +95,29 @@ def add_item_to_user(user_id,item_id,new_quantity=1,conn=None):
         cur.execute(insert_new_item_row,(item_id,new_quantity,user_id))
         conn.commit()
     return True
+
+@make_database_connection
+def remove_item_from_user(user_id,item_id,quantity_to_remove=1,conn=None):
+    """Removes a quantity of an item from a user-associated record in the owned_items db"""
+    get_current_quantity = '''SELECT owned_item_id,owned_item_quantity FROM owned_items
+                                WHERE owned_item_type_id=%s AND owned_item_owner=%s'''
+    update_quantity = '''UPDATE owned_items
+                         SET owned_item_quantity = %s
+                         WHERE owned_item_id=%s'''
+    delete_row = '''DELETE FROM owned_items
+                    WHERE owned_item_id = %s'''
+    cur = conn.cursor()
+    cur.execute(get_current_quantity,(item_id,user_id))
+    retreived_row = cur.fetchone()
+    if retreived_row:
+        row_id = retreived_row[0]
+        current_quantity = retreived_row[1]
+        if current_quantity <= quantity_to_remove:
+            cur.execute(delete_row,(row_id,))
+            conn.commit()
+            return True
+        quantity_remaining = current_quantity - quantity_to_remove
+        cur.execute(update_quantity,(quantity_remaining,row_id))
+        conn.commit()
+        return True
+    return False
