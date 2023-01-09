@@ -88,6 +88,30 @@ async def joinGame(ctx):
     await ctx.send(msg)
 
 @client.command()
+async def getItem(ctx,itemId):
+    item=Database.getItemFromDB(itemId)
+    await ctx.send(f"{ctx.message.author.mention}\n{item.outputItem()}")
+    if item.imageLink != "":
+        await ctx.send(item.imageLink)
+
+@client.command()
+async def requestBreed(ctx,parent_a,parent_b):
+    """Submit a breeding ticket.
+    SYNTAX: .requestBreed <ID of Parent A> <ID of Parent B>"""
+    author = ctx.message.author
+    parent_a_output = Database.getCreatureFromDB(parent_a)
+    parent_b_output = Database.getCreatureFromDB(parent_b)
+    if parent_a_output and parent_b_output:
+        channel = client.get_channel(1061868480086941716)
+        msg = f"""User {author} has requested the following breeding:
+        **Parent A:** {parent_a_output.name} ({parent_a})
+        **Parent B:** {parent_b_output.name} ({parent_b})"""
+        channel.send(msg)
+        ctx.send("Your request for breeding has been successfully submitted.")
+    else:
+        ctx.send("Parent ID not found in database.")
+
+@client.command()
 @is_guild_owner_or_me()
 async def makeCreature(ctx,creatureName):
     """Creates a new creature (Admin Restricted Command).  Requires an image attachment.
@@ -140,12 +164,6 @@ async def removeItemFromInv(ctx,itemIDToRemove):
     else:
         await ctx.send(f"Item not found, or not successfully removed.")
 
-@client.command()
-async def getItem(ctx,itemId):
-    item=Database.getItemFromDB(itemId)
-    await ctx.send(f"{ctx.message.author.mention}\n{item.outputItem()}")
-    if item.imageLink != "":
-        await ctx.send(item.imageLink)
 # END OF COMMANDS SECTION
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__), '../token.txt')))
 token = f.readline()
