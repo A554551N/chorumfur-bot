@@ -108,7 +108,8 @@ async def requestBreed(ctx,parent_a,parent_b):
         **Parent A:** {parent_a_output.name} ({parent_a})
         **Parent B:** {parent_b_output.name} ({parent_b})"""
         await channel.send(msg)
-        await ctx.send("Your request for breeding has been successfully submitted.")
+        await ctx.send("Justin, God of all things sex, has heard your " +
+        f"request and taken {parent_a_output.name} and {parent_b_output.name} to his bedchamber.")
     else:
         await ctx.send("Parent ID not found in database.")
 
