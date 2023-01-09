@@ -25,16 +25,18 @@ def createTestUser(userAttributes):
                     wallet=userAttributes['wallet'])
     return testUser
 
-def test_createUserDefault(userAttributes):
-    testUser = User(userAttributes["ID"])
-    assert testUser
+def test_create_user_default(userAttributes):
+    """Confirms that a user can be created by supplying only an"""
+    test_user = User(userAttributes["ID"])
+    assert test_user
 
-def test_createUserAllValues(userAttributes):
-    testUser = User(userAttributes["ID"],
+def test_create_user_all_values(userAttributes):
+    """Confirms that a user can be created with all values selected"""
+    test_user = User(userAttributes["ID"],
                         userAttributes["level"],
                         userAttributes["lastBreed"],
                         userAttributes["warningsIssued"])
-    assert testUser.userId == userAttributes["ID"]
+    assert test_user.userId == userAttributes["ID"]
 
 def test_breedingLevel1(userAttributes):
     testUser = User(userAttributes["ID"],
