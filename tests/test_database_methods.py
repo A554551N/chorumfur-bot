@@ -1,6 +1,7 @@
 """Includes tests to ensure the database is functioning"""
 import random
 import pytest
+from datetime import datetime
 from .context import Item
 from .context import database_methods
 
@@ -10,7 +11,7 @@ def random_user_constants():
     return {'user_id' : random.randint(1,1000000),
     'user_level' : random.randint(1,99),
     'user_wallet' : random.randint(1,1000000),
-    'user_last_breed' : 'date',
+    'user_last_breed' : datetime.today(),
     'user_warnings_issued' : random.randint(1,100)
     }
 def test_database_connection():
