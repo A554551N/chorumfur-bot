@@ -57,3 +57,7 @@ def test_get_item_from_db():
     """Tests to confirm that an item can be retreived from the database"""
     test_item = database_methods.get_item_from_db(1)
     assert test_item.id == 1
+
+def test_cannot_get_nonexistant_item():
+    """Tests to confirm that get_item_from_db fails gracefully on no record"""
+    assert not database_methods.get_item_from_db(99999)
