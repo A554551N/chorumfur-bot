@@ -40,7 +40,7 @@ class Creature:
         self.creatureId = creatureId
         self.createDate = createDate
         self.traits = traits
-    
+
     def randomize_creature(self):
         """Overwrites all trait fields with random values"""
         self.traits['MAIN_HORN'] = randint(1,len(Constants.MAIN_HORN))
@@ -51,7 +51,7 @@ class Creature:
         self.traits['FLUFF'] = randint(1,len(Constants.FLUFF))
         if randint(1,100) <= Constants.CHANCE_TO_ADD_MUTATION:
             self.traits['MUTATION'] = randint(1,len(Constants.MUTATION))
-        
+
     def outputCreature(self):
         age = datetime.today() - self.createDate
         output = f"ID: {self.creatureId}\n"\
@@ -61,3 +61,7 @@ class Creature:
                 f"Create Date: {datetime.strftime(self.createDate,Constants.DATEONLYFORMAT)}\n"\
                 f"Generation: {self.generation}\n"
         return output
+
+if __name__ == '__main__':
+    new_creature = Creature("a",1)
+    new_creature.randomize_creature()
