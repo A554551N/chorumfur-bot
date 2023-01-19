@@ -128,7 +128,7 @@ async def makeCreature(ctx,creatureName):
         msg=f"{creatureName} created with Id #{creatureId}"
     await ctx.send(msg)
 @client.command()
-@is_guild_owner_or_me
+@is_guild_owner_or_me()
 async def makeRandomCreature(ctx,creature_name):
     """Creates a new creature with random traits"""
     user_id = ctx.message.author.id
