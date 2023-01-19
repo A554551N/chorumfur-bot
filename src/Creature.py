@@ -1,6 +1,6 @@
 from datetime import datetime
-from ConstantData import Constants
 from random import randint
+from ConstantData import Constants
 class Creature:
     """
         A class to represent a Creature
@@ -41,17 +41,21 @@ class Creature:
         self.createDate = createDate
         self.traits = traits
 
-    def randomize_creature(self):
-        """Overwrites all trait fields with random values"""
-        self.traits['MAIN_HORN'] = randint(1,len(Constants.MAIN_HORN))
-        self.traits['CHEEK_HORN'] = randint(1,len(Constants.CHEEK_HORN))
-        self.traits['FACE_HORN'] = randint(1,len(Constants.FACE_HORN))
-        self.traits['TAIL'] = randint(1,len(Constants.TAIL))
-        self.traits['TAIL_TIP'] = randint(1,len(Constants.TAIL_TIP))
-        self.traits['FLUFF'] = randint(1,len(Constants.FLUFF))
-        if randint(1,100) <= Constants.CHANCE_TO_ADD_MUTATION:
-            self.traits['MUTATION'] = randint(1,len(Constants.MUTATION))
+    def randomize_creature_weighted(self,configuration_dict):
+        """Selects an option from a given set of weights"""
+        summed_weight = 0
+        for item in configuration_dict.values():
+            summed_weight += item[1]
+        roll = randint(1,summed_weight)
+        for item in configuration_dict:
+            weight = configuration_dict[item][1]
+            if roll > configuration_dict[item][1]:
+                roll -= weight
+            else:
+                return item
 
+
+    
     def outputCreature(self):
         age = datetime.today() - self.createDate
         output = f"ID: {self.creatureId}\n"\
@@ -64,4 +68,11 @@ class Creature:
 
 if __name__ == '__main__':
     new_creature = Creature("a",1)
-    new_creature.randomize_creature()
+    results_dict = {}
+    for i in range(1000):
+        key_result = new_creature.randomize_creature_weighted(Constants.MAIN_HORN)
+        if key_result in results_dict:
+            results_dict[key_result] += 1
+        else:
+            results_dict[key_result] = 1
+    print(results_dict)

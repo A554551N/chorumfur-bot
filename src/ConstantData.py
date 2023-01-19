@@ -2,28 +2,28 @@ class Constants:
     DATETIMEFORMAT='''%Y-%m-%d %H:%M:%S.%f'''
     DATEONLYFORMAT='%Y-%m-%d'
     MAIN_HORN = {
-        1 : "Standard",
-        2 : "Jacobs",
-        3 : "Sheep 1",
-        4 : "Sheep 2",
-        5 : "Bighorn",
-        6 : "Water Buffalo",
-        7 : "Kudu",
-        8 : "Bison",
-        9 : "Wildebeest",
-        10 : "Alpine Goat"
+        1 : ("Standard",70),
+        2 : ("Alpine Goat",10),
+        3 : ("Sheep 1",5),
+        4 : ("Sheep 2",5),
+        5 : ("Bighorn",2),
+        6 : ("Water Buffalo",2),
+        7 : ("Kudu",2),
+        8 : ("Bison",2),
+        9 : ("Wildebeest",2),
+        10 : ("Jacobs",0)
     }
     CHEEK_HORN = {
-        1 : "Standard",
-        2 : "Jacobs",
-        3 : "Mountain Goat",
-        4 : "Impala",
-        5 : "Blackbuck",
-        6 : "Saiga",
-        7 : "Gerrenok",
-        8 : "Bongo",
-        9 : "Sitatunga",
-        10 : "Nilgai"
+        1 : ("Standard",70),
+        2 : ("Nilgai",10),
+        3 : ("Mountain Goat",5),
+        4 : ("Impala",5),
+        5 : ("Blackbuck",2),
+        6 : ("Saiga",2),
+        7 : ("Gerrenok",2),
+        8 : ("Bongo",2),
+        9 : ("Sitatunga",2),
+        10 : ("Jacobs",0)
     }
     FACE_HORN = {
         1 : "Standard",
