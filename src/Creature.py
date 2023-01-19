@@ -49,8 +49,8 @@ class Creature:
         self.traits['TAIL'] = randint(1,len(Constants.TAIL))
         self.traits['TAIL_TIP'] = randint(1,len(Constants.TAIL_TIP))
         self.traits['FLUFF'] = randint(1,len(Constants.FLUFF))
-        #if randint(1,100) <= Constants.CHANCE_TO_ADD_MUTATION:
-        self.traits['MUTATION'] = randint(1,len(Constants.MUTATION))
+        if randint(1,100) <= Constants.CHANCE_TO_ADD_MUTATION:
+            self.traits['MUTATION'] = randint(1,len(Constants.MUTATION))
 
     def outputCreature(self):
         age = datetime.today() - self.createDate
