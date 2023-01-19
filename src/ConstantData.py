@@ -1,7 +1,7 @@
 class Constants:
     DATETIMEFORMAT='''%Y-%m-%d %H:%M:%S.%f'''
     DATEONLYFORMAT='%Y-%m-%d'
-    MAIN_HORN_TYPES = {
+    MAIN_HORN = {
         1 : "Standard",
         2 : "Jacobs",
         3 : "Sheep 1",
@@ -13,7 +13,7 @@ class Constants:
         9 : "Wildebeest",
         10 : "Alpine Goat"
     }
-    CHEEK_HORN_TYPES = {
+    CHEEK_HORN = {
         1 : "Standard",
         2 : "Jacobs",
         3 : "Mountain Goat",
@@ -25,7 +25,7 @@ class Constants:
         9 : "Sitatunga",
         10 : "Nilgai"
     }
-    FACE_HORN_TYPES = {
+    FACE_HORN = {
         1 : "Standard",
         2 : "Long",
         3 : "None",
@@ -40,7 +40,7 @@ class Constants:
         12 : "Curled",
         13 : "Forked"
     }
-    TAIL_TYPES = {
+    TAIL = {
         1 : "Standard",
         2 : "Long",
         3 : "Short",
@@ -49,7 +49,7 @@ class Constants:
         6 : "None",
         7 : "Curled"
     }
-    TAIL_TIP_TYPES = {
+    TAIL_TIP = {
         1 : "Standard (Feather)",
         2 : "Paradise (Feather)",
         3 : "Long (Feather)",
@@ -66,7 +66,7 @@ class Constants:
         14 : "Palmately Lobed (Leaf)",
         15 : "Reniform (Leaf)"
     }
-    FLUFF_TYPES = {
+    FLUFF = {
         1 : "Standard",
         2 : "Long",
         3 : "Short",
@@ -75,7 +75,7 @@ class Constants:
         6 : "Curly",
         7 : "Wavy"
     }
-    MUTATION_TYPES = {
+    MUTATION = {
         1 : "Back Spines",
         2 : "Tail Spines",
         3 : "Dwarfism",
@@ -88,8 +88,8 @@ class Constants:
         10 : "Extra Feathers",
         11 : "Mane"
     }
-    CHANCE_TO_PASS_TRAITS = .25
-    GRANDPARENT_ADD_TRAITS = .15
-    CHANCE_TO_PASS_MUTATION = .10
-    GRANDPARENT_ADD_MUTATION = .05
+    CHANCE_TO_PASS_TRAITS = 25
+    GRANDPARENT_ADD_TRAITS = 15
+    CHANCE_TO_PASS_MUTATION = 10
+    CHANCE_TO_ADD_MUTATION = 1
     MAX_LITTER_SIZE = 4

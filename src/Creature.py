@@ -1,5 +1,6 @@
 from datetime import datetime
 from ConstantData import Constants
+from random import randint
 class Creature:
     """
         A class to represent a Creature
@@ -26,7 +27,7 @@ class Creature:
         outputCreature()
             returns a formatted string with date about creature
     """
-    def __init__(self,name,owner,imageLink = "",generation=0,creatureId=None,createDate=None,ownerName=None):
+    def __init__(self,name,owner,traits={},imageLink = "",generation=0,creatureId=None,createDate=None,ownerName=None):
         self.name = name
         if not createDate:
             createDate= datetime.today()
@@ -38,7 +39,19 @@ class Creature:
         self.generation = generation
         self.creatureId = creatureId
         self.createDate = createDate
+        self.traits = traits
     
+    def randomize_creature(self):
+        """Overwrites all trait fields with random values"""
+        self.traits['MAIN_HORN'] = randint(1,len(Constants.MAIN_HORN))
+        self.traits['CHEEK_HORN'] = randint(1,len(Constants.CHEEK_HORN))
+        self.traits['FACE_HORN'] = randint(1,len(Constants.FACE_HORN))
+        self.traits['TAIL'] = randint(1,len(Constants.TAIL))
+        self.traits['TAIL_TIP'] = randint(1,len(Constants.TAIL_TIP))
+        self.traits['FLUFF'] = randint(1,len(Constants.FLUFF))
+        if randint(1,100) <= Constants.CHANCE_TO_ADD_MUTATION:
+            self.traits['MUTATION'] = randint(1,len(Constants.MUTATION))
+        
     def outputCreature(self):
         age = datetime.today() - self.createDate
         output = f"ID: {self.creatureId}\n"\
