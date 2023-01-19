@@ -5,6 +5,7 @@ from Creature import Creature
 from User import User
 from Item import Item
 from discord.ext import commands
+from ConstantData import Constants
 discord.app_commands.CommandTree
 
 intents = discord.Intents.default()
@@ -126,6 +127,23 @@ async def makeCreature(ctx,creatureName):
         creatureId = Database.addCreatureToDB(creatureToAdd)
         msg=f"{creatureName} created with Id #{creatureId}"
     await ctx.send(msg)
+@client.command()
+@is_guild_owner_or_me
+async def makeRandomCreature(ctx,creature_name):
+    """Creates a new creature with random traits"""
+    user_id = ctx.message.author.id
+    new_creature = Creature(creature_name,user_id,"No Image Available")
+    new_creature.randomize_creature()
+    msg = f"""Main Horn: {Constants.MAIN_HORN[new_creature.traits['MAIN_HORN']]}
+                 Cheek Horn: {Constants.CHEEK_HORN[new_creature.traits['CHEEK_HORN']]}
+                 Face Horn: {Constants.FACE_HORN[new_creature.traits['FACE_HORN']]}
+                 Tail: {Constants.TAIL[new_creature.traits['TAIL']]}
+                 Tail Tip: {Constants.TAIL_TIP[new_creature.traits['TAIL_TIP']]}
+                 Fluff: {Constants.FLUFF[new_creature.traits['FLUFF']]}
+                 """
+    if new_creature.traits['MUTATION']:
+        msg += f"""Mutation: {Constants.MUTATION[new_creature.traits['MUTATION']]}"""
+    ctx.send(msg)
 
 @client.command()
 @is_guild_owner_or_me()
