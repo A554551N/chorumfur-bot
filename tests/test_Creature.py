@@ -61,7 +61,7 @@ def test_add_creature_to_db(createCreature):
     assert database_methods.add_creature_to_db(createCreature)
 
 def test_get_creature_from_db(testCreatureAttributes):
-    test_creature = database_methods.get_creature_from_db(2)
+    test_creature = database_methods.get_creature_from_db(19)
     assert test_creature.name == 'Test Creature'
 
 def test_get_creature_from_db_that_doesnt_exist(testCreatureAttributes):
