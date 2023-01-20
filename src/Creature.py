@@ -28,7 +28,7 @@ class Creature:
         outputCreature()
             returns a formatted string with date about creature
     """
-    def __init__(self,name,owner,traits={},imageLink = "",generation=0,creatureId=None,createDate=None,ownerName=None):
+    def __init__(self,name,owner,traits={},imageLink = "No Image",generation=0,creatureId=None,createDate=None,ownerName=None):
         self.name = name
         if not createDate:
             createDate= datetime.today()
@@ -67,7 +67,6 @@ class Creature:
         random_traits['TAIL_TIP'] = self.randomize_trait(Constants.TAIL_TIP)
         random_traits['FLUFF'] = self.randomize_trait(Constants.FLUFF)
         random_traits['MUTATION'] = self.randomize_trait(Constants.MUTATION)
-        print(random_traits)
         self.traits = random_traits
 
 

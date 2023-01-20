@@ -116,11 +116,12 @@ async def makeCreature(ctx,creatureName):
 async def makeRandomCreature(ctx,creatureName):
     userId = ctx.message.author.id
     creature_to_add = Creature(creatureName,userId)
+    creature_to_add.randomize_creature()
     creature_id = database_methods.add_creature_to_db(creature_to_add)
     if creature_id:
-        ctx.send(f"{creatureName} added to database with ID #{creature_id}")
+        await ctx.send(f"{creatureName} added to database with ID #{creature_id}")
     else:
-        ctx.send(f"An error occurred adding {creatureName} to the database")
+        await ctx.send(f"An error occurred adding {creatureName} to the database")
 
 @client.command()
 @is_guild_owner_or_me()
