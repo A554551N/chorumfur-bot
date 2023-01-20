@@ -59,7 +59,7 @@ def setup_databases(database_name,database_password):
     """Performs initial database setup for application"""
     try:
         conn = psycopg2.connect(
-            host="localhost",
+            host="0.0.0.0",
             database=database_name,
             user="postgres",
             password=database_password
