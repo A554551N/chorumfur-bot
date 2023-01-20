@@ -1,11 +1,18 @@
 import os
 import discord
+import logging
 from discord.ext import commands
 from Creature import Creature
 from User import User
 from Item import Item
 import database_methods
 
+#discord_py_logfile_location = os.path.abspath(os.path.join(os.path.dirname(__file__), '../discord.log'))
+app_logfile_location = os.path.abspath(os.path.join(os.path.dirname(__file__), '../chorumfur-bot.log'))
+logging.basicConfig(filename=app_logfile_location,format='%(asctime)s %(message)s')
+logger = logging.getLogger(__name__)
+logger.setLevel(20)
+#handler = logging.FileHandler(filename=discord_py_logfile_location, encoding='utf-8', mode='w')
 intents = discord.Intents.default()
 intents.message_content = True
 
@@ -22,14 +29,15 @@ def is_guild_owner_or_me():
 @client.event
 async def on_ready():
     """Called when discord bot is ready to use"""
-    print(f'We have logged in as {client.user}')
+    logging.info('We have logged in as %s',client.user)
 
 @client.event
 async def on_command_error(ctx, error):
     """Triggers when a command is not processed successfully"""
-    print(f"{ctx.message.author}: {error}")
+    logger.info("%s:%s Command failed",ctx.message.author,ctx.message.content)
+    logger.warning(error)
     await ctx.send(f"Command {ctx.message.content} is not recognized or you"\
-        " do not have permission to perform this action.")
+       " do not have permission to perform this action.")
 
 
 # BEGIN COMMANDS SECTION

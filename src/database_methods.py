@@ -5,6 +5,7 @@ database_connection(func)
     Decorator that safely constructs and destructs the database
 """
 import psycopg2
+import logging
 from User import User
 from Item import Item
 from Creature import Creature
@@ -24,11 +25,11 @@ def make_database_connection(func):
                 return output
             return False
         except psycopg2.DatabaseError as error:
-            print(error)
+            logging.warning(error)
         finally:
             if conn is not None:
                 conn.close()
-                print("DB Closed")
+                logging.debug("DB Transaction Completed")
     return inner
 
 @make_database_connection
@@ -89,7 +90,6 @@ def add_item_to_user(user_id,item_id,new_quantity=1,conn=None):
     cur.execute(check_if_item_type_owned,(item_id,user_id))
     retreived_row = cur.fetchone()
     if retreived_row:
-        print(retreived_row)
         updated_quantity = retreived_row[1] + new_quantity
         owned_item_id = retreived_row[0]
         cur.execute(update_existing_item_row,(updated_quantity,owned_item_id))
