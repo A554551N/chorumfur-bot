@@ -28,7 +28,8 @@ class Creature:
         outputCreature()
             returns a formatted string with date about creature
     """
-    def __init__(self,name,owner,traits={},imageLink = "No Image",generation=0,creatureId=None,createDate=None,ownerName=None):
+    def __init__(self,name,owner,traits=Constants.DEFAULT_TRAITS_DICT,
+                imageLink = "No Image",generation=0,creatureId=None,createDate=None,ownerName=None):
         self.name = name
         if not createDate:
             createDate= datetime.today()
@@ -77,7 +78,14 @@ class Creature:
                 f"Owner: {self.ownerName}\n"\
                 f"Age: {age}\n"\
                 f"Create Date: {datetime.strftime(self.createDate,Constants.DATEONLYFORMAT)}\n"\
-                f"Generation: {self.generation}\n"
+                f"Generation: {self.generation}\n"\
+                f"Main Horn: {Constants.MAIN_HORN[self.traits['MAIN_HORN']][0]}\n"\
+                f"Cheek Horn: {Constants.CHEEK_HORN[self.traits['CHEEK_HORN']][0]}\n"\
+                f"Face Horn: {Constants.FACE_HORN[self.traits['FACE_HORN']][0]}\n"\
+                f"Tail: {Constants.TAIL[self.traits['TAIL']][0]}\n"\
+                f"Tail Tip: {Constants.TAIL_TIP[self.traits['TAIL_TIP']][0]}\n"\
+                f"Fluff: {Constants.FLUFF[self.traits['FLUFF']][0]}\n"\
+                f"Mutation: {Constants.MUTATION[self.traits['MUTATION']][0]}\n"
         return output
 
 if __name__ == '__main__':

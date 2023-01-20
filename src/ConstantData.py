@@ -1,6 +1,15 @@
 class Constants:
     DATETIMEFORMAT='''%Y-%m-%d %H:%M:%S.%f'''
     DATEONLYFORMAT='%Y-%m-%d'
+    DEFAULT_TRAITS_DICT = {
+        'MAIN_HORN' : "",
+        'CHEEK_HORN' : "",
+        'FACE_HORN' : "",
+        'TAIL' : "",
+        'TAIL_TIP' : "",
+        'FLUFF' : "",
+        'MUTATION' : ""
+    }
     MAIN_HORN = {
         1 : ("Standard",".92"),
         2 : ("Alpine Goat",".01"),
