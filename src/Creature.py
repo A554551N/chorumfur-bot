@@ -41,6 +41,8 @@ class Creature:
         self.createDate = createDate
         self.traits = traits
 
+    def randomize_creature(self):
+        
     def outputCreature(self):
         age = datetime.today() - self.createDate
         output = f"ID: {self.creatureId}\n"\
