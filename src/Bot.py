@@ -79,7 +79,7 @@ async def getID(ctx):
     userId = ctx.message.author.id
     await ctx.send(f"Your unique ID is {userId}")
 
-@client.command(aliases=['gc'],require_var_positional=True)
+@client.command(aliases=['gc','getcreature'],require_var_positional=True)
 async def getCreature(ctx,creatureId):
     requestedCreature = database_methods.get_creature_from_db(creatureId)
     if requestedCreature:
