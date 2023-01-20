@@ -1,6 +1,6 @@
 """Performs initial database setup in accordance with defined schema"""
-import psycopg2
 import os
+import psycopg2
 
 SQL_CREATE_USERS_TABLE = """
 CREATE TABLE users (
