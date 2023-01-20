@@ -38,8 +38,9 @@ class Creature:
         self.generation = generation
         self.creatureId = creatureId
         self.createDate = createDate
-    
+
     def outputCreature(self):
+        """returns a formatted string representation of this Creature"""
         age = datetime.today() - self.createDate
         output = f"ID: {self.creatureId}\n"\
                 f"Name: {self.name}\n"\
