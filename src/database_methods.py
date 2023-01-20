@@ -13,7 +13,7 @@ from Item import Item
 from Creature import Creature
 
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__),'../db_pass.txt')),encoding='utf-8')
-DB_PASSWORD = f.readline()
+DB_PASSWORD = f.readline().rstrip('\n')
 
 def make_database_connection(func):
     """Connects database connection and runs code passed from decorator"""

@@ -78,7 +78,7 @@ def setup_databases(database_name,database_password):
             print("DB Closed")
 
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__),'../db_pass.txt')),encoding='utf-8')
-database_password = f.readline()
+database_password = f.readline().rstrip('\n')
 
 if __name__ == '__main__':
     print(database_password)
