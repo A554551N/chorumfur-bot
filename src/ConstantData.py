@@ -76,7 +76,7 @@ class Constants:
         7 : "Wavy"
     }
     MUTATION = {
-        1 : "Back Spines",
+        1 : "None",
         2 : "Tail Spines",
         3 : "Dwarfism",
         4 : "Long Ears",
@@ -86,7 +86,8 @@ class Constants:
         8 : "Claws",
         9 : "Kirin Scales",
         10 : "Extra Feathers",
-        11 : "Mane"
+        11 : "Mane",
+        12 : "Back Spines"
     }
     CHANCE_TO_PASS_TRAITS = 25
     GRANDPARENT_ADD_TRAITS = 15
