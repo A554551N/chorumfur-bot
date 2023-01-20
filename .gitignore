@@ -163,3 +163,6 @@ token.txt
 
 # Isolates test database
 *.db
+
+# Removes database password
+db_pass.txt
