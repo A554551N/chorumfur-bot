@@ -79,7 +79,7 @@ async def getID(ctx):
     userId = ctx.message.author.id
     await ctx.send(f"Your unique ID is {userId}")
 
-@client.command(require_var_positional=True)
+@client.command(aliases=['gc'],require_var_positional=True)
 async def getCreature(ctx,creatureId):
     requestedCreature = database_methods.get_creature_from_db(creatureId)
     if requestedCreature:
@@ -90,7 +90,7 @@ async def getCreature(ctx,creatureId):
     else:
         await ctx.send(f"ID Number {creatureId} not found")
 
-@client.command()
+@client.command(aliases=['join'])
 async def joinGame(ctx):
     newUser = User(ctx.message.author.id)
     if database_methods.add_user_to_database(newUser):
@@ -99,7 +99,7 @@ async def joinGame(ctx):
         msg="Failed to add new user, perhaps you are already registered?  Try .me"
     await ctx.send(msg)
 
-@client.command()
+@client.command(require_var_positional=True)
 @is_guild_owner_or_me()
 async def makeCreature(ctx,creatureName):
     userId = ctx.message.author.id
