@@ -4,11 +4,16 @@ Methods
 database_connection(func)
     Decorator that safely constructs and destructs the database
 """
+
 import psycopg2
 import logging
+import os
 from User import User
 from Item import Item
 from Creature import Creature
+
+f = open(os.path.abspath(os.path.join(os.path.dirname(__file__),'../db_pass.txt')),encoding='utf-8')
+DB_PASSWORD = f.readline()
 
 def make_database_connection(func):
     """Connects database connection and runs code passed from decorator"""
@@ -18,7 +23,7 @@ def make_database_connection(func):
                 host="localhost",
                 database="chorumfur",
                 user="postgres",
-                password="postgres"
+                password=DB_PASSWORD
             )
             output = func(conn = conn,*args,**kwargs)
             if output:
@@ -239,5 +244,6 @@ def get_creature_from_db(creature_id,conn=None):
                         imageLink=returned_row[4],
                         generation=returned_row[5])
     return None
+
 if __name__ == "__main__":
     get_creature_from_db(2)

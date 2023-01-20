@@ -1,12 +1,13 @@
 """Performs initial database setup in accordance with defined schema"""
 import psycopg2
+import os
 
 SQL_CREATE_USERS_TABLE = """
 CREATE TABLE users (
-    user_id INTEGER PRIMARY KEY,
+    user_id BIGINT PRIMARY KEY,
     user_level INTEGER NOT NULL,
     user_wallet INTEGER NOT NULL,
-    user_lastBreed TEXT NOT NULL,
+    user_lastBreed TEXT,
     user_warnings_issued INTEGER NOT NULL
     )"""
 
@@ -17,7 +18,8 @@ CREATE TABLE creatures (
     creature_create_date TEXT NOT NULL,
     creature_image_link TEXT NOT NULL,
     creature_generation INTEGER NOT NULL,
-    creature_owner INTEGER NOT NULL,
+    creature_owner BIGINT NOT NULL,
+    creature_traits TEXT,
     CONSTRAINT fk_user
         FOREIGN KEY(creature_owner)
             REFERENCES users(user_id)
@@ -37,7 +39,7 @@ CREATE TABLE owned_items(
     owned_item_id SERIAL PRIMARY KEY,
     owned_item_type_id INTEGER NOT NULL,
     owned_item_quantity INTEGER,
-    owned_item_owner INTEGER NOT NULL,
+    owned_item_owner BIGINT NOT NULL,
     CONSTRAINT fk_user
         FOREIGN KEY(owned_item_owner)
             REFERENCES users(user_id),
@@ -52,14 +54,15 @@ SQL_COMMANDS = (
     SQL_CREATE_ITEMS_TABLE,
     SQL_CREATE_OWNED_ITEMS_TABLE
 )
-def setup_databases():
+
+def setup_databases(database_name,database_password):
     """Performs initial database setup for application"""
     try:
         conn = psycopg2.connect(
             host="localhost",
-            database="chorumfur",
+            database=database_name,
             user="postgres",
-            password="postgres"
+            password=database_password
         )
 
         cur = conn.cursor()
@@ -73,5 +76,9 @@ def setup_databases():
         if conn is not None:
             conn.close()
             print("DB Closed")
+
+f = open(os.path.abspath(os.path.join(os.path.dirname(__file__),'../db_pass.txt')),encoding='utf-8')
+database_password = f.readline()
+
 if __name__ == '__main__':
-    setup_databases()
+    setup_databases('chorumfur',database_password)
