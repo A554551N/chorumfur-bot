@@ -141,6 +141,31 @@ def get_item_from_db(item_id,conn=None):
     return False
 
 @make_database_connection
+def add_item_to_db(item_to_add,conn=None):
+    """Adds a new type of item to the items table of the database"""
+    add_item_sql = '''INSERT INTO items (item_name,item_desc,item_value,item_image_link)
+                  VALUES (%s,%s,%s,%s)
+                  RETURNING item_id'''
+    cur = conn.cursor()
+    cur.execute(add_item_sql,(item_to_add.name,
+                              item_to_add.description,
+                              item_to_add.value,
+                              item_to_add.imageLink))
+    returned_id = cur.fetchone()[0]
+    conn.commit()
+    return returned_id
+
+@make_database_connection
+def get_all_items_from_db(conn=None):
+    """Returns a list of all item types defined in the items table."""
+    get_all_items_sql = """SELECT item_id,item_name,item_desc,item_value FROM items"""
+    cur = conn.cursor()
+    cur.execute(get_all_items_sql)
+    returned_items = cur.fetchall()
+    return returned_items
+
+
+@make_database_connection
 def get_user_inventory(user_id,conn=None):
     """Retreives all items associated with user and returns an array of tuples
     (Item object,quantity)"""
@@ -169,5 +194,4 @@ def get_user_inventory(user_id,conn=None):
     return None
 
 if __name__ == "__main__":
-    test_user = get_user_from_db(99999)
-    print(test_user.outputInventory())
+    get_all_items_from_db()
