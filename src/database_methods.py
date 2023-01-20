@@ -66,12 +66,14 @@ def get_user_from_db(user_id,conn=None):
     cur = conn.cursor()
     cur.execute(sql,(user_id,))
     user_data = cur.fetchone()
-    return User(userId = user_id,
-        level=user_data[0],
-        wallet=user_data[1],
-        lastBreed=user_data[2],
-        warningsIssued=user_data[3],
-        inventory=get_user_inventory(user_id))
+    if user_data:
+        return User(userId = user_id,
+                    level=user_data[0],
+                    wallet=user_data[1],
+                    lastBreed=user_data[2],
+                    warningsIssued=user_data[3],
+                    inventory=get_user_inventory(user_id))
+    return None
 
 @make_database_connection
 def add_item_to_user(user_id,item_id,new_quantity=1,conn=None):

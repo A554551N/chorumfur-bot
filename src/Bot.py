@@ -133,9 +133,9 @@ async def addItemToInv(ctx,item_id_to_add,quantity=1):
 
 @client.command()
 @is_guild_owner_or_me()
-async def removeItemFromInv(ctx,item_id_to_remove):
+async def removeItemFromInv(ctx,item_id_to_remove,quantity=1):
     user_id = ctx.message.author.id
-    if database_methods.remove_item_from_user(user_id,item_id_to_remove):
+    if database_methods.remove_item_from_user(user_id,item_id_to_remove,quantity):
         await ctx.send("Item removed from User Inventory")
     else:
         await ctx.send("Item not found, or not successfully removed.")
