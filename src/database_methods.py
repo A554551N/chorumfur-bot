@@ -7,6 +7,7 @@ database_connection(func)
 import psycopg2
 from User import User
 from Item import Item
+from Creature import Creature
 
 def make_database_connection(func):
     """Connects database connection and runs code passed from decorator"""
@@ -191,5 +192,50 @@ def get_user_inventory(user_id,conn=None):
         return inventory
     return None
 
+@make_database_connection
+def add_creature_to_db(creature_to_add,conn=None):
+    """Takes in a Creature object and adds to creatures table of db.  Returns ID of added creture."""
+    add_creature_sql = """INSERT INTO creatures
+                          (creature_name,
+                          creature_owner,
+                          creature_create_date,
+                          creature_image_link,
+                          creature_generation)
+                          VALUES (%s,%s,%s,%s,%s)
+                          RETURNING creature_id
+                          """
+    cur = conn.cursor()
+    cur.execute(add_creature_sql,
+                (creature_to_add.name,
+                 creature_to_add.owner,
+                 creature_to_add.createDate,
+                 creature_to_add.imageLink,
+                 creature_to_add.generation))
+    returned_id = cur.fetchone()[0]
+    conn.commit()
+    return returned_id
+
+@make_database_connection
+def get_creature_from_db(creature_id,conn=None):
+    """Takes in an int creature_id and returns a matching Creature object from db"""
+    get_creature_sql = """SELECT creature_name,
+                                 creature_owner,
+                                 creature_id,
+                                 creature_create_date,
+                                 creature_image_link,
+                                 creature_generation
+                          FROM creatures
+                          WHERE creature_id = %s"""
+    cur = conn.cursor()
+    cur.execute(get_creature_sql,(creature_id,))
+    returned_row = cur.fetchone()
+    if returned_row:
+        return Creature(name=returned_row[0],
+                        owner=returned_row[1],
+                        creatureId=returned_row[2],
+                        createDate=returned_row[3],
+                        imageLink=returned_row[4],
+                        generation=returned_row[5])
+    return None
 if __name__ == "__main__":
-    get_all_items_from_db()
+    get_creature_from_db(2)
