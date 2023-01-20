@@ -71,7 +71,7 @@ conn = create_connection(db_file_test)
 if conn is not None:
     for table in tablesToCreate:
         create_table(conn,table)
-    sql =  f'''INSERT INTO users(userId,level,wallet,lastBreed,warnings_issued)
+    sql =  '''INSERT INTO users(userId,level,wallet,lastBreed,warnings_issued)
             VALUES(?,?,?,?,?)'''
     c = conn.cursor()
     c.execute(sql,(99999,99,0,"",0))
