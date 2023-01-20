@@ -38,14 +38,8 @@ def is_database_connected(conn=None):
     return None
 
 @make_database_connection
-def add_user_to_database(
-    user_id,
-    user_level=1,
-    user_wallet=0,
-    user_last_breed="",
-    user_warnings_issued=0,
-    conn=None):
-    """Adds a user to the Users table of the database"""
+def add_user_to_database(user_to_add,conn=None):
+    """Takes in a User object and adds to users table of db"""
     sql = """INSERT INTO users (
         user_id,
         user_level,
@@ -54,13 +48,17 @@ def add_user_to_database(
         user_warnings_issued)
         VALUES (%s,%s,%s,%s,%s)"""
     cur = conn.cursor()
-    cur.execute(sql,(user_id,user_level,user_wallet,user_last_breed,user_warnings_issued))
+    cur.execute(sql,(user_to_add.userId,
+                     user_to_add.level,
+                     user_to_add.wallet,
+                     user_to_add.lastBreed,
+                     user_to_add.warningsIssued))
     conn.commit()
     return True
 
 @make_database_connection
 def get_user_from_db(user_id,conn=None):
-    """Retrieves a user from the database with a given ID"""
+    """Retrieves a user from the database with a given ID and returns a User object."""
     sql = """SELECT user_level,user_wallet,user_lastBreed,user_warnings_issued
                 FROM users WHERE user_id = %s
             """
@@ -142,7 +140,7 @@ def get_item_from_db(item_id,conn=None):
 
 @make_database_connection
 def add_item_to_db(item_to_add,conn=None):
-    """Adds a new type of item to the items table of the database"""
+    """Takes in an Item object and adds it to the items table of the database"""
     add_item_sql = '''INSERT INTO items (item_name,item_desc,item_value,item_image_link)
                   VALUES (%s,%s,%s,%s)
                   RETURNING item_id'''

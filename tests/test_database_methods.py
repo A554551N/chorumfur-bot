@@ -2,6 +2,7 @@
 import random
 import pytest
 from datetime import datetime
+from .context import User
 from .context import Item
 from .context import database_methods
 
@@ -20,26 +21,26 @@ def test_database_connection():
 
 def test_reject_duplicate_user_id(random_user_constants):
     """Tests to confirm that the database correctly rejects a duplicate user."""
-    assert not database_methods.add_user_to_database(
-        user_id = 99999,
-        user_level = random_user_constants['user_level'],
-        user_wallet = random_user_constants['user_wallet'],
-        user_last_breed = random_user_constants['user_last_breed'],
-        user_warnings_issued = random_user_constants['user_warnings_issued']
-    )
+    user_to_add = User(userId=99999,
+                       level=random_user_constants['user_level'],
+                       wallet=random_user_constants['user_wallet'],
+                       lastBreed=random_user_constants['user_last_breed'],
+                       warningsIssued=random_user_constants['user_warnings_issued'])
+    assert not database_methods.add_user_to_database(user_to_add)
+
 def test_add_user_to_database(random_user_constants):
     """Tests to confirm that a user can be added to the users database"""
-    assert database_methods.add_user_to_database(
-        user_id = random_user_constants['user_id'],
-        user_level = random_user_constants['user_level'],
-        user_wallet = random_user_constants['user_wallet'],
-        user_last_breed = random_user_constants['user_last_breed'],
-        user_warnings_issued = random_user_constants['user_warnings_issued']
-    )
+    user_to_add = User(userId=random_user_constants['user_id'],
+                       level=random_user_constants['user_level'],
+                       wallet=random_user_constants['user_wallet'],
+                       lastBreed=random_user_constants['user_last_breed'],
+                       warningsIssued=random_user_constants['user_warnings_issued'])
+    assert database_methods.add_user_to_database(user_to_add)
 
 def test_add_user_with_defaults(random_user_constants):
     """Tests to confirm that the database correctly rejects a duplicate user."""
-    assert database_methods.add_user_to_database(random_user_constants['user_id'])
+    user_to_add = User(random_user_constants['user_id'])
+    assert database_methods.add_user_to_database(user_to_add)
 
 def test_add_item_to_user():
     """Tests to confirm an item can be added to owned_items and associated to a user"""
