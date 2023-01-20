@@ -20,7 +20,7 @@ def make_database_connection(func):
     def inner(*args,**kwargs):
         try:
             conn = psycopg2.connect(
-                host="0.0.0.0",
+                host="localhost",
                 database="chorumfur",
                 user="postgres",
                 password=DB_PASSWORD
