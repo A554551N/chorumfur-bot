@@ -8,6 +8,7 @@ database_connection(func)
 import psycopg2
 import logging
 import os
+import pickle
 from User import User
 from Item import Item
 from Creature import Creature
@@ -207,8 +208,9 @@ def add_creature_to_db(creature_to_add,conn=None):
                           creature_owner,
                           creature_create_date,
                           creature_image_link,
-                          creature_generation)
-                          VALUES (%s,%s,%s,%s,%s)
+                          creature_generation,
+                          creature_traits)
+                          VALUES (%s,%s,%s,%s,%s,%s)
                           RETURNING creature_id
                           """
     cur = conn.cursor()
@@ -217,7 +219,8 @@ def add_creature_to_db(creature_to_add,conn=None):
                  creature_to_add.owner,
                  creature_to_add.createDate,
                  creature_to_add.imageLink,
-                 creature_to_add.generation))
+                 creature_to_add.generation,
+                 pickle.dumps(creature_to_add.traits)))
     returned_id = cur.fetchone()[0]
     conn.commit()
     return returned_id
@@ -230,20 +233,25 @@ def get_creature_from_db(creature_id,conn=None):
                                  creature_id,
                                  creature_create_date,
                                  creature_image_link,
-                                 creature_generation
+                                 creature_generation,
+                                 creature_traits
                           FROM creatures
                           WHERE creature_id = %s"""
     cur = conn.cursor()
     cur.execute(get_creature_sql,(creature_id,))
     returned_row = cur.fetchone()
     if returned_row:
-        return Creature(name=returned_row[0],
-                        owner=returned_row[1],
-                        creatureId=returned_row[2],
-                        createDate=returned_row[3],
-                        imageLink=returned_row[4],
-                        generation=returned_row[5])
+        returned_creature = Creature(name=returned_row[0],
+                                     owner=returned_row[1],
+                                     creatureId=returned_row[2],
+                                     createDate=returned_row[3],
+                                     imageLink=returned_row[4],
+                                     generation=returned_row[5])
+        if returned_row[6]:
+            returned_creature.traits=pickle.loads(returned_row[6])
+        return returned_creature
     return None
 
 if __name__ == "__main__":
-    get_creature_from_db(2)
+    creature = get_creature_from_db(19)
+    print(creature.traits)

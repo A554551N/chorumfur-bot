@@ -113,6 +113,20 @@ async def makeCreature(ctx,creatureName):
 
 @client.command()
 @is_guild_owner_or_me()
+async def makeRandomCreature(ctx,creatureName):
+    userId = ctx.message.author.id
+    creature_to_add = Creature(creatureName,userId)
+    creature_to_add.randomize_creature()
+    creature_id = database_methods.add_creature_to_db(creature_to_add)
+    if creature_id:
+        creature_to_add.creatureId=creature_id
+        await ctx.send(f"{creatureName} added to database with ID #{creature_id}")
+        await ctx.send(creature_to_add.outputCreature())
+    else:
+        await ctx.send(f"An error occurred adding {creatureName} to the database")
+
+@client.command()
+@is_guild_owner_or_me()
 async def makeItem(ctx,itemName,itemDesc,itemValue):
     if ctx.message.attachments:
         imageLink = ctx.message.attachments[0].url

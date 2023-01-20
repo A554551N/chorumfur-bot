@@ -47,12 +47,21 @@ def test_outputCreature(createCreature,testCreatureAttributes):
                     f"""Generation: {testCreatureAttributes["generation"]}\n"""
     assert createCreature.outputCreature() == outputString
 
+def test_randomize_creature(createCreature):
+    """Tests the randomize creature function to confirm all traits are generated."""
+    createCreature.randomize_creature()
+    assertion = True
+    for value in createCreature.traits.values():
+        if not value:
+            assertion = False
+    assert assertion
+
 # Database Read/Write
 def test_add_creature_to_db(createCreature):
     assert database_methods.add_creature_to_db(createCreature)
 
 def test_get_creature_from_db(testCreatureAttributes):
-    test_creature = database_methods.get_creature_from_db(2)
+    test_creature = database_methods.get_creature_from_db(28)
     assert test_creature.name == 'Test Creature'
 
 def test_get_creature_from_db_that_doesnt_exist(testCreatureAttributes):
