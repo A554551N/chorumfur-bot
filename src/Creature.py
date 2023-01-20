@@ -41,21 +41,6 @@ class Creature:
         self.createDate = createDate
         self.traits = traits
 
-    def randomize_creature_weighted(self,configuration_dict):
-        """Selects an option from a given set of weights"""
-        summed_weight = 0
-        for item in configuration_dict.values():
-            summed_weight += item[1]
-        roll = randint(1,summed_weight)
-        for item in configuration_dict:
-            weight = configuration_dict[item][1]
-            if roll > configuration_dict[item][1]:
-                roll -= weight
-            else:
-                return item
-
-
-    
     def outputCreature(self):
         age = datetime.today() - self.createDate
         output = f"ID: {self.creatureId}\n"\
