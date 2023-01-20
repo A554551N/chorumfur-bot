@@ -4,7 +4,7 @@ from discord.ext import commands
 from Creature import Creature
 from User import User
 from Item import Item
-import Database
+import database_methods
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -41,7 +41,7 @@ async def shop(ctx):
 @client.command()
 async def me(ctx):
     """gets user profile and displays it in chat"""
-    user = Database.getUserFromDB(ctx.message.author.id)
+    user = database_methods.get_user_from_db(ctx.message.author.id)
     if user:
         user.name = await client.fetch_user(user.userId)
         msg = f"{ctx.message.author.mention}\n{user.outputProfile()}"
@@ -52,7 +52,7 @@ async def me(ctx):
 @client.command()
 async def crystal(ctx):
     """gets the status of the user's breeding crystal and displays it in in chat"""
-    user = Database.getUserFromDB(ctx.message.author.id)
+    user = database_methods.get_user_from_db(ctx.message.author.id)
     if user:
         msg=f"**Last Breeding:** {user.lastBreed}\n"\
         f"Crystal Full in {user.daysUntilFull()} days"
@@ -62,7 +62,7 @@ async def crystal(ctx):
 @client.command()
 async def inventory(ctx):
     await ctx.send(f"Fetching Inventory {ctx.message.author.mention}")
-    user = Database.getUserFromDB(ctx.message.author.id)
+    user = database_methods.get_user_from_db(ctx.message.author.id)
     await ctx.send(user.outputInventory())
     await ctx.send("For more information on an item, use .getItem <ID Number>")
 
@@ -73,7 +73,7 @@ async def getID(ctx):
 
 @client.command(require_var_positional=True)
 async def getCreature(ctx,creatureId):
-    requestedCreature = Database.getCreatureFromDB(creatureId)
+    requestedCreature = database_methods.get_creature_from_db(creatureId)
     if requestedCreature:
         user = await client.fetch_user(requestedCreature.owner)
         requestedCreature.ownerName = user.name
@@ -85,10 +85,10 @@ async def getCreature(ctx,creatureId):
 @client.command()
 async def joinGame(ctx):
     newUser = User(ctx.message.author.id)
-    if Database.addUserToDB(newUser):
+    if database_methods.add_user_to_database(newUser):
         msg=f"Welcome to Chorumfur {await client.fetch_user(ctx.message.author.id)}"
     else:
-        msg=f"Failed to add new user, perhaps you are already registered?  Try .me"
+        msg="Failed to add new user, perhaps you are already registered?  Try .me"
     await ctx.send(msg)
 
 @client.command()
@@ -99,7 +99,7 @@ async def makeCreature(ctx,creatureName):
         msg="Attachment not detected, new Chorumfur submissions require an image."
     else:
         creatureToAdd = Creature(creatureName,userId,ctx.message.attachments[0].url)
-        creatureId = Database.addCreatureToDB(creatureToAdd)
+        creatureId = database_methods.add_creature_to_db(creatureToAdd)
         msg=f"{creatureName} created with Id #{creatureId}"
     await ctx.send(msg)
 
@@ -111,7 +111,7 @@ async def makeItem(ctx,itemName,itemDesc,itemValue):
     else:
         imageLink = ""
     itemToAdd = Item(itemName,itemDesc,itemValue,imageLink)
-    itemId = Database.addItemToDB(itemToAdd)
+    itemId = database_methods.add_item_to_db(itemToAdd)
     if itemId:
         await ctx.send(f'{itemName} created with ID # {itemId}')
     else:
@@ -120,29 +120,29 @@ async def makeItem(ctx,itemName,itemDesc,itemValue):
 @client.command()
 @is_guild_owner_or_me()
 async def getAllItems(ctx):
-    await ctx.send(f"{ctx.message.author.mention}\n{Database.getAllItemsInDB()}")
+    await ctx.send(f"{ctx.message.author.mention}\n{database_methods.get_all_items_from_db()}")
 
 @client.command()
 @is_guild_owner_or_me()
-async def addItemToInv(ctx,itemIDToAdd):
-    user = Database.getUserFromDB(ctx.message.author.id)
-    if Database.addToUserInventory(user.userId,itemIDToAdd):
-        await ctx.send(f"Item {Database.getItemFromDB(itemIDToAdd).name} added to your user.")
+async def addItemToInv(ctx,item_id_to_add,quantity=1):
+    user_id = ctx.message.author.id
+    if database_methods.add_item_to_user(user_id,item_id_to_add,quantity):
+        await ctx.send("Inventory update successful.")
     else:
-        await ctx.send(f"Adding Item {Database.getItemFromDB(itemIDToAdd).name}failed.")
+        await ctx.send("Inventory update failed.")
 
 @client.command()
 @is_guild_owner_or_me()
-async def removeItemFromInv(ctx,itemIDToRemove):
-    user = Database.getUserFromDB(ctx.message.author.id)
-    if Database.removeFromUserInventory(user.userId,itemIDToRemove):
+async def removeItemFromInv(ctx,item_id_to_remove):
+    user_id = ctx.message.author.id
+    if database_methods.remove_item_from_user(user_id,item_id_to_remove):
         await ctx.send("Item removed from User Inventory")
     else:
-        await ctx.send(f"Item not found, or not successfully removed.")
+        await ctx.send("Item not found, or not successfully removed.")
 
 @client.command()
-async def getItem(ctx,itemId):
-    item=Database.getItemFromDB(itemId)
+async def getItem(ctx,item_id):
+    item=database_methods.get_item_from_db(item_id)
     await ctx.send(f"{ctx.message.author.mention}\n{item.outputItem()}")
     if item.imageLink != "":
         await ctx.send(item.imageLink)
