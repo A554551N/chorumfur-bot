@@ -81,4 +81,5 @@ f = open(os.path.abspath(os.path.join(os.path.dirname(__file__),'../db_pass.txt'
 database_password = f.readline()
 
 if __name__ == '__main__':
+    print(database_password)
     setup_databases('chorumfur',database_password)
