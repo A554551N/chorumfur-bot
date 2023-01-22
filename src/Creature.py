@@ -47,12 +47,12 @@ class Creature:
         """Takes in a trait category and returns a randomly selected trait"""
         sum_of_options = 0
         for trait_type_weights in trait_category.values():
-            sum_of_options += Decimal(trait_type_weights[1])
-        if sum_of_options < 1 or sum_of_options > 1:
+            sum_of_options += Decimal(trait_type_weights)
+        if sum_of_options != 1:
             return None
         random_roll = Decimal(str(random.random()))
         for trait_type in trait_category:
-            trait_weight = Decimal(trait_category[trait_type][1])
+            trait_weight = Decimal(trait_category[trait_type])
             if random_roll > trait_weight:
                 random_roll = random_roll - trait_weight
             else:
