@@ -106,7 +106,7 @@ async def makeCreature(ctx,creatureName):
     if not ctx.message.attachments:
         msg="Attachment not detected, new Chorumfur submissions require an image."
     else:
-        creatureToAdd = Creature(creatureName,userId,ctx.message.attachments[0].url)
+        creatureToAdd = Creature(name = creatureName,owner = userId,imageLink = ctx.message.attachments[0].url)
         creatureId = database_methods.add_creature_to_db(creatureToAdd)
         msg=f"{creatureName} created with Id #{creatureId}"
     await ctx.send(msg)
