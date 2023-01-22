@@ -54,7 +54,7 @@ class Creature:
         for trait_type in trait_category:
             trait_weight = Decimal(trait_category[trait_type])
             if random_roll > trait_weight:
-                random_roll = random_roll - trait_weight
+                random_roll -= trait_weight
             else:
                 return trait_type
 
@@ -79,13 +79,13 @@ class Creature:
                 f"Age: {age}\n"\
                 f"Create Date: {datetime.strftime(self.createDate,Constants.DATEONLYFORMAT)}\n"\
                 f"Generation: {self.generation}\n"\
-                f"Main Horn: {Constants.MAIN_HORN[self.traits['MAIN_HORN']][0]}\n"\
-                f"Cheek Horn: {Constants.CHEEK_HORN[self.traits['CHEEK_HORN']][0]}\n"\
-                f"Face Horn: {Constants.FACE_HORN[self.traits['FACE_HORN']][0]}\n"\
-                f"Tail: {Constants.TAIL[self.traits['TAIL']][0]}\n"\
-                f"Tail Tip: {Constants.TAIL_TIP[self.traits['TAIL_TIP']][0]}\n"\
-                f"Fluff: {Constants.FLUFF[self.traits['FLUFF']][0]}\n"\
-                f"Mutation: {Constants.MUTATION[self.traits['MUTATION']][0]}\n"
+                f"Main Horn: {self.traits['MAIN_HORN']}\n"\
+                f"Cheek Horn: {self.traits['CHEEK_HORN']}\n"\
+                f"Face Horn: {self.traits['FACE_HORN']}\n"\
+                f"Tail: {self.traits['TAIL']}\n"\
+                f"Tail Tip: {self.traits['TAIL_TIP']}\n"\
+                f"Fluff: {self.traits['FLUFF']}\n"\
+                f"Mutation: {self.traits['MUTATION']}\n"
         return output
 
 if __name__ == '__main__':
