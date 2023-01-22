@@ -5,6 +5,7 @@ from discord.ext import commands
 from Creature import Creature
 from User import User
 from Item import Item
+from Breeding import Breeding
 import database_methods
 
 #discord_py_logfile_location = os.path.abspath(os.path.join(os.path.dirname(__file__), '../discord.log'))
@@ -168,6 +169,20 @@ async def getItem(ctx,item_id):
     await ctx.send(f"{ctx.message.author.mention}\n{item.outputItem()}")
     if item.imageLink != "":
         await ctx.send(item.imageLink)
+
+@client.command()
+async def breed(ctx,creature_a_id,creature_b_id):
+    """Submit a breeding request in format .breed <creature_a> <creature_b>"""
+    requesting_user = database_methods.get_user_from_db(ctx.message.author.id)
+    if requesting_user.breedingLevel < 5:
+        await ctx.send("Your Crystal is not fully charged.  You will be "\
+                    f"able to breed again in {requesting_user.daysUntilFull()} days.")
+    else:
+        creature_a=database_methods.get_creature_from_db(creature_a_id)
+        creature_b=database_methods.get_creature_from_db(creature_b_id)
+        breed_request = Breeding(creature_a,creature_b)
+        await ctx.send("Breeding Request Created")
+
 # END OF COMMANDS SECTION
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__), '../token.txt')))
 token = f.readline()
