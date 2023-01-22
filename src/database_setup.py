@@ -20,9 +20,17 @@ CREATE TABLE creatures (
     creature_generation INTEGER NOT NULL,
     creature_owner BIGINT NOT NULL,
     creature_traits TEXT,
+    creature_parent_a INTEGER,
+    creature_parent_b INTEGER,
     CONSTRAINT fk_user
         FOREIGN KEY(creature_owner)
             REFERENCES users(user_id)
+    CONSTRAINT fk_parent_a
+        FOREIGN KEY(creature_parent_a)
+            REFERENCES creatures(creature_id)
+    CONSTRAINT fk_parent_b
+        FOREIGN KEY(creature_parent_b)
+            REFERENCES creatures(creature_id)
     )"""
 
 SQL_CREATE_ITEMS_TABLE = """
