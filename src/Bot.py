@@ -174,14 +174,15 @@ async def getItem(ctx,item_id):
 async def breed(ctx,creature_a_id,creature_b_id):
     """Submit a breeding request in format .breed <creature_a> <creature_b>"""
     requesting_user = database_methods.get_user_from_db(ctx.message.author.id)
-    if requesting_user.breedingLevel < 5:
+    if requesting_user.breedingLevel() < 5:
         await ctx.send("Your Crystal is not fully charged.  You will be "\
                     f"able to breed again in {requesting_user.daysUntilFull()} days.")
     else:
         creature_a=database_methods.get_creature_from_db(creature_a_id)
         creature_b=database_methods.get_creature_from_db(creature_b_id)
-        breed_request = Breeding(creature_a,creature_b)
-        await ctx.send("Breeding Request Created")
+        breed_request = Breeding(creature_a,creature_b,requesting_user.userId)
+        spawn = breed_request.breed()
+        await ctx.send(f"Breeding Complete, ID #s {spawn} added to DB")
 
 # END OF COMMANDS SECTION
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__), '../token.txt')))
