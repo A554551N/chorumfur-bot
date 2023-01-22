@@ -182,7 +182,23 @@ async def breed(ctx,creature_a_id,creature_b_id):
         creature_b=database_methods.get_creature_from_db(creature_b_id)
         breed_request = Breeding(creature_a,creature_b,requesting_user.userId)
         spawn = breed_request.breed()
+        requesting_user.update_last_breed()
+        database_methods.update_user_last_breed(requesting_user)
         await ctx.send(f"Breeding Complete, ID #s {spawn} added to DB")
+
+@client.command()
+@is_guild_owner_or_me()
+async def adminBreed(ctx,creature_a_id,creature_b_id):
+    """ADMIN: Submit a breeding request in format .breed <creature_a> <creature_b>
+       DOES NOT USE BREEDING CRYSTAL"""
+    requesting_user = database_methods.get_user_from_db(ctx.message.author.id)
+    creature_a=database_methods.get_creature_from_db(creature_a_id)
+    creature_b=database_methods.get_creature_from_db(creature_b_id)
+    breed_request = Breeding(creature_a,creature_b,requesting_user.userId)
+    spawn = breed_request.breed()
+    requesting_user.update_last_breed()
+    database_methods.update_user_last_breed(requesting_user)
+    await ctx.send(f"Breeding Complete, ID #s {spawn} added to DB")
 
 # END OF COMMANDS SECTION
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__), '../token.txt')))
