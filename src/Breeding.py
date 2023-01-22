@@ -30,16 +30,15 @@ class Breeding:
     def breed(self):
         """Performs the breed action, producing randomized traits based on parents
         creature_a and creature_b"""
-        if self.creatures_have_same_owner():
-            number_of_pups = randint(1,4)
-            added_creature_ids = []
-            for pup_count in range(1,(number_of_pups+1)):
-                pup = Creature(name=f"Pup {pup_count}",
-                               owner=self.new_creature_owner,
-                               generation=self.new_creature_generation)
-                for trait in Constants.DEFAULT_TRAITS_DICT:
-                    pup.traits[trait] = self.select_trait_to_pass(trait)
-                added_creature_ids.append(database_methods.add_creature_to_db(pup))
+        number_of_pups = randint(1,4)
+        added_creature_ids = []
+        for pup_count in range(1,(number_of_pups+1)):
+            pup = Creature(name=f"Pup {pup_count}",
+                           owner=self.new_creature_owner,
+                           generation=self.new_creature_generation)
+            for trait in Constants.DEFAULT_TRAITS_DICT:
+                pup.traits[trait] = self.select_trait_to_pass(trait)
+            added_creature_ids.append(database_methods.add_creature_to_db(pup))
             return added_creature_ids
         return None
     
