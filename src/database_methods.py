@@ -293,7 +293,18 @@ def get_parents_from_db(creature,conn=None):
             returned_parents.append(returned_creature)
         return returned_parents
     return None
+
+@make_database_connection
+def update_user_last_breed(user,conn=None):
+    update_user_sql = """UPDATE users
+                         SET user_lastbreed = %s
+                         WHERE user_id = %s"""
+    cur = conn.cursor()
+    cur.execute(update_user_sql,(user.lastBreed,user.userId))
+    conn.commit()
+    return True
+
 if __name__ == "__main__":
-    creature = get_creature_from_db(39)
-    returned_value = get_parents_from_db(creature)
-    print(returned_value[1].creatureId)
+    user = get_user_from_db(202632427535859712)
+    print(type(user.daysSinceLastBreed))
+    print(user.daysUntilFull())
