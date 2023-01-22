@@ -209,8 +209,10 @@ def add_creature_to_db(creature_to_add,conn=None):
                           creature_create_date,
                           creature_image_link,
                           creature_generation,
-                          creature_traits)
-                          VALUES (%s,%s,%s,%s,%s,%s)
+                          creature_traits,
+                          creature_parent_a,
+                          creature_parent_b)
+                          VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
                           RETURNING creature_id
                           """
     cur = conn.cursor()
@@ -220,7 +222,9 @@ def add_creature_to_db(creature_to_add,conn=None):
                  creature_to_add.createDate,
                  creature_to_add.imageLink,
                  creature_to_add.generation,
-                 pickle.dumps(creature_to_add.traits)))
+                 pickle.dumps(creature_to_add.traits),
+                 creature_to_add.parents[0],
+                 creature_to_add.parents[1]))
     returned_id = cur.fetchone()[0]
     conn.commit()
     return returned_id
@@ -234,7 +238,9 @@ def get_creature_from_db(creature_id,conn=None):
                                  creature_create_date,
                                  creature_image_link,
                                  creature_generation,
-                                 creature_traits
+                                 creature_traits,
+                                 creature_parent_a,
+                                 creature_parent_b
                           FROM creatures
                           WHERE creature_id = %s"""
     cur = conn.cursor()
@@ -249,9 +255,45 @@ def get_creature_from_db(creature_id,conn=None):
                                      generation=returned_row[5])
         if returned_row[6]:
             returned_creature.traits=pickle.loads(returned_row[6])
+        if returned_row[7] or returned_row[8]:
+            returned_creature.parents = [returned_row[7],returned_row[8]]
         return returned_creature
     return None
 
+@make_database_connection
+def get_parents_from_db(creature,conn=None):
+    """Takes in a Creature object and returns an array of Creature objects for parents"""
+    get_parents_sql = """SELECT creature_name,
+                                 creature_owner,
+                                 creature_id,
+                                 creature_create_date,
+                                 creature_image_link,
+                                 creature_generation,
+                                 creature_traits,
+                                 creature_parent_a,
+                                 creature_parent_b
+                          FROM creatures
+                          WHERE creature_id = %s OR creature_id = %s"""
+    cur = conn.cursor()
+    cur.execute(get_parents_sql,(creature.parents[0],creature.parents[1]))
+    returned_rows = cur.fetchall()
+    if returned_rows:
+        returned_parents = []
+        for returned_row in returned_rows:
+            returned_creature = Creature(name=returned_row[0],
+                                         owner=returned_row[1],
+                                         creatureId=returned_row[2],
+                                         createDate=returned_row[3],
+                                         imageLink=returned_row[4],
+                                         generation=returned_row[5])
+            if returned_row[6]:
+                returned_creature.traits=pickle.loads(returned_row[6])
+            if returned_row[7] or returned_row[8]:
+                returned_creature.parents = [returned_row[7],returned_row[8]]
+            returned_parents.append(returned_creature)
+        return returned_parents
+    return None
 if __name__ == "__main__":
-    creature = get_creature_from_db(19)
-    print(creature.traits)
+    creature = get_creature_from_db(39)
+    returned_value = get_parents_from_db(creature)
+    print(returned_value[1].creatureId)

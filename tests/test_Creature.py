@@ -67,3 +67,10 @@ def test_get_creature_from_db(testCreatureAttributes):
 def test_get_creature_from_db_that_doesnt_exist(testCreatureAttributes):
     testCreature = database_methods.get_creature_from_db(99999)
     assert not testCreature
+
+def test_get_parents_from_db():
+    test_creature = database_methods.get_creature_from_db(39)
+    parents = database_methods.get_parents_from_db(test_creature)
+    correct_parents = [27,29]
+    parents_returned = [parents[0].creatureId,parents[1].creatureId]
+    assert correct_parents == parents_returned
