@@ -89,18 +89,6 @@ class Creature:
         return output
 
 if __name__ == '__main__':
-
-    number_runs = 10000
-    new_creature = Creature("a",1)
-    total_mutations = 0
-    main_horns = {}
-    for i in range(number_runs):
-        new_creature.randomize_creature()
-        if new_creature.traits['MAIN_HORN'] in main_horns:
-            main_horns[new_creature.traits['MAIN_HORN']] += 1
-        else: main_horns[new_creature.traits['MAIN_HORN']] = 1
-        if new_creature.traits['MUTATION'] != 1:
-            total_mutations += 1
-            print("Mutation Detected")
-    print(main_horns)
-    print(f"Total runs: {number_runs}\nMutations Discovered: {total_mutations}")
+    test_creature = Creature("Steve",1)
+    test_creature.randomize_creature()
+    print(test_creature.outputCreature())
