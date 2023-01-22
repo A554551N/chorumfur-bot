@@ -101,7 +101,7 @@ class Constants:
 
     MUTATION = {
         "None" : ".9986",
-        "Tail Spines" : ,".0001",
+        "Tail Spines" : ".0001",
         "Dwarfism" : ".0001",
         "Long Ears" : ".0001",
         "Short Ears" : ".0001",
