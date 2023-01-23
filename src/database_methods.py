@@ -363,4 +363,18 @@ def get_ticket_from_db(ticket_id,conn=None):
             pups = tkt_pups)
         return returned_ticket
     return None
-#if __name__ == "__main__":
+
+@make_database_connection
+def update_ticket_status(ticket_to_update,conn=None):
+    """Advances"""
+    update_status_sql = """UPDATE breeding_tickets
+                            SET ticket_status=%s
+                            WHERE ticket_id=%s"""
+    cur = conn.cursor()
+    cur.execute(update_status_sql,(ticket_to_update.status,ticket_to_update.id))
+    conn.commit()
+    return True
+
+if __name__ == "__main__":
+    ticket = get_ticket_from_db(40)
+    print(ticket.id)
