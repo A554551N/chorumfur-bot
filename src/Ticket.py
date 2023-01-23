@@ -1,5 +1,6 @@
 from datetime import datetime
 from ConstantData import Constants
+from Breeding import Breeding
 
 class Ticket:
     """Implements a breeding order and methods for managing breeding orders
@@ -15,7 +16,7 @@ class Ticket:
     """
 
     def __init__(self,ticket_name,ticket_requestor,creature_a,creature_b,
-                 ticket_id=None,ticket_date=datetime.today(),ticket_status=Constants.TICKET_STATUS[0]):
+                 ticket_id=None,ticket_date=datetime.today(),ticket_status=Constants.TICKET_STATUS[0],breeding=None):
         self.id = ticket_id
         self.name = ticket_name
         self.requestor = ticket_requestor
@@ -26,14 +27,27 @@ class Ticket:
         self.status = ticket_status
         self.creature_a = creature_a
         self.creature_b = creature_b
+        self.breeding = breeding
+        self.pups = []
 
     def output_ticket(self):
         """returns a formatted string with ticket details"""
-        print(f"Ticket #{self.id} - {self.name}\n"\
+        return f"Ticket #{self.id} - {self.name}\n"\
               f"Open Date: {self.ticket_date}\n"\
               f"Status: {self.status}\n"\
-              f"Parent A: {self.creature_a.creatureId}-{self.creature_a.name}"\
-              f"Parent B: {self.creature_b.creatureId}-{self.creature_b.name}")
+              f"Parent A: {self.creature_a.creatureId}-{self.creature_a.name}\n"\
+              f"Parent B: {self.creature_b.creatureId}-{self.creature_b.name}\n"
+
+    def submit_breed(self):
+        requested_breed = Breeding(creature_a=self.creature_a,
+                                   creature_b=self.creature_b,
+                                   new_creature_owner=self.requestor)
+        self.pups = requested_breed.breed()
+        output=self.output_ticket()+"\n------------\n"
+        for pup in self.pups:
+            output+=pup.outputCreature()
+            output+="----------------------\n"
+        return output
 
     def requestor_can_breed(self):
         """Confirms that at least one creature is owned by the Requestor and
@@ -43,11 +57,13 @@ class Ticket:
             can_breed = False
         elif self.requestor.breedingLevel() != 5:
             can_breed = False
+        elif self.creature_a.creatureId == self.creature_b.creatureId:
+            can_breed = False
         return can_breed
 
     def requestor_owns_both(self):
         """Confirms that the user owns both creatures and returns True if checks pass."""
-        if self.creature_a.creatureId == self.requestor.userId and self.creature_b.creatureId == self.requestor.userId:
+        if self.creature_a.owner == self.requestor.userId and self.creature_b.owner == self.requestor.userId:
             return True
         return False
 
