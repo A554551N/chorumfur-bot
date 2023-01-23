@@ -375,6 +375,23 @@ def update_ticket_status(ticket_to_update,conn=None):
     conn.commit()
     return True
 
+@make_database_connection
+def update_ticket_in_db(ticket,conn=None):
+    """Updates ticket fields after a deferred breeding is accepted."""
+    update_ticket_sql = """UPDATE breeding_tickets
+                        SET ticket_name=%s,
+                            ticket_status=%s,
+                            ticket_pups=%s
+                        WHERE ticket_id=%s"""
+    pickled_pups = pickle.dumps(ticket.pups)
+    cur = conn.cursor()
+    cur.execute(update_ticket_sql,(ticket.name,
+                                   ticket.status,
+                                   pickled_pups,
+                                   ticket.id))
+    conn.commit()
+    return True
+
 if __name__ == "__main__":
     ticket = get_ticket_from_db(40)
     print(ticket.id)
