@@ -296,6 +296,20 @@ def get_parents_from_db(creature,conn=None):
     return None
 
 @make_database_connection
+def get_my_creatures_from_db(user_id,conn=None):
+    """Retreives all creatures from the database with a given user_id"""
+    get_creatures_sql="""SELECT creature_id,
+                                creature_name
+                        FROM creatures
+                        WHERE creature_owner = %s"""
+    cur = conn.cursor()
+    cur.execute(get_creatures_sql,(user_id,))
+    returned_rows = cur.fetchall()
+    if returned_rows:
+        return returned_rows
+    return None
+
+@make_database_connection
 def update_user_last_breed(user,conn=None):
     update_user_sql = """UPDATE users
                          SET user_lastbreed = %s
