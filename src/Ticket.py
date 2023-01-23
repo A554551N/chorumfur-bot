@@ -38,11 +38,17 @@ class Ticket:
               f"Parent A: {self.creature_a.creatureId}-{self.creature_a.name}\n"\
               f"Parent B: {self.creature_b.creatureId}-{self.creature_b.name}\n"
 
-    def submit_breed(self):
+    def perform_breeding(self):
+        """Creates a Breeding object and performs breeding, returns an array of pups
+        and updates Ticket object pups."""
         requested_breed = Breeding(creature_a=self.creature_a,
                                    creature_b=self.creature_b,
-                                   new_creature_owner=self.requestor)
+                                   new_creature_owner=self.requestor.userId)
         self.pups = requested_breed.breed()
+        return self.pups
+
+    def output_detailed_ticket(self):
+        """Outputs a detailed ticket for the #breeding-tickets channel"""
         output=self.output_ticket()+"\n------------\n"
         for pup in self.pups:
             output+=pup.outputCreature()
