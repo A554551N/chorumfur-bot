@@ -202,6 +202,7 @@ async def breed(ctx,creature_a_id,creature_b_id):
                            parents_of_b=parents_of_b)
     if breed_request.requestor_can_breed():
         if breed_request.requestor_owns_both():
+            # When requestor owns both, breeding processing can go ahead without pause.
             breed_request.update_ticket_status(3)
             requesting_user.update_last_breed()
             database_methods.update_user_last_breed(requesting_user)
@@ -210,14 +211,54 @@ async def breed(ctx,creature_a_id,creature_b_id):
             breed_request.id = database_methods.add_ticket_to_db(breed_request)
             await send_ticket_to_channel(breed_request)
         else:
+            # Otherwise breeding is put on hold until the receiving user uses .accept
             breed_request.update_ticket_status(2)
             breed_request.id = database_methods.add_ticket_to_db(breed_request)
-        await ctx.send(f"Ticket #{breed_request.id} has been submitted for breeding with a status of {breed_request.status}")
+            pending_breedings = client.get_channel(1067121489444339844)
+            other_user = client.get_user(breed_request.other_user())
+            await pending_breedings.send(f"{other_user.mention}: Please use .accept "\
+                f"{breed_request.id} to confirm the following breeding, or "\
+                f".decline {breed_request.id} to reject it.  Unanswered tickets"\
+                " will expire after 30 days.\n"\
+                f"{breed_request.output_ticket()}")
+        await ctx.send(f"Ticket #{breed_request.id} has been submitted for "\
+                       f"breeding with a status of {breed_request.status}")
     else:
         await ctx.send("Breeding request was not able to be submitted at this time."\
                 " Please confirm you own at least one of the creatures submitted "\
                 "and that your breeding crystal is fully charged.")
 
+@client.command(aliases=['accept'])
+async def acceptBreeding(ctx,ticket_id):
+    ticket = database_methods.get_ticket_from_db(ticket_id)
+    if ticket.other_user() != ctx.message.author.id:
+        msg = "You do not have permission to modify this ticket."
+    elif ticket.status != Constants.TICKET_STATUS[2]:
+        msg = f"This ticket is in {ticket.status} and cannot be modified."
+    else:
+        #Do all the breeding stuff put on hold
+        ticket.update_ticket_status(3)
+        ticket.requestor.update_last_breed()
+        database_methods.update_user_last_breed(ticket.requestor)
+        ticket.perform_breeding()
+        ticket = add_pups_to_database(ticket)
+        database_methods.update_ticket_in_db(ticket)
+        await send_ticket_to_channel(ticket)
+        msg = f"Ticket {ticket.id} has been accepted.  Status is now {ticket.status}"
+    await ctx.send(msg)
+
+@client.command(aliases=['decline'])
+async def declineBreeding(ctx,ticket_id):
+    ticket = database_methods.get_ticket_from_db(ticket_id)
+    if ticket.other_user() != ctx.message.author.id:
+        msg = "You do not have permission to modify this ticket."
+    elif ticket.status != Constants.TICKET_STATUS[2]:
+        msg = f"This ticket is in {ticket.status} and cannot be modified."
+    else:
+        ticket.update_ticket_status(6)
+        database_methods.update_ticket_in_db(ticket)
+        msg = f"Ticket {ticket.id} has been rejected.  Status is now {ticket.status}"
+    await ctx.send(msg)
 @client.command(aliases=['gt'])
 async def getTicket(ctx,ticket_id):
     """Retreives a ticket from the database by ID number."""
