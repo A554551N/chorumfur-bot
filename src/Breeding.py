@@ -3,7 +3,7 @@ from Creature import Creature
 from ConstantData import Constants
 
 class Breeding:
-    """An class to represent a proposed pairing of two creatures"""
+    """A class to represent a proposed pairing of two creatures"""
     def __init__(self,creature_a,creature_b,new_creature_owner):
         self.creature_a = creature_a
         self.creature_b = creature_b
@@ -16,9 +16,9 @@ class Breeding:
         self.parents_of_a = None
         self.parents_of_b = None
         if creature_a.generation >= 2:
-            self.parents_of_a = database_methods.get_parents_from_db(self.creature_a)
+            self.parents_of_a = creature_a.parents
         if creature_b.generation >= 2:
-            self.parents_of_b = database_methods.get_parents_from_db(self.creature_b)
+            self.parents_of_b = creature_b.parents
 
     def breed(self):
         """Performs the breed action, producing randomized traits based on parents
