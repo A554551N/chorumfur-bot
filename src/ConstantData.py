@@ -122,7 +122,8 @@ class Constants:
                      'Awaiting Confirmation',
                      'Breeding Pending',
                      'Breeding in Progress',
-                     'Complete']
+                     'Complete',
+                     'Rejected']
 
     #PARENT_PASS_TRAITS = 25
     GRANDPARENT_PASS_TRAITS = 15
