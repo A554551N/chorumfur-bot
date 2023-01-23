@@ -204,9 +204,9 @@ async def breed(ctx,creature_a_id,creature_b_id):
             breed_request.update_ticket_status(2)
             requesting_user.update_last_breed()
             database_methods.update_user_last_breed(requesting_user)
-            breed_request.id = database_methods.add_ticket_to_db(breed_request)
             breed_request.perform_breeding()
             breed_request = add_pups_to_database(breed_request)
+            breed_request.id = database_methods.add_ticket_to_db(breed_request)
             await send_ticket_to_channel(breed_request)
         else:
             breed_request.update_ticket_status(1)
@@ -222,6 +222,13 @@ async def getTicket(ctx,ticket_id):
     """Retreives a ticket from the database by ID number."""
     returned_ticket = database_methods.get_ticket_from_db(ticket_id)
     await ctx.send(returned_ticket.output_ticket())
+
+@is_guild_owner_or_me()
+@client.command(aliases=['gdt'])
+async def getDetailedTicket(ctx,ticket_id):
+    """Retrieves a ticket from the database and outputs a detailed breeding ticket"""
+    returned_ticket = database_methods.get_ticket_from_db(ticket_id)
+    await ctx.send(returned_ticket.output_detailed_ticket())
 
 @client.command()
 @is_guild_owner_or_me()
