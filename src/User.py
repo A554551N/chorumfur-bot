@@ -94,9 +94,10 @@ class User:
 
     def outputInventory(self):
         if self.inventory:
-            output="Item ID | Item Name | Quantity\n"
+            output="**Item ID | Item Name | Quantity**\n```"
             for item in self.inventory.keys():
                 output+=f"{item} | {self.inventory[item][0].name} | {self.inventory[item][1]}\n"
+            output +="```"
             return output
         return "You don't have any items!"
     

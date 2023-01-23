@@ -159,12 +159,20 @@ async def makeItem(ctx,itemName,itemDesc,itemValue):
 @client.command()
 @is_guild_owner_or_me()
 async def getAllItems(ctx):
-    await ctx.send(f"{ctx.message.author.mention}\n{database_methods.get_all_items_from_db()}")
+    output = "**Item ID | Item Name - Item Value**\n```"
+    for item in database_methods.get_all_items_from_db():
+        output+= f"{item[0]} | {item[1]} - {item[2]}\n"
+    output+= "```**For more information run `.getItem <Item ID>`**"
+    await ctx.send(output)
 
 @client.command()
 @is_guild_owner_or_me()
-async def addItemToInv(ctx,item_id_to_add,quantity=1):
-    user_id = ctx.message.author.id
+async def addItemToInv(ctx,item_id_to_add,user_id = None,quantity=1):
+    """adds an item to a given users inventory with a given quantity.
+    If no user ID is specified, items will be given to the user who invoked the command.
+    If a quantity is not specified, it will add 1."""
+    if user_id is None:
+        user_id = ctx.message.author.id
     if database_methods.add_item_to_user(user_id,item_id_to_add,quantity):
         await ctx.send("Inventory update successful.")
     else:
@@ -172,8 +180,9 @@ async def addItemToInv(ctx,item_id_to_add,quantity=1):
 
 @client.command()
 @is_guild_owner_or_me()
-async def removeItemFromInv(ctx,item_id_to_remove,quantity=1):
-    user_id = ctx.message.author.id
+async def removeItemFromInv(ctx,item_id_to_remove,user_id = None,quantity=1):
+    if user_id is None:
+        user_id = ctx.message.author.id
     if database_methods.remove_item_from_user(user_id,item_id_to_remove,quantity):
         await ctx.send("Item removed from User Inventory")
     else:

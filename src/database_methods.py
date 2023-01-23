@@ -165,8 +165,8 @@ def add_item_to_db(item_to_add,conn=None):
 
 @make_database_connection
 def get_all_items_from_db(conn=None):
-    """Returns a list of all item types defined in the items table."""
-    get_all_items_sql = """SELECT item_id,item_name,item_desc,item_value FROM items"""
+    """Returns a tuple of tuples conataining all item types defined in the items table."""
+    get_all_items_sql = """SELECT item_id,item_name,item_value FROM items"""
     cur = conn.cursor()
     cur.execute(get_all_items_sql)
     returned_items = cur.fetchall()
@@ -456,4 +456,4 @@ def get_requested_tickets_from_db(type_to_show,conn=None):
         return returned_rows
     return None
 if __name__ == "__main__":
-    delete_ticket(33)
+    print(get_all_items_from_db())
