@@ -33,13 +33,14 @@ async def send_ticket_to_channel(ticket):
     artist = await client.fetch_user(101509826588205056)
     ticket_channel = await client.fetch_channel(1061868480086941716)
     await ticket_channel.send(artist.mention)
-    await ticket_channel.send(ticket.submit_breed())
+    await ticket_channel.send(ticket.output_detailed_ticket())
 
 def add_pups_to_database(ticket):
+    """Iterates over the pups parameter of a ticket object and adds them to database."""
     for pup in ticket.pups:
         pup.creatureId = database_methods.add_creature_to_db(pup)
-        print(pup)
     return ticket
+
 @client.event
 async def on_ready():
     """Called when discord bot is ready to use"""
@@ -199,11 +200,9 @@ async def breed(ctx,creature_a_id,creature_b_id):
             requesting_user.update_last_breed()
             database_methods.update_user_last_breed(requesting_user)
             breed_request.id = database_methods.add_ticket_to_db(breed_request)
-            for i in range(len(breed_request.pups)):
-                returned_id = database_methods.add_creature_to_db(breed_request.pups[i])
-                breed_request.pups[i].creatureId = returned_id
+            breed_request.perform_breeding()
+            breed_request = add_pups_to_database(breed_request)
             await send_ticket_to_channel(breed_request)
-
         else:
             breed_request.update_ticket_status(1)
             breed_request.id = database_methods.add_ticket_to_db(breed_request)
