@@ -12,6 +12,7 @@ import pickle
 from User import User
 from Item import Item
 from Creature import Creature
+from Ticket import Ticket
 
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__),'../db_pass.txt')),encoding='utf-8')
 DB_PASSWORD = f.readline().rstrip('\n')
@@ -304,7 +305,32 @@ def update_user_last_breed(user,conn=None):
     conn.commit()
     return True
 
+@make_database_connection
+def add_ticket_to_db(ticket,conn=None):
+    """Adds a ticket object to the database, returns added ID"""
+    add_ticket_sql = """INSERT INTO breeding_tickets
+                        (ticket_name,
+                        ticket_requestor,
+                        ticket_date,
+                        ticket_status,
+                        ticket_creature_a,
+                        ticket_creature_b)
+                        VALUES (%s,%s,%s,%s,%s,%s)
+                        RETURNING ticket_id"""
+    cur = conn.cursor()
+    cur.execute(add_ticket_sql,(ticket.name,
+                                ticket.requestor.userId,
+                                ticket.ticket_date,
+                                ticket.status,
+                                ticket.creature_a.creatureId,
+                                ticket.creature_b.creatureId))
+    returned_id = cur.fetchone()[0]
+    conn.commit()
+    return returned_id
+    
 if __name__ == "__main__":
+    creature_a = get_creature_from_db(27)
+    creature_b = get_creature_from_db(28)
     user = get_user_from_db(202632427535859712)
-    print(type(user.daysSinceLastBreed))
-    print(user.daysUntilFull())
+    test_ticket = Ticket("Test Ticket",user,creature_a,creature_b)
+    add_ticket_to_db(test_ticket)
