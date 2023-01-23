@@ -17,7 +17,7 @@ class Ticket:
 
     def __init__(self,ticket_name,ticket_requestor,creature_a,creature_b,
                  ticket_id=None,ticket_date=datetime.today(),ticket_status=Constants.TICKET_STATUS[0],
-                 parents_of_a=None,parents_of_b=None):
+                 parents_of_a=None,parents_of_b=None,pups=None):
         self.id = ticket_id
         self.name = ticket_name
         self.requestor = ticket_requestor
@@ -30,7 +30,7 @@ class Ticket:
         self.creature_b = creature_b
         self.parents_of_a = parents_of_a
         self.parents_of_b = parents_of_b
-        self.pups = []
+        self.pups = pups
 
     def output_ticket(self):
         """returns a formatted string with ticket details"""
