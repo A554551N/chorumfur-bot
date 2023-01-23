@@ -7,6 +7,7 @@ from User import User
 from Item import Item
 from Breeding import Breeding
 from Ticket import Ticket
+from ConstantData import Constants
 import database_methods
 
 #discord_py_logfile_location = os.path.abspath(os.path.join(os.path.dirname(__file__), '../discord.log'))
@@ -229,6 +230,21 @@ async def getDetailedTicket(ctx,ticket_id):
     """Retrieves a ticket from the database and outputs a detailed breeding ticket"""
     returned_ticket = database_methods.get_ticket_from_db(ticket_id)
     await ctx.send(returned_ticket.output_detailed_ticket())
+
+@is_guild_owner_or_me()
+@client.command(aliases=['at'])
+async def advanceTicket(ctx,ticket_id):
+    ticket = database_methods.get_ticket_from_db(ticket_id)
+    status_code = Constants.TICKET_STATUS.index(ticket.status)
+    if status_code == 2:
+        await ctx.send("Ticket is currently awaiting confirmation from a user.  It cannot be updated.")
+    elif status_code == 5:
+        await ctx.send("Ticket already has a status of Complete, cannot advance.")
+    else:
+        status_code += 1
+        ticket.status = Constants.TICKET_STATUS[status_code]
+        database_methods.update_ticket_status()
+
 
 @client.command()
 @is_guild_owner_or_me()
