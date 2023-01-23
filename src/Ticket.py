@@ -1,5 +1,6 @@
 from datetime import datetime
 from ConstantData import Constants
+
 class Ticket:
     """Implements a breeding order and methods for managing breeding orders
     Parameters
@@ -14,7 +15,7 @@ class Ticket:
     """
 
     def __init__(self,ticket_name,ticket_requestor,creature_a,creature_b,
-                 ticket_id=None,ticket_date=datetime.today(),ticket_status='New'):
+                 ticket_id=None,ticket_date=datetime.today(),ticket_status=Constants.TICKET_STATUS[0]):
         self.id = ticket_id
         self.name = ticket_name
         self.requestor = ticket_requestor
@@ -43,15 +44,16 @@ class Ticket:
         elif self.requestor.breedingLevel() != 5:
             can_breed = False
         return can_breed
-    
+
     def requestor_owns_both(self):
         """Confirms that the user owns both creatures and returns True if checks pass."""
         if self.creature_a.creatureId == self.requestor.userId and self.creature_b.creatureId == self.requestor.userId:
             return True
         return False
-    
+
     def update_ticket_status(self,new_status_code):
         """Takes in a status code and updates the ticket_status parameter to match"""
         self.status = Constants.TICKET_STATUS[new_status_code]
+
 #if __name__ == '__main__':
 
