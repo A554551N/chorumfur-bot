@@ -332,7 +332,7 @@ async def showTickets(ctx,type_to_show='open'):
     output+="```**For more information run `.getTicket <ticket ID>`**"
     await ctx.send(output)
 
-@client.command(aliases=['ml'])
+@client.command(aliases=['ml','lair'])
 async def myLair(ctx):
     user_id = ctx.message.author.id
     returned_creatures = database_methods.get_my_creatures_from_db(user_id)
