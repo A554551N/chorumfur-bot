@@ -16,7 +16,8 @@ class Ticket:
     """
 
     def __init__(self,ticket_name,ticket_requestor,creature_a,creature_b,
-                 ticket_id=None,ticket_date=datetime.today(),ticket_status=Constants.TICKET_STATUS[0],breeding=None):
+                 ticket_id=None,ticket_date=datetime.today(),ticket_status=Constants.TICKET_STATUS[0],
+                 parents_of_a=None,parents_of_b=None):
         self.id = ticket_id
         self.name = ticket_name
         self.requestor = ticket_requestor
@@ -27,7 +28,8 @@ class Ticket:
         self.status = ticket_status
         self.creature_a = creature_a
         self.creature_b = creature_b
-        self.breeding = breeding
+        self.parents_of_a = parents_of_a
+        self.parents_of_b = parents_of_b
         self.pups = []
 
     def output_ticket(self):
