@@ -74,6 +74,12 @@ class Ticket:
         if self.creature_a.owner == self.requestor.userId and self.creature_b.owner == self.requestor.userId:
             return True
         return False
+    def other_user(self):
+        """Checks owners of both creatures and returns the ID of the user
+        who is not the requestor"""
+        if self.creature_a.owner != self.requestor.userId:
+            return self.creature_a.owner
+        return self.creature_b.owner
 
     def update_ticket_status(self,new_status_code):
         """Takes in a status code and updates the ticket_status parameter to match"""
