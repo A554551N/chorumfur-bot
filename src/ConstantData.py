@@ -117,6 +117,12 @@ class Constants:
         "Floppy Ears" : ".0001"
     }
 
+    TICKET_STATUS = ['New',
+                     'Awaiting Confirmation',
+                     'Breeding Pending',
+                     'Breeding in Progress',
+                     'Complete']
+
     #PARENT_PASS_TRAITS = 25
     GRANDPARENT_PASS_TRAITS = 15
     CHANCE_TO_PASS_MUTATION = 10
