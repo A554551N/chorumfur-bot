@@ -6,6 +6,7 @@ from Creature import Creature
 from User import User
 from Item import Item
 from Breeding import Breeding
+from Ticket import Ticket
 import database_methods
 
 #discord_py_logfile_location = os.path.abspath(os.path.join(os.path.dirname(__file__), '../discord.log'))
@@ -174,17 +175,25 @@ async def getItem(ctx,item_id):
 async def breed(ctx,creature_a_id,creature_b_id):
     """Submit a breeding request in format .breed <creature_a> <creature_b>"""
     requesting_user = database_methods.get_user_from_db(ctx.message.author.id)
-    if requesting_user.breedingLevel() < 5:
-        await ctx.send("Your Crystal is not fully charged.  You will be "\
-                    f"able to breed again in {requesting_user.daysUntilFull()} days.")
+    creature_a=database_methods.get_creature_from_db(creature_a_id)
+    creature_b=database_methods.get_creature_from_db(creature_b_id)
+    breed_request = Ticket(ticket_name=f"{creature_a.name} x f{creature_b.name}",
+                           ticket_requestor=requesting_user,
+                           creature_a=creature_a,
+                           creature_b=creature_b)
+    if breed_request.requestor_can_breed():
+        if breed_request.requestor_owns_both():
+            breed_request.update_ticket_status(2)
+            requesting_user.update_last_breed()
+            database_methods.update_user_last_breed(requesting_user)
+        else:
+            breed_request.update_ticket_status(1)
+        ticket_id = database_methods.add_ticket_to_db(breed_request)
+        ctx.send(f"Ticket #{ticket_id} has been submitted for breeding with a status of {breed_request.status}")
     else:
-        creature_a=database_methods.get_creature_from_db(creature_a_id)
-        creature_b=database_methods.get_creature_from_db(creature_b_id)
-        breed_request = Breeding(creature_a,creature_b,requesting_user.userId)
-        spawn = breed_request.breed()
-        requesting_user.update_last_breed()
-        database_methods.update_user_last_breed(requesting_user)
-        await ctx.send(f"Breeding Complete, ID #s {spawn} added to DB")
+        ctx.send("Breeding request was not able to be submitted at this time."\
+                " Please confirm you own at least one of the creatures submitted "\
+                "and that your breeding crystal is fully charged.")
 
 @client.command()
 @is_guild_owner_or_me()
