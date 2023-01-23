@@ -200,7 +200,8 @@ async def breed(ctx,creature_a_id,creature_b_id):
             database_methods.update_user_last_breed(requesting_user)
             breed_request.id = database_methods.add_ticket_to_db(breed_request)
             for i in range(len(breed_request.pups)):
-                breed_request.pups[i].creatureId = database_methods.add_creature_to_db(pup)
+                returned_id = database_methods.add_creature_to_db(breed_request.pups[i])
+                breed_request.pups[i].creatureId = returned_id
             await send_ticket_to_channel(breed_request)
 
         else:
