@@ -17,6 +17,7 @@ logger.setLevel(20)
 #handler = logging.FileHandler(filename=discord_py_logfile_location, encoding='utf-8', mode='w')
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 
 game = discord.Game('with all these Chorumfurs!')
 
@@ -30,8 +31,8 @@ def is_guild_owner_or_me():
 
 async def send_ticket_to_channel(ticket):
     """Sends a message to the tickets channel and mentions artist"""
-    artist = await client.fetch_user(101509826588205056)
-    ticket_channel = await client.fetch_channel(1061868480086941716)
+    artist = client.get_user(101509826588205056)
+    ticket_channel = client.get_channel(1061868480086941716)
     await ticket_channel.send(artist.mention)
     await ticket_channel.send(ticket.output_detailed_ticket())
 
@@ -66,7 +67,7 @@ async def me(ctx):
     """gets user profile and displays it in chat"""
     user = database_methods.get_user_from_db(ctx.message.author.id)
     if user:
-        user.name = await client.fetch_user(user.userId)
+        user.name = client.get_user(ctx.message.author.id)
         msg = f"{ctx.message.author.mention}\n{user.outputProfile()}"
     else:
         msg = "A profile was not found for you.  If you haven't use .joinGame"
@@ -98,7 +99,7 @@ async def getID(ctx):
 async def getCreature(ctx,creatureId):
     requestedCreature = database_methods.get_creature_from_db(creatureId)
     if requestedCreature:
-        user = await client.fetch_user(requestedCreature.owner)
+        user = client.get_user(requestedCreature.owner)
         requestedCreature.ownerName = user.name
         await ctx.send(requestedCreature.outputCreature())
         await ctx.send(requestedCreature.imageLink)
@@ -109,7 +110,7 @@ async def getCreature(ctx,creatureId):
 async def joinGame(ctx):
     newUser = User(ctx.message.author.id)
     if database_methods.add_user_to_database(newUser):
-        msg=f"Welcome to Chorumfur {await client.fetch_user(ctx.message.author.id)}"
+        msg=f"Welcome to Chorumfur {client.get_user(ctx.message.author.id)}"
     else:
         msg="Failed to add new user, perhaps you are already registered?  Try .me"
     await ctx.send(msg)
