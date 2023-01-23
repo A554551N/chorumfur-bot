@@ -259,11 +259,24 @@ async def declineBreeding(ctx,ticket_id):
         database_methods.update_ticket_in_db(ticket)
         msg = f"Ticket {ticket.id} has been rejected.  Status is now {ticket.status}"
     await ctx.send(msg)
+
 @client.command(aliases=['gt'])
 async def getTicket(ctx,ticket_id):
     """Retreives a ticket from the database by ID number."""
     returned_ticket = database_methods.get_ticket_from_db(ticket_id)
     await ctx.send(returned_ticket.output_ticket())
+
+@client.command(aliases=['mt'])
+async def myTickets(ctx):
+    """Retreives data on all tickets user currently has and returns it as a formatted output"""
+    user_id = ctx.message.author.id
+    returned_tickets = database_methods.get_my_tickets_from_db(user_id)
+    output="**ID# | Ticket Name - Ticket Status**\n```"
+    for ticket in returned_tickets:
+        output+=f"{ticket[0]} | {ticket[1]} - {ticket[2]}\n"
+    output+="```**For more information run `.getTicket <ticket ID>`**"
+    await ctx.send(output)
+
 
 @is_guild_owner_or_me()
 @client.command(aliases=['gdt'])
@@ -275,6 +288,7 @@ async def getDetailedTicket(ctx,ticket_id):
 @is_guild_owner_or_me()
 @client.command(aliases=['at'])
 async def advanceTicket(ctx,ticket_id):
+    """Advances the status of a given ticket one step"""
     ticket = database_methods.get_ticket_from_db(ticket_id)
     status_code = Constants.TICKET_STATUS.index(ticket.status)
     if status_code == 2:
@@ -286,6 +300,37 @@ async def advanceTicket(ctx,ticket_id):
         ticket.status = Constants.TICKET_STATUS[status_code]
         database_methods.update_ticket_status()
 
+@client.command()
+async def cancelTicket(ctx,ticket_id):
+    """Cancels an in progress breeding ticket"""
+    ticket = database_methods.get_ticket_from_db(ticket_id)
+    if ctx.message.author.id != ticket.requestor.userId:
+        msg = "You do not have permission to modify this ticket."
+    elif ticket.status == Constants.TICKET_STATUS[5]:
+        msg = "You cannot cancel a completed ticket."
+    else:
+        if database_methods.delete_ticket(ticket_id):
+            msg = "Your ticket has been successfully removed from the database."
+            tickets_channel = client.get_channel(1061868480086941716)
+            artist = client.get_user(101509826588205056)
+            await tickets_channel.send(f"{artist.mention} **User has requested cancellation"\
+                                f"of ticket #{ticket.id}**")
+        else:
+            msg="An error occurred deleting your ticket from the database."
+    await ctx.send(msg)
+
+@client.command()
+@is_guild_owner_or_me()
+async def showTickets(ctx,type_to_show='open'):
+    """Shows a summary view of all open tickets based on a parameter.  Accepts 'open'
+    to show all open tickets or 'pending' to show tickets in a Breeding Pending state."""
+    type_to_show = type_to_show.lower()
+    returned_tickets = database_methods.get_requested_tickets_from_db(type_to_show)
+    output="**ID# | Ticket Name - Ticket Status**\n```"
+    for ticket in returned_tickets:
+        output+=f"{ticket[0]} | {ticket[1]} - {ticket[2]}\n"
+    output+="```**For more information run `.getTicket <ticket ID>`**"
+    await ctx.send(output)
 
 @client.command()
 @is_guild_owner_or_me()

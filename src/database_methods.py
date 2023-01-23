@@ -392,6 +392,54 @@ def update_ticket_in_db(ticket,conn=None):
     conn.commit()
     return True
 
+@make_database_connection
+def get_my_tickets_from_db(user_id,conn=None):
+    """Gets all tickets that match a given user_id and returns a
+    tuple of tuples representing each row"""
+    get_tickets_sql = """SELECT ticket_id,
+                                ticket_name,
+                                ticket_status
+                         FROM breeding_tickets
+                         WHERE ticket_requestor = %s"""
+    cur = conn.cursor()
+    cur.execute(get_tickets_sql,(user_id,))
+    returned_rows = cur.fetchall()
+    if returned_rows:
+        return returned_rows
+    return None
+
+@make_database_connection
+def delete_ticket(ticket_id,conn=None):
+    """Deletes a ticket from the breeding_tickets db"""
+    delete_ticket_sql = """DELETE FROM breeding_tickets WHERE ticket_id = %s"""
+    cur = conn.cursor()
+    cur.execute(delete_ticket_sql,(ticket_id,))
+    conn.commit()
+    print(cur.rowcount)
+    if cur.rowcount == 1:
+        return True
+    return False
+
+@make_database_connection
+def get_requested_tickets_from_db(type_to_show,conn=None):
+    """Retreives all tickets from the breeding_tickets and returns a
+    tuple of tuples representing each row.  Query depends on argument"""
+    options={}
+    options['open']="""SELECT ticket_id,
+                              ticket_name,
+                              ticket_status
+                        FROM breeding_tickets
+                        WHERE ticket_status != 'Complete'"""
+    options['pending']="""SELECT ticket_id,
+                              ticket_name,
+                              ticket_status
+                        FROM breeding_tickets
+                        WHERE ticket_status = 'Breeding Pending'"""
+    cur = conn.cursor()
+    cur.execute(options[type_to_show])
+    returned_rows = cur.fetchall()
+    if returned_rows:
+        return returned_rows
+    return None
 if __name__ == "__main__":
-    ticket = get_ticket_from_db(40)
-    print(ticket.id)
+    delete_ticket(33)
