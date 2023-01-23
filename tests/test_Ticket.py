@@ -29,6 +29,13 @@ def test_can_breed_when_owning_one():
     test_ticket = Ticket('Test Ticket',test_user,creature_a,creature_b)
     assert test_ticket.requestor_can_breed()
 
+def test_owns_both_creatures():
+    creature_a = Creature("Test_A",111)
+    creature_b = Creature("Test_A",111)
+    test_user = User(111,lastBreed=datetime(2022,1,1))
+    test_ticket = Ticket('Test Ticket',test_user,creature_a,creature_b)
+    assert test_ticket.requestor_owns_both()
+
 def test_add_ticket_to_db():
     """Test should add a ticket to the database and return its ID."""
     creature_a = database_methods.get_creature_from_db(27)
