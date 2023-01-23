@@ -37,3 +37,15 @@ def test_add_ticket_to_db():
     user.lastBreed = datetime(2022,1,1)
     test_ticket = Ticket("Test Ticket",user,creature_a,creature_b)
     assert database_methods.add_ticket_to_db(test_ticket)
+
+def test_get_ticket_from_db():
+    """Test should retreive a ticket from the database and return its ID"""
+    test_ticket = database_methods.get_ticket_from_db(1)
+    expected_result = (1,27,28,202632427535859712)
+    returned_value = (
+        test_ticket.id,
+        test_ticket.creature_a.creatureId,
+        test_ticket.creature_b.creatureId,
+        test_ticket.requestor.userId)
+    assert expected_result == returned_value
+

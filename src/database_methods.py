@@ -327,7 +327,36 @@ def add_ticket_to_db(ticket,conn=None):
     returned_id = cur.fetchone()[0]
     conn.commit()
     return returned_id
-    
+
+@make_database_connection
+def get_ticket_from_db(ticket_id,conn=None):
+    """Gets a ticket from the DB by ID and returns a Ticket object"""
+    get_ticket_sql = """SELECT ticket_id,
+                               ticket_name,
+                               ticket_requestor,
+                               ticket_date,
+                               ticket_status,
+                               ticket_creature_a,
+                               ticket_creature_b
+                        FROM breeding_tickets
+                        WHERE ticket_id=%s"""
+    cur = conn.cursor()
+    cur.execute(get_ticket_sql,(ticket_id,))
+    result = cur.fetchone()
+    if result:
+        requestor = get_user_from_db(result[2])
+        creature_a = get_creature_from_db(result[5])
+        creature_b = get_creature_from_db(result[6])
+        returned_ticket =Ticket(
+            ticket_name = result[1],
+            ticket_requestor = requestor,
+            creature_a = creature_a,
+            creature_b = creature_b,
+            ticket_id=result[0],
+            ticket_date=result[3],
+            ticket_status=result[4])
+        return returned_ticket
+    return None
 if __name__ == "__main__":
     creature_a = get_creature_from_db(27)
     creature_b = get_creature_from_db(28)
