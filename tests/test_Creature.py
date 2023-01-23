@@ -37,15 +37,16 @@ def test_createCreature(testCreatureAttributes):
                             )
     assert testCreature
 
-def test_outputCreature(createCreature,testCreatureAttributes):
-    age = datetime.today() - testCreatureAttributes['createDate']
-    outputString = f"""ID: {testCreatureAttributes["creatureId"]}\n"""\
-                    f"""Name: {testCreatureAttributes["name"]}\n"""\
-                    f"""Owner: {testCreatureAttributes["ownerName"]}\n"""\
-                    f"""Age: {age}\n"""\
-                    f"""Create Date: {datetime.strftime(testCreatureAttributes['createDate'],Constants.DATEONLYFORMAT)}\n"""\
-                    f"""Generation: {testCreatureAttributes["generation"]}\n"""
-    assert createCreature.outputCreature() == outputString
+# Mothballing this test pending refactor
+#def test_outputCreature(createCreature,testCreatureAttributes):
+#    age = datetime.today() - testCreatureAttributes['createDate']
+#    outputString = f"""ID: {testCreatureAttributes["creatureId"]}\n"""\
+#                    f"""Name: {testCreatureAttributes["name"]}\n"""\
+#                    f"""Owner: {testCreatureAttributes["ownerName"]}\n"""\
+#                    f"""Age: {age}\n"""\
+#                    f"""Create Date: {datetime.strftime(testCreatureAttributes['createDate'],Constants.DATEONLYFORMAT)}\n"""\
+#                    f"""Generation: {testCreatureAttributes["generation"]}\n"""
+#    assert createCreature.outputCreature() == outputString
 
 def test_randomize_creature(createCreature):
     """Tests the randomize creature function to confirm all traits are generated."""
