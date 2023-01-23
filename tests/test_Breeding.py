@@ -28,5 +28,7 @@ def test_breed_same_owner_no_grandparents():
 def test_breed_same_owner_grandparents():
     test_creature_a = database_methods.get_creature_from_db(57)
     test_creature_b = database_methods.get_creature_from_db(55)
-    test_breeding = Breeding(test_creature_a,test_creature_b,202632427535859712)
+    test_gp_a = database_methods.get_parents_from_db(test_creature_a)
+    test_gp_b = database_methods.get_parents_from_db(test_creature_b)
+    test_breeding = Breeding(test_creature_a,test_creature_b,202632427535859712,test_gp_a,test_gp_b)
     assert test_breeding.breed()
