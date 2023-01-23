@@ -29,7 +29,8 @@ class Creature:
             returns a formatted string with date about creature
     """
     def __init__(self,name,owner,traits=Constants.DEFAULT_TRAITS_DICT,
-                imageLink = "No Image",generation=0,creatureId=None,createDate=None,ownerName=None):
+                imageLink = "No Image",generation=0,creatureId=None,createDate=None,
+                ownerName=None,parents=[None,None]):
         self.name = name
         if not createDate:
             createDate= datetime.today()
@@ -42,6 +43,7 @@ class Creature:
         self.creatureId = creatureId
         self.createDate = createDate
         self.traits = traits
+        self.parents = parents
 
     def randomize_trait(self,trait_category):
         """Takes in a trait category and returns a randomly selected trait"""

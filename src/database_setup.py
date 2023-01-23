@@ -20,9 +20,17 @@ CREATE TABLE creatures (
     creature_generation INTEGER NOT NULL,
     creature_owner BIGINT NOT NULL,
     creature_traits TEXT,
+    creature_parent_a INTEGER,
+    creature_parent_b INTEGER,
     CONSTRAINT fk_user
         FOREIGN KEY(creature_owner)
             REFERENCES users(user_id)
+    CONSTRAINT fk_parent_a
+        FOREIGN KEY(creature_parent_a)
+            REFERENCES creatures(creature_id)
+    CONSTRAINT fk_parent_b
+        FOREIGN KEY(creature_parent_b)
+            REFERENCES creatures(creature_id)
     )"""
 
 SQL_CREATE_ITEMS_TABLE = """
@@ -46,6 +54,25 @@ CREATE TABLE owned_items(
     CONSTRAINT fk_item
     FOREIGN KEY(owned_item_type_id)
         REFERENCES items(item_id)
+    )"""
+SQL_BREEDING_TICKETS_TABLE = """
+CREATE TABLE breeding_tickets (
+    ticket_id SERIAL PRIMARY KEY,
+    ticket_name TEXT NOT NULL,
+    ticket_requestor INTEGER NOT NULL,
+    ticket_date TEXT NOT NULL,
+    ticket_status TEXT NOT NULL,
+    ticket_creature_a INTEGER NOT NULL,
+    ticket_creature_b INTEGER NOT NULL,
+    CONSTRAINT fk_requestor
+        FOREIGN KEY(ticket_requestor)
+            REFERENCES users(user_id),
+    CONSTRAINT fk_creature_a
+        FOREIGN KEY(ticket_creature_a)
+            REFERENCES creatures(creature_id)
+    CONSTRAINT fk_creature_b
+        FOREIGN KEY(ticket_creature_b)
+            REFERENCES creatures(creature_id)
     )"""
 
 SQL_COMMANDS = (

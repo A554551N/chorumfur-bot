@@ -1,7 +1,6 @@
 import math
 from datetime import datetime
 from ConstantData import Constants
-
 class User:
     """
         A class to represent a User
@@ -50,7 +49,7 @@ class User:
         self.inventory = inventory
         if lastBreed == "None":
             lastBreed = None
-        elif type(lastBreed) == 'str':
+        elif isinstance(lastBreed,str):
             lastBreed = datetime.strptime(lastBreed,Constants.DATETIMEFORMAT)
             daysSinceLastBreed = (datetime.today() - lastBreed).days
         self.daysSinceLastBreed = daysSinceLastBreed
@@ -87,7 +86,7 @@ class User:
     def daysUntilFull(self):
         """calculates how many days until the breeding crystal is ready to be used."""
         if self.lastBreed:
-            daysUntilFull = self.daysSinceLastBreed = datetime.today() - self.lastBreed
+            daysUntilFull = datetime.today() - self.lastBreed
             if daysUntilFull.days > 0:
                 return 0
             return 30 - self.daysSinceLastBreed
@@ -100,3 +99,6 @@ class User:
                 output+=f"{item} | {self.inventory[item][0].name} | {self.inventory[item][1]}\n"
             return output
         return "You don't have any items!"
+    
+    def update_last_breed(self):
+        self.lastBreed = datetime.today()

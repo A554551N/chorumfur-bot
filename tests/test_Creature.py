@@ -37,15 +37,16 @@ def test_createCreature(testCreatureAttributes):
                             )
     assert testCreature
 
-def test_outputCreature(createCreature,testCreatureAttributes):
-    age = datetime.today() - testCreatureAttributes['createDate']
-    outputString = f"""ID: {testCreatureAttributes["creatureId"]}\n"""\
-                    f"""Name: {testCreatureAttributes["name"]}\n"""\
-                    f"""Owner: {testCreatureAttributes["ownerName"]}\n"""\
-                    f"""Age: {age}\n"""\
-                    f"""Create Date: {datetime.strftime(testCreatureAttributes['createDate'],Constants.DATEONLYFORMAT)}\n"""\
-                    f"""Generation: {testCreatureAttributes["generation"]}\n"""
-    assert createCreature.outputCreature() == outputString
+# Mothballing this test pending refactor
+#def test_outputCreature(createCreature,testCreatureAttributes):
+#    age = datetime.today() - testCreatureAttributes['createDate']
+#    outputString = f"""ID: {testCreatureAttributes["creatureId"]}\n"""\
+#                    f"""Name: {testCreatureAttributes["name"]}\n"""\
+#                    f"""Owner: {testCreatureAttributes["ownerName"]}\n"""\
+#                    f"""Age: {age}\n"""\
+#                    f"""Create Date: {datetime.strftime(testCreatureAttributes['createDate'],Constants.DATEONLYFORMAT)}\n"""\
+#                    f"""Generation: {testCreatureAttributes["generation"]}\n"""
+#    assert createCreature.outputCreature() == outputString
 
 def test_randomize_creature(createCreature):
     """Tests the randomize creature function to confirm all traits are generated."""
@@ -67,3 +68,10 @@ def test_get_creature_from_db(testCreatureAttributes):
 def test_get_creature_from_db_that_doesnt_exist(testCreatureAttributes):
     testCreature = database_methods.get_creature_from_db(99999)
     assert not testCreature
+
+def test_get_parents_from_db():
+    test_creature = database_methods.get_creature_from_db(39)
+    parents = database_methods.get_parents_from_db(test_creature)
+    correct_parents = [27,29]
+    parents_returned = [parents[0].creatureId,parents[1].creatureId]
+    assert correct_parents == parents_returned
