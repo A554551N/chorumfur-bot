@@ -189,11 +189,15 @@ async def breed(ctx,creature_a_id,creature_b_id):
     """Submit a breeding request in format .breed <creature_a> <creature_b>"""
     requesting_user = database_methods.get_user_from_db(ctx.message.author.id)
     creature_a=database_methods.get_creature_from_db(creature_a_id)
+    parents_of_a=database_methods.get_parents_from_db(creature_a)
     creature_b=database_methods.get_creature_from_db(creature_b_id)
+    parents_of_b=database_methods.get_parents_from_db(creature_b)
     breed_request = Ticket(ticket_name=f"{creature_a.name} x {creature_b.name}",
                            ticket_requestor=requesting_user,
                            creature_a=creature_a,
-                           creature_b=creature_b)
+                           creature_b=creature_b,
+                           parents_of_a=parents_of_a,
+                           parents_of_b=parents_of_b)
     if breed_request.requestor_can_breed():
         if breed_request.requestor_owns_both():
             breed_request.update_ticket_status(2)
@@ -226,7 +230,9 @@ async def adminBreed(ctx,creature_a_id,creature_b_id):
     requesting_user = database_methods.get_user_from_db(ctx.message.author.id)
     creature_a=database_methods.get_creature_from_db(creature_a_id)
     creature_b=database_methods.get_creature_from_db(creature_b_id)
-    breed_request = Breeding(creature_a,creature_b,requesting_user.userId)
+    parents_of_a = database_methods.get_parents_from_db(creature_a)
+    parents_of_b = database_methods.get_parents_from_db(creature_b)
+    breed_request = Breeding(creature_a,creature_b,requesting_user.userId,parents_of_a,parents_of_b)
     pups = breed_request.breed()
     pup_ids=[]
     for pup in pups:
