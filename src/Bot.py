@@ -28,6 +28,18 @@ def is_guild_owner_or_me():
         return ctx.guild is not None and (ctx.guild.owner_id == ctx.author.id or ctx.author.id == 202632427535859712)
     return commands.check(predicate)
 
+async def send_ticket_to_channel(ticket):
+    """Sends a message to the tickets channel and mentions artist"""
+    artist = await client.fetch_user(101509826588205056)
+    ticket_channel = await client.fetch_channel(1061868480086941716)
+    await ticket_channel.send(artist.mention)
+    await ticket_channel.send(ticket.submit_breed())
+
+def add_pups_to_database(ticket):
+    for pup in ticket.pups:
+        pup.creatureId = database_methods.add_creature_to_db(pup)
+        print(pup)
+    return ticket
 @client.event
 async def on_ready():
     """Called when discord bot is ready to use"""
@@ -177,7 +189,7 @@ async def breed(ctx,creature_a_id,creature_b_id):
     requesting_user = database_methods.get_user_from_db(ctx.message.author.id)
     creature_a=database_methods.get_creature_from_db(creature_a_id)
     creature_b=database_methods.get_creature_from_db(creature_b_id)
-    breed_request = Ticket(ticket_name=f"{creature_a.name} x f{creature_b.name}",
+    breed_request = Ticket(ticket_name=f"{creature_a.name} x {creature_b.name}",
                            ticket_requestor=requesting_user,
                            creature_a=creature_a,
                            creature_b=creature_b)
@@ -186,14 +198,25 @@ async def breed(ctx,creature_a_id,creature_b_id):
             breed_request.update_ticket_status(2)
             requesting_user.update_last_breed()
             database_methods.update_user_last_breed(requesting_user)
+            breed_request.id = database_methods.add_ticket_to_db(breed_request)
+            for i in range(len(breed_request.pups)):
+                breed_request.pups[i].creatureId = database_methods.add_creature_to_db(pup)
+            await send_ticket_to_channel(breed_request)
+
         else:
             breed_request.update_ticket_status(1)
-        ticket_id = database_methods.add_ticket_to_db(breed_request)
-        ctx.send(f"Ticket #{ticket_id} has been submitted for breeding with a status of {breed_request.status}")
+            breed_request.id = database_methods.add_ticket_to_db(breed_request)
+        await ctx.send(f"Ticket #{breed_request.id} has been submitted for breeding with a status of {breed_request.status}")
     else:
-        ctx.send("Breeding request was not able to be submitted at this time."\
+        await ctx.send("Breeding request was not able to be submitted at this time."\
                 " Please confirm you own at least one of the creatures submitted "\
                 "and that your breeding crystal is fully charged.")
+
+@client.command(aliases=['gt'])
+async def getTicket(ctx,ticket_id):
+    """Retreives a ticket from the database by ID number."""
+    returned_ticket = database_methods.get_ticket_from_db(ticket_id)
+    await ctx.send(returned_ticket.output_ticket())
 
 @client.command()
 @is_guild_owner_or_me()
@@ -204,10 +227,11 @@ async def adminBreed(ctx,creature_a_id,creature_b_id):
     creature_a=database_methods.get_creature_from_db(creature_a_id)
     creature_b=database_methods.get_creature_from_db(creature_b_id)
     breed_request = Breeding(creature_a,creature_b,requesting_user.userId)
-    spawn = breed_request.breed()
-    requesting_user.update_last_breed()
-    database_methods.update_user_last_breed(requesting_user)
-    await ctx.send(f"Breeding Complete, ID #s {spawn} added to DB")
+    pups = breed_request.breed()
+    pup_ids=[]
+    for pup in pups:
+        pup_ids.append(database_methods.add_creature_to_db(pup))
+    await ctx.send(f"Breeding Complete, ID #s {pup_ids} added to DB")
 
 # END OF COMMANDS SECTION
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__), '../token.txt')))
