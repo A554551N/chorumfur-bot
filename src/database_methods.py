@@ -314,16 +314,19 @@ def add_ticket_to_db(ticket,conn=None):
                         ticket_date,
                         ticket_status,
                         ticket_creature_a,
-                        ticket_creature_b)
-                        VALUES (%s,%s,%s,%s,%s,%s)
+                        ticket_creature_b,
+                        ticket_pups)
+                        VALUES (%s,%s,%s,%s,%s,%s,%s)
                         RETURNING ticket_id"""
     cur = conn.cursor()
+    pickled_pups = pickle.dumps(ticket.pups)
     cur.execute(add_ticket_sql,(ticket.name,
                                 ticket.requestor.userId,
                                 ticket.ticket_date,
                                 ticket.status,
                                 ticket.creature_a.creatureId,
-                                ticket.creature_b.creatureId))
+                                ticket.creature_b.creatureId,
+                                pickled_pups))
     returned_id = cur.fetchone()[0]
     conn.commit()
     return returned_id
@@ -337,7 +340,8 @@ def get_ticket_from_db(ticket_id,conn=None):
                                ticket_date,
                                ticket_status,
                                ticket_creature_a,
-                               ticket_creature_b
+                               ticket_creature_b,
+                               ticket_pups
                         FROM breeding_tickets
                         WHERE ticket_id=%s"""
     cur = conn.cursor()
@@ -345,21 +349,18 @@ def get_ticket_from_db(ticket_id,conn=None):
     result = cur.fetchone()
     if result:
         requestor = get_user_from_db(result[2])
-        creature_a = get_creature_from_db(result[5])
-        creature_b = get_creature_from_db(result[6])
+        tkt_creature_a = get_creature_from_db(result[5])
+        tkt_creature_b = get_creature_from_db(result[6])
+        tkt_pups = pickle.loads(result[7])
         returned_ticket =Ticket(
             ticket_name = result[1],
             ticket_requestor = requestor,
-            creature_a = creature_a,
-            creature_b = creature_b,
+            creature_a = tkt_creature_a,
+            creature_b = tkt_creature_b,
             ticket_id=result[0],
             ticket_date=result[3],
-            ticket_status=result[4])
+            ticket_status=result[4],
+            pups = tkt_pups)
         return returned_ticket
     return None
-if __name__ == "__main__":
-    creature_a = get_creature_from_db(27)
-    creature_b = get_creature_from_db(28)
-    user = get_user_from_db(202632427535859712)
-    test_ticket = Ticket("Test Ticket",user,creature_a,creature_b)
-    add_ticket_to_db(test_ticket)
+#if __name__ == "__main__":
