@@ -1,6 +1,5 @@
 from random import randint
 from Creature import Creature
-import database_methods
 from ConstantData import Constants
 
 class Breeding:
@@ -21,26 +20,19 @@ class Breeding:
         if creature_b.generation >= 2:
             self.parents_of_b = database_methods.get_parents_from_db(self.creature_b)
 
-    def creatures_have_same_owner(self):
-        """Determines whether creature_a and creature_b has same owner.  Returns True/False"""
-        if self.creature_a.owner == self.creature_b.owner:
-            return True
-        return False
-    
     def breed(self):
         """Performs the breed action, producing randomized traits based on parents
-        creature_a and creature_b"""
+        creature_a and creature_b.  Returns an array of Creatures."""
         number_of_pups = randint(1,4)
-        added_creature_ids = []
+        pups = []
         for pup_count in range(1,(number_of_pups+1)):
             pup = Creature(name=f"Pup {pup_count}",
                            owner=self.new_creature_owner,
                            generation=self.new_creature_generation)
             for trait in Constants.DEFAULT_TRAITS_DICT:
                 pup.traits[trait] = self.select_trait_to_pass(trait)
-            added_creature_ids.append(database_methods.add_creature_to_db(pup))
-            return added_creature_ids
-        return None
+            pups.append(pup)
+        return pups
     
     def select_trait_to_pass(self,trait_type):
         """Selects a trait to pass to new pup.  Takes in a Trait_type and returns a string"""
