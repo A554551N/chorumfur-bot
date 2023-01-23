@@ -117,7 +117,8 @@ class Constants:
         "Floppy Ears" : ".0001"
     }
 
-    TICKET_STATUS = ['New',
+    TICKET_STATUS = ['On Hold',
+                     'New',
                      'Awaiting Confirmation',
                      'Breeding Pending',
                      'Breeding in Progress',
