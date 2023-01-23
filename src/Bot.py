@@ -332,6 +332,16 @@ async def showTickets(ctx,type_to_show='open'):
     output+="```**For more information run `.getTicket <ticket ID>`**"
     await ctx.send(output)
 
+@client.command(aliases=['ml'])
+async def myLair(ctx):
+    user_id = ctx.message.author.id
+    returned_creatures = database_methods.get_my_creatures_from_db(user_id)
+    output="**ID# | Creature Name**\n```"
+    for creature in returned_creatures:
+        output+=f"{creature[0]} | {creature[1]}\n"
+    output+="```**For more information run `.getCreature <Creature ID>`**"
+    await ctx.send(output)
+
 @client.command()
 @is_guild_owner_or_me()
 async def adminBreed(ctx,creature_a_id,creature_b_id):
