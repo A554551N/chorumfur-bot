@@ -202,7 +202,7 @@ async def breed(ctx,creature_a_id,creature_b_id):
                            parents_of_b=parents_of_b)
     if breed_request.requestor_can_breed():
         if breed_request.requestor_owns_both():
-            breed_request.update_ticket_status(2)
+            breed_request.update_ticket_status(3)
             requesting_user.update_last_breed()
             database_methods.update_user_last_breed(requesting_user)
             breed_request.perform_breeding()
@@ -210,7 +210,7 @@ async def breed(ctx,creature_a_id,creature_b_id):
             breed_request.id = database_methods.add_ticket_to_db(breed_request)
             await send_ticket_to_channel(breed_request)
         else:
-            breed_request.update_ticket_status(1)
+            breed_request.update_ticket_status(2)
             breed_request.id = database_methods.add_ticket_to_db(breed_request)
         await ctx.send(f"Ticket #{breed_request.id} has been submitted for breeding with a status of {breed_request.status}")
     else:
