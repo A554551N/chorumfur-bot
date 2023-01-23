@@ -23,8 +23,8 @@ def test_cannot_breed_when_crystal_empty():
 
 def test_can_breed_when_owning_one():
     """Test should return True when user attempts to breed creature they own one of"""
-    creature_a = Creature("Test_A",111)
-    creature_b = Creature("Test_A",222)
+    creature_a = Creature("Test_A",111,creatureId=1)
+    creature_b = Creature("Test_A",222,creatureId=2)
     test_user = User(111,lastBreed=datetime(2022,1,1))
     test_ticket = Ticket('Test Ticket',test_user,creature_a,creature_b)
     assert test_ticket.requestor_can_breed()
