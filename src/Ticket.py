@@ -16,7 +16,7 @@ class Ticket:
     """
 
     def __init__(self,ticket_name,ticket_requestor,creature_a,creature_b,
-                 ticket_id=None,ticket_date=datetime.today(),ticket_status=Constants.TICKET_STATUS[0],
+                 ticket_id=None,ticket_date=datetime.today(),ticket_status=Constants.TICKET_STATUS[1],
                  parents_of_a=None,parents_of_b=None,pups=None):
         self.id = ticket_id
         self.name = ticket_name
