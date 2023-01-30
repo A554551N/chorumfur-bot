@@ -156,6 +156,19 @@ async def makeCreature(ctx,creatureName,main_horn_trait,
     msg=f"{creatureName} created with Id #{creature_id}"
     await ctx.send(msg)
 
+@client.command(aliases=['rename'])
+async def renameCreature(ctx,creature_id,new_name):
+    """Renames a creature with a given creature ID"""
+    requested_creature = database_methods.get_creature_from_db(creature_id)
+    if ctx.message.author.id != requested_creature.owner:
+        await ctx.send("Only a chorumfur's owner can change its' name.")
+    else:
+        requested_creature.name = new_name
+        if database_methods.update_creature(requested_creature):
+            await ctx.send("Chorumfur data successfully updated!")
+        else:
+            await ctx.send("Your chorumfur could not be renamed.")
+    
 @client.command()
 @is_guild_owner_or_me()
 async def makeRandomCreature(ctx,creatureName):
