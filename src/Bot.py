@@ -388,6 +388,7 @@ async def showTickets(ctx,type_to_show='open'):
 
 @client.command(aliases=['ml','lair'])
 async def myLair(ctx):
+    """Displays a list of all chorumfurs in your lair."""
     user_id = ctx.message.author.id
     returned_creatures = database_methods.get_my_creatures_from_db(user_id)
     output="**ID# | Creature Name**\n```"
@@ -395,6 +396,20 @@ async def myLair(ctx):
         output+=f"{creature[0]} | {creature[1]}\n"
     output+="```**For more information run `.getCreature <Creature ID>`**"
     await ctx.send(output)
+
+@client.command()
+@is_guild_owner_or_me()
+async def updateImage(ctx,creature_id):
+    """ADMIN COMMAND: Updates a chorumfur with a given id's displayed image"""
+    if not ctx.message.attachments:
+        await ctx.send("Cannot update image without attachment")
+    else:
+        creature_to_update = database_methods.get_creature_from_db(creature_id)
+        creature_to_update.imageLink = ctx.message.attachments[0].url
+        if database_methods.update_creature(creature_to_update):
+            await ctx.send("Chorumfur has been updated successfully.")
+        else:
+            await ctx.send("The chorumfur could not be updated.")
 
 @client.command()
 @is_guild_owner_or_me()
