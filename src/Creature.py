@@ -42,7 +42,7 @@ class Creature:
         self.generation = generation
         self.creatureId = creatureId
         self.createDate = createDate
-        self.traits = traits
+        self.traits = dict(traits)
         self.parents = parents
 
     def randomize_trait(self,trait_category):
@@ -93,4 +93,7 @@ class Creature:
 if __name__ == '__main__':
     test_creature = Creature("Steve",1)
     test_creature.randomize_creature()
+    test_creature2 = Creature("test 2",1)
+    test_creature2.randomize_creature()
     print(test_creature.outputCreature())
+    print(test_creature2.outputCreature())
