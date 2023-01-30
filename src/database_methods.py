@@ -262,6 +262,26 @@ def get_creature_from_db(creature_id,conn=None):
     return None
 
 @make_database_connection
+def update_creature(creature_to_update,conn=None):
+    update_creature_sql = '''
+                          UPDATE creatures
+                          SET creature_name = %s,
+                              creature_image_link = %s,
+                              creature_owner = %s,
+                              creature_traits = %s
+                          WHERE creature_id = %s
+                          '''
+    cur = conn.cursor()
+    cur.execute(update_creature_sql,(creature_to_update.name,
+                                     creature_to_update.imageLink,
+                                     creature_to_update.owner,
+                                     pickle.dumps(creature_to_update.traits),
+                                     creature_to_update.creatureId))
+    if cur.rowcount == 1:
+        conn.commit()
+        return True
+    return False
+@make_database_connection
 def get_parents_from_db(creature,conn=None):
     """Takes in a Creature object and returns an array of Creature objects for parents"""
     get_parents_sql = """SELECT creature_name,
