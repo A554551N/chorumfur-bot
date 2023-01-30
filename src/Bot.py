@@ -43,6 +43,10 @@ def add_pups_to_database(ticket):
         pup.creatureId = database_methods.add_creature_to_db(pup)
     return ticket
 
+def strip_mention_format(mention):
+    """removes leading <@ and trailing > from user IDs passed as mentions"""
+    return mention[2:-1]
+
 @client.event
 async def on_ready():
     """Called when discord bot is ready to use"""
@@ -125,11 +129,13 @@ async def makeCreature(ctx,creatureName,main_horn_trait,
                                        tail_tip_trait,
                                        fluff_trait,
                                        mutation_trait,
-                                       owner_id = None):
+                                       owner = None):
     """ADMIN COMMAND: Adds a creature to the database with specific traits"""
-    if owner_id is None:
+    if owner is None:
         owner_id = ctx.message.author.id
-    if not ctx.message.attachments[0].url:
+    else:
+        owner_id = strip_mention_format(owner)
+    if not ctx.message.attachments:
         image_link = None
     else:
         image_link = ctx.message.attachments[0].url
@@ -146,8 +152,8 @@ async def makeCreature(ctx,creatureName,main_horn_trait,
                                         'MUTATION': mutation_trait
                                       })
 
-    creatureId = database_methods.add_creature_to_db(creature_to_add)
-    msg=f"{creatureName} created with Id #{creatureId}"
+    creature_id = database_methods.add_creature_to_db(creature_to_add)
+    msg=f"{creatureName} created with Id #{creature_id}"
     await ctx.send(msg)
 
 @client.command()
