@@ -122,17 +122,32 @@ async def makeCreature(ctx,creatureName,main_horn_trait,
                                        cheek_horn_trait,
                                        face_horn_trait,
                                        tail_trait,
-                                       tail_tip,
-                                       fluff,
-                                       mutation,
+                                       tail_tip_trait,
+                                       fluff_trait,
+                                       mutation_trait,
                                        owner_id = None):
     """ADMIN COMMAND: Adds a creature to the database with specific traits"""
     if owner_id is None:
         owner_id = ctx.message.author.id
+    if not ctx.message.attachments[0].url:
+        image_link = None
     else:
-        creatureToAdd = Creature(name = creatureName,owner = userId,imageLink = ctx.message.attachments[0].url)
-        creatureId = database_methods.add_creature_to_db(creatureToAdd)
-        msg=f"{creatureName} created with Id #{creatureId}"
+        image_link = ctx.message.attachments[0].url
+    creature_to_add = Creature(name = creatureName,
+                                      owner = owner_id,
+                                      imageLink = image_link,
+                                      traits={
+                                        'MAIN_HORN':main_horn_trait,
+                                        'CHEEK_HORN':cheek_horn_trait,
+                                        'FACE_HORN':face_horn_trait,
+                                        'TAIL':tail_trait,
+                                        'TAIL_TIP':tail_tip_trait,
+                                        'FLUFF': fluff_trait,
+                                        'MUTATION': mutation_trait
+                                      })
+
+    creatureId = database_methods.add_creature_to_db(creature_to_add)
+    msg=f"{creatureName} created with Id #{creatureId}"
     await ctx.send(msg)
 
 @client.command()
