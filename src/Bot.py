@@ -43,6 +43,10 @@ def add_pups_to_database(ticket):
         pup.creatureId = database_methods.add_creature_to_db(pup)
     return ticket
 
+def strip_mention_format(mention):
+    """removes leading <@ and trailing > from user IDs passed as mentions"""
+    return mention[2:-1]
+
 @client.event
 async def on_ready():
     """Called when discord bot is ready to use"""
@@ -116,16 +120,40 @@ async def joinGame(ctx):
         msg="Failed to add new user, perhaps you are already registered?  Try .me"
     await ctx.send(msg)
 
-@client.command(require_var_positional=True)
+@client.command()
 @is_guild_owner_or_me()
-async def makeCreature(ctx,creatureName):
-    userId = ctx.message.author.id
-    if not ctx.message.attachments:
-        msg="Attachment not detected, new Chorumfur submissions require an image."
+async def makeCreature(ctx,creatureName,main_horn_trait,
+                                       cheek_horn_trait,
+                                       face_horn_trait,
+                                       tail_trait,
+                                       tail_tip_trait,
+                                       fluff_trait,
+                                       mutation_trait,
+                                       owner = None):
+    """ADMIN COMMAND: Adds a creature to the database with specific traits"""
+    if owner is None:
+        owner_id = ctx.message.author.id
     else:
-        creatureToAdd = Creature(name = creatureName,owner = userId,imageLink = ctx.message.attachments[0].url)
-        creatureId = database_methods.add_creature_to_db(creatureToAdd)
-        msg=f"{creatureName} created with Id #{creatureId}"
+        owner_id = strip_mention_format(owner)
+    if not ctx.message.attachments:
+        image_link = None
+    else:
+        image_link = ctx.message.attachments[0].url
+    creature_to_add = Creature(name = creatureName,
+                                      owner = owner_id,
+                                      imageLink = image_link,
+                                      traits={
+                                        'MAIN_HORN':main_horn_trait,
+                                        'CHEEK_HORN':cheek_horn_trait,
+                                        'FACE_HORN':face_horn_trait,
+                                        'TAIL':tail_trait,
+                                        'TAIL_TIP':tail_tip_trait,
+                                        'FLUFF': fluff_trait,
+                                        'MUTATION': mutation_trait
+                                      })
+
+    creature_id = database_methods.add_creature_to_db(creature_to_add)
+    msg=f"{creatureName} created with Id #{creature_id}"
     await ctx.send(msg)
 
 @client.command()
@@ -181,6 +209,9 @@ async def addItemToInv(ctx,item_id_to_add,user_id = None,quantity=1):
 @client.command()
 @is_guild_owner_or_me()
 async def removeItemFromInv(ctx,item_id_to_remove,user_id = None,quantity=1):
+    """ADMIN COMMAND: Removes a given quantity of an item from a given user's inventory.
+    If no user is specified, removes an item from your own inventory.
+    If no quantity is specified, removes 1."""
     if user_id is None:
         user_id = ctx.message.author.id
     if database_methods.remove_item_from_user(user_id,item_id_to_remove,quantity):
@@ -190,6 +221,7 @@ async def removeItemFromInv(ctx,item_id_to_remove,user_id = None,quantity=1):
 
 @client.command()
 async def getItem(ctx,item_id):
+    """Displays details of a given Item ID"""
     item=database_methods.get_item_from_db(item_id)
     await ctx.send(f"{ctx.message.author.mention}\n{item.outputItem()}")
     if item.imageLink != "":

@@ -38,7 +38,10 @@ class Creature:
             createDate = datetime.strptime(createDate,Constants.DATETIMEFORMAT)
         self.owner = owner
         self.ownerName = ownerName
-        self.imageLink = imageLink
+        if imageLink:
+            self.imageLink = imageLink
+        else:
+            self.imageLink = "No Image"
         self.generation = generation
         self.creatureId = creatureId
         self.createDate = createDate

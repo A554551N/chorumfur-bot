@@ -20,7 +20,7 @@ class Constants:
         "Kudu" : ".01",
         "Bison" : ".01",
         "Wildebeest" : ".01",
-        "Jacobs" : "0" 
+        "Jacobs" : "0"
     }
 
     CHEEK_HORN = {
