@@ -374,6 +374,19 @@ async def cancelTicket(ctx,ticket_id):
     await ctx.send(msg)
 
 @client.command()
+async def giveCreature(ctx,creature_id,new_owner):
+    """Gives creatures with a given ID to a mentioned new owner."""
+    creature_to_give = database_methods.get_creature_from_db(creature_id)
+    if creature_to_give.owner != ctx.message.author.id:
+        await ctx.send("You may only give away chorumfurs that you own.")
+    else:
+        creature_to_give.owner = strip_mention_format(new_owner)
+        if database_methods.update_creature(creature_to_give):
+            await ctx.send(f"Creature given to user {client.get_user(creature_to_give.owner)}")
+        else:
+            await ctx.send("An error has occurred, your creature has not been transferred.")
+
+@client.command()
 @is_guild_owner_or_me()
 async def showTickets(ctx,type_to_show='open'):
     """Shows a summary view of all open tickets based on a parameter.  Accepts 'open'
