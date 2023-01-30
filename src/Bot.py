@@ -116,9 +116,16 @@ async def joinGame(ctx):
         msg="Failed to add new user, perhaps you are already registered?  Try .me"
     await ctx.send(msg)
 
-@client.command(require_var_positional=True)
+@client.command()
 @is_guild_owner_or_me()
-async def makeCreature(ctx,creatureName):
+async def makeCreature(ctx,creatureName,main_horn_trait,
+                                       cheek_horn_trait,
+                                       face_horn_trait,
+                                       tail_trait,
+                                       tail_tip,
+                                       fluff,
+                                       mutation):
+    """ADMIN COMMAND: Adds a creature to the database with specific traits"""
     userId = ctx.message.author.id
     if not ctx.message.attachments:
         msg="Attachment not detected, new Chorumfur submissions require an image."
@@ -181,6 +188,9 @@ async def addItemToInv(ctx,item_id_to_add,user_id = None,quantity=1):
 @client.command()
 @is_guild_owner_or_me()
 async def removeItemFromInv(ctx,item_id_to_remove,user_id = None,quantity=1):
+    """ADMIN COMMAND: Removes a given quantity of an item from a given user's inventory.
+    If no user is specified, removes an item from your own inventory.
+    If no quantity is specified, removes 1."""
     if user_id is None:
         user_id = ctx.message.author.id
     if database_methods.remove_item_from_user(user_id,item_id_to_remove,quantity):
@@ -190,6 +200,7 @@ async def removeItemFromInv(ctx,item_id_to_remove,user_id = None,quantity=1):
 
 @client.command()
 async def getItem(ctx,item_id):
+    """Displays details of a given Item ID"""
     item=database_methods.get_item_from_db(item_id)
     await ctx.send(f"{ctx.message.author.mention}\n{item.outputItem()}")
     if item.imageLink != "":
