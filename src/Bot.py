@@ -124,11 +124,11 @@ async def makeCreature(ctx,creatureName,main_horn_trait,
                                        tail_trait,
                                        tail_tip,
                                        fluff,
-                                       mutation):
+                                       mutation,
+                                       owner_id = None):
     """ADMIN COMMAND: Adds a creature to the database with specific traits"""
-    userId = ctx.message.author.id
-    if not ctx.message.attachments:
-        msg="Attachment not detected, new Chorumfur submissions require an image."
+    if owner_id is None:
+        owner_id = ctx.message.author.id
     else:
         creatureToAdd = Creature(name = creatureName,owner = userId,imageLink = ctx.message.attachments[0].url)
         creatureId = database_methods.add_creature_to_db(creatureToAdd)
