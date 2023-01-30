@@ -34,9 +34,9 @@ def test_add_item_to_type_db(testItemAttributes):
 
 def test_get_item_from_type_db(testItemAttributes):
     """Retreives an item from the type database"""
-    received_item = database_methods.get_item_from_db(testItemAttributes['id'])
+    received_item = database_methods.get_item_from_db(1)
     assert_pair = (received_item.id,received_item.name)
-    assert assert_pair == (testItemAttributes['id'],testItemAttributes['name'])
+    assert assert_pair == (1,'Beach Fun')
 
 def test_getAllItemsInDB():
     """Tests that all items are retreived from database"""
