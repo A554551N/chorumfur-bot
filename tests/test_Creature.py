@@ -3,6 +3,7 @@ from .context import Creature
 from .context import database_methods
 from datetime import datetime
 import pytest
+from random import randint
 
 @pytest.fixture
 def testCreatureAttributes():
@@ -75,3 +76,10 @@ def test_get_parents_from_db():
     correct_parents = [27,29]
     parents_returned = [parents[0].creatureId,parents[1].creatureId]
     assert correct_parents == parents_returned
+
+def test_update_creature():
+    new_name = f"Renamed Creature {randint(1,10)}"
+    test_creature = database_methods.get_creature_from_db(57)
+    test_creature.name=new_name
+    assert database_methods.update_creature(test_creature)
+    
