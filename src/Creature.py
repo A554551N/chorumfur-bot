@@ -87,6 +87,8 @@ class Creature:
 
 
     def outputCreature(self):
+        """Returns a tuple containing a formatted string with details about the
+        creature and the correct image for the bot to display based on the creature's age."""
         age = datetime.today() - self.createDate
         output = f"ID: {self.creatureId}\n"\
                 f"Name: {self.name}\n"\
@@ -101,7 +103,14 @@ class Creature:
                 f"Tail Tip: {self.traits['TAIL_TIP']}\n"\
                 f"Fluff: {self.traits['FLUFF']}\n"\
                 f"Mutation: {self.traits['MUTATION']}\n"
-        return output
+        image_link = ""
+        if age.days <= 7:
+            image_link = self.imageLink_nb
+        elif age.days <= 14:
+            image_link = self.imageLink_pup
+        else:
+            image_link = self.imageLink
+        return (output,image_link)
 
 if __name__ == '__main__':
     test_creature = Creature("Steve",1)
