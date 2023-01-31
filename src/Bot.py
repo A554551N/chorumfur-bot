@@ -412,7 +412,7 @@ async def myLair(ctx):
 
 @client.command()
 @is_guild_owner_or_me()
-async def updateImage(ctx,creature_id,**kwargs):
+async def updateImage(ctx,creature_id):
     """ADMIN COMMAND: Updates a chorumfur with a given id's displayed image.
     .updateImage <creature_id> newborn=<url> pup=<url> adult=<url>.
     All keywords are optional but at least one must be specified."""
@@ -421,12 +421,12 @@ async def updateImage(ctx,creature_id,**kwargs):
             #"Must specify at least one of `newborn=<link> pup=<link> adult=<link>")
     #else:
     creature_to_update = database_methods.get_creature_from_db(creature_id)
-    if 'adult' in kwargs:
-        creature_to_update.imageLink = kwargs['adult']
-    if 'newborn' in kwargs:
-        creature_to_update.imageLink_nb = kwargs['newborn']
-    if 'pup' in kwargs:
-        creature_to_update.imageLink_pup = kwargs['pups']
+    if 'adult' in ctx.kwargs:
+        creature_to_update.imageLink = ctx.kwargs['adult']
+    if 'newborn' in ctx.kwargs:
+        creature_to_update.imageLink_nb = ctx.kwargs['newborn']
+    if 'pup' in ctx.kwargs:
+        creature_to_update.imageLink_pup = ctx.kwargs['pups']
     if database_methods.update_creature(creature_to_update):
         await ctx.send("Chorumfur has been updated successfully.")
     else:
