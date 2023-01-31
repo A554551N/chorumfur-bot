@@ -104,9 +104,9 @@ class Creature:
                 f"Fluff: {self.traits['FLUFF']}\n"\
                 f"Mutation: {self.traits['MUTATION']}\n"
         image_link = ""
-        if age.days <= 7:
+        if age.days <= 7 and self.generation != 0:
             image_link = self.imageLink_nb
-        elif age.days <= 14:
+        elif age.days <= 14 and self.generation != 0:
             image_link = self.imageLink_pup
         else:
             image_link = self.imageLink
