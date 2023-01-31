@@ -382,7 +382,7 @@ async def giveCreature(ctx,creature_id,new_owner):
     else:
         creature_to_give.owner = strip_mention_format(new_owner)
         if database_methods.update_creature(creature_to_give):
-            await ctx.send(f"Creature given to user {client.get_user(creature_to_give.owner)}")
+            await ctx.send(f"Creature has been given to requested user.")
         else:
             await ctx.send("An error has occurred, your creature has not been transferred.")
 
