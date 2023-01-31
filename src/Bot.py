@@ -412,11 +412,12 @@ async def myLair(ctx):
 
 @client.command()
 @is_guild_owner_or_me()
-async def updateImage(ctx,creature_id):
+async def updateImage(ctx,creature_id,**kwargs):
     """ADMIN COMMAND: Updates a chorumfur with a given id's displayed image.
     .updateImage <creature_id> <newborn url> <pup url> <adult url>.
     All keywords are optional but at least one must be specified."""
     await ctx.send(ctx.kwargs)
+    await ctx.send(kwargs)
     creature_to_update = database_methods.get_creature_from_db(creature_id)
     if database_methods.update_creature(creature_to_update):
         await ctx.send("Chorumfur has been updated successfully.")
