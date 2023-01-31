@@ -28,9 +28,16 @@ class Creature:
         outputCreature()
             returns a formatted string with date about creature
     """
-    def __init__(self,name,owner,traits=Constants.DEFAULT_TRAITS_DICT,
-                imageLink = "No Image",generation=0,creatureId=None,createDate=None,
-                ownerName=None,parents=[None,None]):
+    def __init__(self,name,owner,
+                traits=Constants.DEFAULT_TRAITS_DICT,
+                imageLink = "No Image",
+                imageLink_nb = "No Image",
+                imageLink_pup = "No Image",
+                generation=0,
+                creatureId=None,
+                createDate=None,
+                ownerName=None,
+                parents=[None,None]):
         self.name = name
         if not createDate:
             createDate= datetime.today()
@@ -38,10 +45,13 @@ class Creature:
             createDate = datetime.strptime(createDate,Constants.DATETIMEFORMAT)
         self.owner = owner
         self.ownerName = ownerName
+        # Confirm whether this is still necessary
         if imageLink:
             self.imageLink = imageLink
         else:
             self.imageLink = "No Image"
+        self.imageLink_nb = imageLink_nb
+        self.imageLink_pup = imageLink_pup
         self.generation = generation
         self.creatureId = creatureId
         self.createDate = createDate
