@@ -414,9 +414,10 @@ async def myLair(ctx):
 @is_guild_owner_or_me()
 async def updateImage(ctx,creature_id,*args):
     """ADMIN COMMAND: Updates a chorumfur with a given id's displayed image.
-    .updateImage <creature_id> <newborn url> <pup url> <adult url>.
+    .updateImage <creature_id> newborn|<newborn url> pup|<pup url> adult|<adult url>.
     All keywords are optional but at least one must be specified."""
     creature_to_update = database_methods.get_creature_from_db(creature_id)
+    print(args)
     for argument in args:
         split_argument = argument.lower().split("|")
         if split_argument[0] == 'adult':
