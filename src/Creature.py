@@ -90,19 +90,19 @@ class Creature:
         """Returns a tuple containing a formatted string with details about the
         creature and the correct image for the bot to display based on the creature's age."""
         age = datetime.today() - self.createDate
-        output = f"ID: {self.creatureId}\n"\
-                f"Name: {self.name}\n"\
-                f"Owner: {self.ownerName}\n"\
-                f"Age: {age}\n"\
-                f"Create Date: {datetime.strftime(self.createDate,Constants.DATEONLYFORMAT)}\n"\
-                f"Generation: {self.generation}\n"\
-                f"Main Horn: {self.traits['MAIN_HORN']}\n"\
-                f"Cheek Horn: {self.traits['CHEEK_HORN']}\n"\
-                f"Face Horn: {self.traits['FACE_HORN']}\n"\
-                f"Tail: {self.traits['TAIL']}\n"\
-                f"Tail Tip: {self.traits['TAIL_TIP']}\n"\
-                f"Fluff: {self.traits['FLUFF']}\n"\
-                f"Mutation: {self.traits['MUTATION']}\n"
+        output = f"**ID:** {self.creatureId}\n"\
+                f"**Name:** {self.name}\n"\
+                f"**Owner:** {self.ownerName}\n"\
+                f"**Age:** {age}\n"\
+                f"**Create Date:** {datetime.strftime(self.createDate,Constants.DATEONLYFORMAT)}\n"\
+                f"**Generation:** {self.generation}\n"\
+                f"**Main Horn**: {self.traits['MAIN_HORN']}\n"\
+                f"**Cheek Horn**: {self.traits['CHEEK_HORN']}\n"\
+                f"**Face Horn**: {self.traits['FACE_HORN']}\n"\
+                f"**Tail**: {self.traits['TAIL']}\n"\
+                f"**Tail Tip**: {self.traits['TAIL_TIP']}\n"\
+                f"**Fluff**: {self.traits['FLUFF']}\n"\
+                f"**Mutation**: {self.traits['MUTATION']}\n"
         image_link = ""
         if age.days <= 7 and self.generation != 0:
             image_link = self.imageLink_nb

@@ -80,7 +80,7 @@ class User:
         """calculates how many days until the breeding crystal is ready to be used."""
         if self.lastBreed:
             daysUntilFull = datetime.today() - self.lastBreed
-            if daysUntilFull.days > 0:
+            if daysUntilFull.days < 0:
                 return 0
             return 30 - self.daysSinceLastBreed
         return 0
