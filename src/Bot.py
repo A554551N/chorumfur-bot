@@ -66,6 +66,7 @@ async def on_member_join(member):
     rules_channel = client.get_channel(1067133274796871803)
     await landing_zone.send(f"Welcome to Chorumfur, {member.name}!  To get started, check out the {rules_channel.mention} "\
         "and then use `.joinGame` to start playing!")
+
 # BEGIN COMMANDS SECTION
 @client.command()
 async def shop(ctx):
