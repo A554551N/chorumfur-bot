@@ -86,7 +86,7 @@ async def crystal(ctx):
         msg=f"**Last Breeding:** {user.lastBreed}\n"\
         f"Crystal Full in {user.daysUntilFull()} days"
         await ctx.send(msg)
-        await ctx.send(user.BREEDINGSTONELINKS[user.breedingLevel()])
+        await ctx.send(Constants.CRYSTAL_IMAGE_STAGES[user.breedingLevel()])
 
 @client.command()
 async def inventory(ctx):
