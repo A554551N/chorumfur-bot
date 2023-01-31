@@ -1,6 +1,7 @@
 from .context import User
 from .context import database_methods
 from .context import Item
+from .context import Constants
 import random
 import pytest
 from datetime import datetime
@@ -80,8 +81,9 @@ def test_breeding_level_above_5(user_attributes):
 
 def test_breeding_level_image(user_attributes):
     """Confirms that the correct art is shown for breeding item level"""
-    testUser = User(user_attributes["ID"],
+    test_user = User(user_attributes["ID"],
                         user_attributes["level"],
                         datetime(2022,12,31),
                         user_attributes["warningsIssued"])
-    assert "https://media.discordapp.net/attachments/1039966957799211109/1039967098174185552/Breeding_Crystal.png" == User.BREEDINGSTONELINKS[testUser.breedingLevel(True)]
+    assert ("https://chorumfur-bot.s3.us-east-2.amazonaws.com"\
+            "/items/Breeding+Crystal5.png") == Constants.CRYSTAL_IMAGE_STAGES[test_user.breedingLevel()]
