@@ -53,7 +53,7 @@ class Ticket:
         """Outputs a detailed ticket for the #breeding-tickets channel"""
         output=self.output_ticket()+"\n------------\n"
         for pup in self.pups:
-            output+=pup.outputCreature()
+            output+=pup.outputCreature(output_all=True)[0]
             output+="----------------------\n"
         return output
 
