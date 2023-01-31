@@ -131,7 +131,7 @@ class Constants:
     CHANCE_TO_ADD_MUTATION = 1
     MAX_LITTER_SIZE = 4
 
-    BREEDING_CRYSTAL_IMAGE_STAGES = [
+    CRYSTAL_IMAGE_STAGES = [
         "https://chorumfur-bot.s3.us-east-2.amazonaws.com/items/Breeding+Crystal.png",
         "https://chorumfur-bot.s3.us-east-2.amazonaws.com/items/Breeding+Crystal1.png",
         "https://chorumfur-bot.s3.us-east-2.amazonaws.com/items/Breeding+Crystal2.png",
