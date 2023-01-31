@@ -88,34 +88,38 @@ class Creature:
 
     def outputCreature(self):
         """Returns a tuple containing a formatted string with details about the
-        creature and the correct image for the bot to display based on the creature's age."""
+        creature and the correct image for the bot to display based on the creature's age.
+        The amount of information returned in the string also varies based on creature's age."""
         age = datetime.today() - self.createDate
+        image_link = ""
         output = f"**ID:** {self.creatureId}\n"\
                 f"**Name:** {self.name}\n"\
                 f"**Owner:** {self.ownerName}\n"\
                 f"**Age:** {age}\n"\
                 f"**Create Date:** {datetime.strftime(self.createDate,Constants.DATEONLYFORMAT)}\n"\
                 f"**Generation:** {self.generation}\n"\
-                f"**Main Horn**: {self.traits['MAIN_HORN']}\n"\
-                f"**Cheek Horn**: {self.traits['CHEEK_HORN']}\n"\
-                f"**Face Horn**: {self.traits['FACE_HORN']}\n"\
-                f"**Tail**: {self.traits['TAIL']}\n"\
-                f"**Tail Tip**: {self.traits['TAIL_TIP']}\n"\
-                f"**Fluff**: {self.traits['FLUFF']}\n"\
-                f"**Mutation**: {self.traits['MUTATION']}\n"
-        image_link = ""
+                 "**---Traits---**\n"
         if age.days <= 7 and self.generation != 0:
             image_link = self.imageLink_nb
         elif age.days <= 14 and self.generation != 0:
+            output += f"**Main Horn**: {self.traits['MAIN_HORN']}\n"
             image_link = self.imageLink_pup
         else:
+            output += f"**Cheek Horn**: {self.traits['CHEEK_HORN']}\n"\
+                     f"**Face Horn**: {self.traits['FACE_HORN']}\n"\
+                     f"**Tail**: {self.traits['TAIL']}\n"\
+                     f"**Tail Tip**: {self.traits['TAIL_TIP']}\n"\
+                     f"**Fluff**: {self.traits['FLUFF']}\n"\
+                     f"**Mutation**: {self.traits['MUTATION']}\n"
             image_link = self.imageLink
         return (output,image_link)
 
 if __name__ == '__main__':
-    test_creature = Creature("Steve",1)
-    test_creature.randomize_creature()
-    test_creature2 = Creature("test 2",1)
-    test_creature2.randomize_creature()
-    print(test_creature.outputCreature())
-    print(test_creature2.outputCreature())
+    test_creature_nb = Creature('test_nb',1,generation=1)
+    test_creature_pup = Creature('test_pup',1,generation=1,createDate=datetime(2023,1,23).strftime(Constants.DATETIMEFORMAT))
+    test_creature_adult = Creature('test_adult',1,generation=1,createDate=datetime(2022,12,31).strftime(Constants.DATETIMEFORMAT))
+    print(test_creature_nb.outputCreature()[0])
+    print("----------------------")
+    print(test_creature_pup.outputCreature()[0])
+    print("----------------------")
+    print(test_creature_adult.outputCreature()[0])
