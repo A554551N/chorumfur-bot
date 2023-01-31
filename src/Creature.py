@@ -28,9 +28,16 @@ class Creature:
         outputCreature()
             returns a formatted string with date about creature
     """
-    def __init__(self,name,owner,traits=Constants.DEFAULT_TRAITS_DICT,
-                imageLink = "No Image",generation=0,creatureId=None,createDate=None,
-                ownerName=None,parents=[None,None]):
+    def __init__(self,name,owner,
+                traits=Constants.DEFAULT_TRAITS_DICT,
+                imageLink = "No Image",
+                imageLink_nb = "No Image",
+                imageLink_pup = "No Image",
+                generation=0,
+                creatureId=None,
+                createDate=None,
+                ownerName=None,
+                parents=[None,None]):
         self.name = name
         if not createDate:
             createDate= datetime.today()
@@ -38,10 +45,13 @@ class Creature:
             createDate = datetime.strptime(createDate,Constants.DATETIMEFORMAT)
         self.owner = owner
         self.ownerName = ownerName
+        # Confirm whether this is still necessary
         if imageLink:
             self.imageLink = imageLink
         else:
             self.imageLink = "No Image"
+        self.imageLink_nb = imageLink_nb
+        self.imageLink_pup = imageLink_pup
         self.generation = generation
         self.creatureId = creatureId
         self.createDate = createDate
@@ -77,21 +87,30 @@ class Creature:
 
 
     def outputCreature(self):
+        """Returns a tuple containing a formatted string with details about the
+        creature and the correct image for the bot to display based on the creature's age."""
         age = datetime.today() - self.createDate
-        output = f"ID: {self.creatureId}\n"\
-                f"Name: {self.name}\n"\
-                f"Owner: {self.ownerName}\n"\
-                f"Age: {age}\n"\
-                f"Create Date: {datetime.strftime(self.createDate,Constants.DATEONLYFORMAT)}\n"\
-                f"Generation: {self.generation}\n"\
-                f"Main Horn: {self.traits['MAIN_HORN']}\n"\
-                f"Cheek Horn: {self.traits['CHEEK_HORN']}\n"\
-                f"Face Horn: {self.traits['FACE_HORN']}\n"\
-                f"Tail: {self.traits['TAIL']}\n"\
-                f"Tail Tip: {self.traits['TAIL_TIP']}\n"\
-                f"Fluff: {self.traits['FLUFF']}\n"\
-                f"Mutation: {self.traits['MUTATION']}\n"
-        return output
+        output = f"**ID:** {self.creatureId}\n"\
+                f"**Name:** {self.name}\n"\
+                f"**Owner:** {self.ownerName}\n"\
+                f"**Age:** {age}\n"\
+                f"**Create Date:** {datetime.strftime(self.createDate,Constants.DATEONLYFORMAT)}\n"\
+                f"**Generation:** {self.generation}\n"\
+                f"**Main Horn**: {self.traits['MAIN_HORN']}\n"\
+                f"**Cheek Horn**: {self.traits['CHEEK_HORN']}\n"\
+                f"**Face Horn**: {self.traits['FACE_HORN']}\n"\
+                f"**Tail**: {self.traits['TAIL']}\n"\
+                f"**Tail Tip**: {self.traits['TAIL_TIP']}\n"\
+                f"**Fluff**: {self.traits['FLUFF']}\n"\
+                f"**Mutation**: {self.traits['MUTATION']}\n"
+        image_link = ""
+        if age.days <= 7 and self.generation != 0:
+            image_link = self.imageLink_nb
+        elif age.days <= 14 and self.generation != 0:
+            image_link = self.imageLink_pup
+        else:
+            image_link = self.imageLink
+        return (output,image_link)
 
 if __name__ == '__main__':
     test_creature = Creature("Steve",1)
