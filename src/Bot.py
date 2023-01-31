@@ -64,7 +64,7 @@ async def on_command_error(ctx, error):
 async def on_member_join(member):
     landing_zone = client.get_channel(1067121892223369278)
     rules_channel = client.get_channel(1067133274796871803)
-    await landing_zone.send(f"Welcome to Chorumfur, {member.name}!  To get started, check out the {rules_channel.mention} "\
+    await landing_zone.send(f"Welcome to Chorumfur, {member.mention}!  To get started, check out the {rules_channel.mention} "\
         "and then use `.joinGame` to start playing!")
 
 # BEGIN COMMANDS SECTION
