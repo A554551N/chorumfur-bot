@@ -35,6 +35,7 @@ class Ticket:
     def output_ticket(self):
         """returns a formatted string with ticket details"""
         return f"Ticket #{self.id} - {self.name}\n"\
+              f"Requesting User: <@{self.requestor.userId}>\n"\
               f"Open Date: {self.ticket_date}\n"\
               f"Status: {self.status}\n"\
               f"Parent A: {self.creature_a.creatureId}-{self.creature_a.name}\n"\
@@ -53,7 +54,7 @@ class Ticket:
         """Outputs a detailed ticket for the #breeding-tickets channel"""
         output=self.output_ticket()+"\n------------\n"
         for pup in self.pups:
-            output+=pup.outputCreature()
+            output+=pup.outputCreature(output_all=True)[0]
             output+="----------------------\n"
         return output
 

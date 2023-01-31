@@ -47,6 +47,46 @@ def strip_mention_format(mention):
     """removes leading <@ and trailing > from user IDs passed as mentions"""
     return mention[2:-1]
 
+def enact_breeding(ticket):
+    """Performs the core logic of breeding based on a supplied Ticket object.
+    Returns the updated Ticket object"""
+    ticket.update_ticket_status(3)
+    ticket.requestor.update_last_breed()
+    database_methods.update_user_last_breed(ticket.requestor)
+    ticket.perform_breeding()
+    ticket = add_pups_to_database(ticket)
+    return ticket
+
+async def pend_breeding(ctx,ticket):
+    """Creates a Ticket in a Pending state and submits the information to the 
+    pending_breedings channel.  Returns the modified Ticket."""
+    ticket.update_ticket_status(2)
+    ticket.id = database_methods.add_ticket_to_db(ticket)
+    pending_breedings = client.get_channel(1067121489444339844)
+    other_user = client.get_user(ticket.other_user())
+    await pending_breedings.send(
+        f"{other_user.mention}: Please use .accept "\
+        f"{ticket.id} to confirm the following breeding, or "\
+        f".decline {ticket.id} to reject it.  Unanswered tickets"\
+        " will expire after 30 days.\n"\
+        f"{ticket.output_ticket()}")
+    await ctx.send(f"Ticket #{ticket.id} has been submitted for "\
+                   f"breeding with a status of {ticket.status}")
+
+def create_breeding_ticket(requesting_user_id,creature_a_id,creature_b_id):
+    """Takes in a user ID and two creature IDs and returns a breeding Ticket"""
+    requesting_user = database_methods.get_user_from_db(requesting_user_id)
+    creature_a=database_methods.get_creature_from_db(creature_a_id)
+    creature_b=database_methods.get_creature_from_db(creature_b_id)
+    parents_of_a=database_methods.get_parents_from_db(creature_a)
+    parents_of_b=database_methods.get_parents_from_db(creature_b)
+    return Ticket(ticket_name=f"{creature_a.name} x {creature_b.name}",
+                           ticket_requestor=requesting_user,
+                           creature_a=creature_a,
+                           creature_b=creature_b,
+                           parents_of_a=parents_of_a,
+                           parents_of_b=parents_of_b)
+                           
 @client.event
 async def on_ready():
     """Called when discord bot is ready to use"""
@@ -249,40 +289,20 @@ async def getItem(ctx,item_id):
 @client.command()
 async def breed(ctx,creature_a_id,creature_b_id):
     """Submit a breeding request in format .breed <creature_a> <creature_b>"""
-    requesting_user = database_methods.get_user_from_db(ctx.message.author.id)
-    creature_a=database_methods.get_creature_from_db(creature_a_id)
-    creature_b=database_methods.get_creature_from_db(creature_b_id)
-    parents_of_a=database_methods.get_parents_from_db(creature_a)
-    parents_of_b=database_methods.get_parents_from_db(creature_b)
-    breed_request = Ticket(ticket_name=f"{creature_a.name} x {creature_b.name}",
-                           ticket_requestor=requesting_user,
-                           creature_a=creature_a,
-                           creature_b=creature_b,
-                           parents_of_a=parents_of_a,
-                           parents_of_b=parents_of_b)
+    # Considering moving this into a method that returns the finished ticket.
+    # I have a feeling I'm going to want this somewhere.
+    breed_request=create_breeding_ticket(requesting_user_id=ctx.message.author.id,
+                                        creature_a_id=creature_a_id,
+                                        creature_b_id=creature_b_id)
     if breed_request.requestor_can_breed():
         if breed_request.requestor_owns_both():
-            # When requestor owns both, breeding processing can go ahead without pause.
-            breed_request.update_ticket_status(3)
-            requesting_user.update_last_breed()
-            database_methods.update_user_last_breed(requesting_user)
-            breed_request.perform_breeding()
-            breed_request = add_pups_to_database(breed_request)
+            breed_request = enact_breeding(breed_request)
             breed_request.id = database_methods.add_ticket_to_db(breed_request)
             await send_ticket_to_channel(breed_request)
+            await ctx.send("Breeding has been successfully submitted.  "\
+                          f"Your Ticket # is {breed_request.id}")
         else:
-            # Otherwise breeding is put on hold until the receiving user uses .accept
-            breed_request.update_ticket_status(2)
-            breed_request.id = database_methods.add_ticket_to_db(breed_request)
-            pending_breedings = client.get_channel(1067121489444339844)
-            other_user = client.get_user(breed_request.other_user())
-            await pending_breedings.send(f"{other_user.mention}: Please use .accept "\
-                f"{breed_request.id} to confirm the following breeding, or "\
-                f".decline {breed_request.id} to reject it.  Unanswered tickets"\
-                " will expire after 30 days.\n"\
-                f"{breed_request.output_ticket()}")
-        await ctx.send(f"Ticket #{breed_request.id} has been submitted for "\
-                       f"breeding with a status of {breed_request.status}")
+            await pend_breeding(ctx,breed_request)
     else:
         await ctx.send("Breeding request was not able to be submitted at this time."\
                 " Please confirm you own at least one of the creatures submitted "\
@@ -290,18 +310,15 @@ async def breed(ctx,creature_a_id,creature_b_id):
 
 @client.command(aliases=['accept'])
 async def acceptBreeding(ctx,ticket_id):
+    """.acceptBreeding <ticket_id> moves a ticket from pending state to active and
+    performs the breeding."""
     ticket = database_methods.get_ticket_from_db(ticket_id)
     if ticket.other_user() != ctx.message.author.id:
         msg = "You do not have permission to modify this ticket."
     elif ticket.status != Constants.TICKET_STATUS[2]:
         msg = f"This ticket is in {ticket.status} and cannot be modified."
     else:
-        #Do all the breeding stuff put on hold
-        ticket.update_ticket_status(3)
-        ticket.requestor.update_last_breed()
-        database_methods.update_user_last_breed(ticket.requestor)
-        ticket.perform_breeding()
-        ticket = add_pups_to_database(ticket)
+        ticket = enact_breeding(ticket)
         database_methods.update_ticket_in_db(ticket)
         await send_ticket_to_channel(ticket)
         msg = f"Ticket {ticket.id} has been accepted.  Status is now {ticket.status}"
@@ -438,20 +455,25 @@ async def updateImage(ctx,creature_id,*args):
 
 @client.command()
 @is_guild_owner_or_me()
-async def adminBreed(ctx,creature_a_id,creature_b_id):
-    """ADMIN: Submit a breeding request in format .breed <creature_a> <creature_b>
+async def adminBreed(ctx,creature_a_id,creature_b_id,new_owner=None):
+    """ADMIN: Submit a breeding request in format .breed <creature_a> <creature_b> <new owner>
        DOES NOT USE BREEDING CRYSTAL"""
-    requesting_user = database_methods.get_user_from_db(ctx.message.author.id)
-    creature_a=database_methods.get_creature_from_db(creature_a_id)
-    creature_b=database_methods.get_creature_from_db(creature_b_id)
-    parents_of_a = database_methods.get_parents_from_db(creature_a)
-    parents_of_b = database_methods.get_parents_from_db(creature_b)
-    breed_request = Breeding(creature_a,creature_b,requesting_user.userId,parents_of_a,parents_of_b)
-    pups = breed_request.breed()
-    pup_ids=[]
-    for pup in pups:
-        pup_ids.append(database_methods.add_creature_to_db(pup))
-    await ctx.send(f"Breeding Complete, ID #s {pup_ids} added to DB")
+    if new_owner is None:
+        new_owner = ctx.message.author.id
+    else:
+        new_owner = strip_mention_format(new_owner)
+    ticket = create_breeding_ticket(requesting_user_id=new_owner,
+                           creature_a_id=creature_a_id,
+                           creature_b_id=creature_b_id)
+    enact_breeding(ticket)
+    ticket.id = database_methods.add_ticket_to_db(ticket)
+    await send_ticket_to_channel(ticket)
+    await ctx.send("Breeding has been successfully submitted.  "\
+                          f"Ticket # is {ticket.id}")
+    #pup_ids=[]
+    #for pup in pups:
+    #    pup_ids.append(database_methods.add_creature_to_db(pup))
+    #await ctx.send(f"Breeding Complete, ID #s {pup_ids} added to DB")
 
 # END OF COMMANDS SECTION
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__), '../token.txt')))
