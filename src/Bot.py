@@ -424,12 +424,12 @@ async def updateImage(ctx,creature_id,*args):
     All keywords are optional but at least one must be specified."""
     creature_to_update = database_methods.get_creature_from_db(creature_id)
     for argument in args:
-        split_argument = argument.lower().split("|")
-        if split_argument[0] == 'adult':
+        split_argument = argument.split("|")
+        if split_argument[0].lower() == 'adult':
             creature_to_update.imageLink = split_argument[1]
-        if split_argument[0] == 'newborn':
+        if split_argument[0].lower() == 'newborn':
             creature_to_update.imageLink_nb = split_argument[1]
-        if split_argument[0] == 'pup':
+        if split_argument[0].lower() == 'pup':
             creature_to_update.imageLink_pup = split_argument[1]
     if database_methods.update_creature(creature_to_update):
         await ctx.send("Chorumfur has been updated successfully.")
