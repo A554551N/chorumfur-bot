@@ -33,14 +33,7 @@ class User:
         breedingLevel()
             returns an int (1-6) indicating User readiness for breeding
     """
-    BREEDINGSTONELINKS = {
-        0 : "https://media.discordapp.net/attachments/1039966957799211109/1039967098174185552/Breeding_Crystal.png",
-        1 : "https://media.discordapp.net/attachments/1039966957799211109/1039967098543292486/Breeding_Crystal2.png",
-        2 : "https://media.discordapp.net/attachments/1039966957799211109/1039967099029823548/Breeding_Crystal3.png",
-        3 : "https://media.discordapp.net/attachments/1039966957799211109/1039967099491205130/Breeding_Crystal4.png",
-        4 : "https://media.discordapp.net/attachments/1039966957799211109/1039967099948376094/Breeding_Crystal5.png",
-        5 : "https://media.discordapp.net/attachments/1039966957799211109/1039967100392980540/Breeding_Crystal6.png"
-    }
+
     def __init__(self,userId,level=1,lastBreed=None,warningsIssued=0,name="",daysSinceLastBreed=None,wallet=0,inventory={}):
         self.userId = userId
         self.name = name
