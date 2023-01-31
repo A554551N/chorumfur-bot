@@ -35,6 +35,7 @@ class Ticket:
     def output_ticket(self):
         """returns a formatted string with ticket details"""
         return f"Ticket #{self.id} - {self.name}\n"\
+              f"Requesting User: <@{self.requestor.userId}>\n"\
               f"Open Date: {self.ticket_date}\n"\
               f"Status: {self.status}\n"\
               f"Parent A: {self.creature_a.creatureId}-{self.creature_a.name}\n"\
