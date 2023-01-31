@@ -152,7 +152,6 @@ async def makeCreature(ctx,creatureName,main_horn_trait,
                                         'FLUFF': fluff_trait,
                                         'MUTATION': mutation_trait
                                       })
-
     creature_id = database_methods.add_creature_to_db(creature_to_add)
     msg=f"{creatureName} created with Id #{creature_id}"
     await ctx.send(msg)

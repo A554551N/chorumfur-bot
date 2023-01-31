@@ -219,6 +219,7 @@ def add_creature_to_db(creature_to_add,conn=None):
                           RETURNING creature_id
                           """
     cur = conn.cursor()
+    print(creature_to_add.traits['MAIN_HORN'])
     cur.execute(add_creature_sql,
                 (creature_to_add.name,
                  creature_to_add.owner,
@@ -262,7 +263,7 @@ def get_creature_from_db(creature_id,conn=None):
                                      imageLink_nb=returned_row[5],
                                      imageLink_pup=returned_row[6],
                                      generation=returned_row[7])
-        if returned_row[7]:
+        if returned_row[8]:
             returned_creature.traits=pickle.loads(returned_row[8])
         if returned_row[9] or returned_row[10]:
             returned_creature.parents = [returned_row[9],returned_row[10]]
