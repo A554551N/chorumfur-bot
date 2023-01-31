@@ -86,7 +86,7 @@ class Creature:
         self.traits = random_traits
 
 
-    def outputCreature(self):
+    def outputCreature(self,output_all = False):
         """Returns a tuple containing a formatted string with details about the
         creature and the correct image for the bot to display based on the creature's age.
         The amount of information returned in the string also varies based on creature's age."""
@@ -99,9 +99,9 @@ class Creature:
                 f"**Create Date:** {datetime.strftime(self.createDate,Constants.DATEONLYFORMAT)}\n"\
                 f"**Generation:** {self.generation}\n"\
                  "**---Traits---**\n"
-        if age.days <= 7 and self.generation != 0:
+        if age.days <= 7 and self.generation != 0 and not output_all:
             image_link = self.imageLink_nb
-        elif age.days <= 14 and self.generation != 0:
+        elif age.days <= 14 and self.generation != 0 and not output_all:
             output += f"**Main Horn**: {self.traits['MAIN_HORN']}\n"
             image_link = self.imageLink_pup
         else:
