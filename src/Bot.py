@@ -111,8 +111,9 @@ async def getCreature(ctx,creatureId):
     if requestedCreature:
         user = client.get_user(requestedCreature.owner)
         requestedCreature.ownerName = user.name
-        await ctx.send(requestedCreature.outputCreature())
-        await ctx.send(requestedCreature.imageLink)
+        returned_values = requestedCreature.outputCreature()
+        await ctx.send(returned_values[0])
+        await ctx.send(returned_values[1])
     else:
         await ctx.send(f"ID Number {creatureId} not found")
 
@@ -156,7 +157,6 @@ async def makeCreature(ctx,creatureName,main_horn_trait,
                                         'FLUFF': fluff_trait,
                                         'MUTATION': mutation_trait
                                       })
-
     creature_id = database_methods.add_creature_to_db(creature_to_add)
     msg=f"{creatureName} created with Id #{creature_id}"
     await ctx.send(msg)
@@ -184,7 +184,7 @@ async def makeRandomCreature(ctx,creatureName):
     if creature_id:
         creature_to_add.creatureId=creature_id
         await ctx.send(f"{creatureName} added to database with ID #{creature_id}")
-        await ctx.send(creature_to_add.outputCreature())
+        await ctx.send(creature_to_add.outputCreature()[0])
     else:
         await ctx.send(f"An error occurred adding {creatureName} to the database")
 
@@ -417,17 +417,23 @@ async def myLair(ctx):
 
 @client.command()
 @is_guild_owner_or_me()
-async def updateImage(ctx,creature_id):
-    """ADMIN COMMAND: Updates a chorumfur with a given id's displayed image"""
-    if not ctx.message.attachments:
-        await ctx.send("Cannot update image without attachment")
+async def updateImage(ctx,creature_id,*args):
+    """ADMIN COMMAND: Updates a chorumfur with a given id's displayed image.
+    .updateImage <creature_id> newborn|<newborn url> pup|<pup url> adult|<adult url>.
+    All keywords are optional but at least one must be specified."""
+    creature_to_update = database_methods.get_creature_from_db(creature_id)
+    for argument in args:
+        split_argument = argument.lower().split("|")
+        if split_argument[0] == 'adult':
+            creature_to_update.imageLink = split_argument[1]
+        if split_argument[0] == 'newborn':
+            creature_to_update.imageLink_nb = split_argument[1]
+        if split_argument[0] == 'pup':
+            creature_to_update.imageLink_pup = split_argument[1]
+    if database_methods.update_creature(creature_to_update):
+        await ctx.send("Chorumfur has been updated successfully.")
     else:
-        creature_to_update = database_methods.get_creature_from_db(creature_id)
-        creature_to_update.imageLink = ctx.message.attachments[0].url
-        if database_methods.update_creature(creature_to_update):
-            await ctx.send("Chorumfur has been updated successfully.")
-        else:
-            await ctx.send("The chorumfur could not be updated.")
+        await ctx.send("The chorumfur could not be updated.")
 
 @client.command()
 @is_guild_owner_or_me()

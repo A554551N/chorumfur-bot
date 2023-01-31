@@ -14,7 +14,7 @@ def testCreatureAttributes():
                             "generation" : 0,
                             "creatureId" : 99999,
                             "createDate" : datetime.today(),
-                            "imageLink" : "https://fakesite.com"
+                            "imageLink" : "https://fakesite.com",
                         }
     return testCreatureAttrs
 
@@ -26,6 +26,8 @@ def createCreature(testCreatureAttributes):
                             creatureId = testCreatureAttributes["creatureId"],
                             createDate=str(testCreatureAttributes["createDate"]),
                             imageLink=testCreatureAttributes['imageLink'],
+                            imageLink_nb=testCreatureAttributes['imageLink'],
+                            imageLink_pup=testCreatureAttributes['imageLink'],
                             ownerName=testCreatureAttributes["ownerName"])
     return test_creature
 
