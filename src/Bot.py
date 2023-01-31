@@ -412,21 +412,17 @@ async def myLair(ctx):
 
 @client.command()
 @is_guild_owner_or_me()
-async def updateImage(ctx,creature_id):
+async def updateImage(ctx,creature_id,newborn=None,pup=None,adult=None):
     """ADMIN COMMAND: Updates a chorumfur with a given id's displayed image.
-    .updateImage <creature_id> newborn=<url> pup=<url> adult=<url>.
+    .updateImage <creature_id> <newborn url> <pup url> <adult url>.
     All keywords are optional but at least one must be specified."""
-    #if 'adult' not in kwargs and 'newborn' not in kwargs and 'pup' not in kwargs:
-        #await ctx.send("Image links are not detected.  "\
-            #"Must specify at least one of `newborn=<link> pup=<link> adult=<link>")
-    #else:
     creature_to_update = database_methods.get_creature_from_db(creature_id)
-    if 'adult' in ctx.kwargs:
-        creature_to_update.imageLink = ctx.kwargs['adult']
-    if 'newborn' in ctx.kwargs:
-        creature_to_update.imageLink_nb = ctx.kwargs['newborn']
-    if 'pup' in ctx.kwargs:
-        creature_to_update.imageLink_pup = ctx.kwargs['pups']
+    if newborn:
+        creature_to_update.imageLink_nb = newborn
+    if pup:
+        creature_to_update.imageLink_pup = pup
+    if adult:
+        creature_to_update.imageLink = adult
     if database_methods.update_creature(creature_to_update):
         await ctx.send("Chorumfur has been updated successfully.")
     else:
