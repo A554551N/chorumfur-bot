@@ -24,7 +24,12 @@ class Constants:
     }
 
     CHEEK_HORN = {
-        "Standard" : ".92",
+        "Standard" : ".30",
+        "Standard (Medium)":".30",
+        "Standard (Short)":".29",
+        "Straight":".01",
+        "Straight (Short)":".01",
+        "Straight (Long)":".01",
         "Nilgai" : ".01",
         "Mountain Goat" : ".01",
         "Impala" : ".01",
