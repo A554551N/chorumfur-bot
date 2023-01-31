@@ -105,7 +105,8 @@ class Creature:
             output += f"**Main Horn**: {self.traits['MAIN_HORN']}\n"
             image_link = self.imageLink_pup
         else:
-            output += f"**Cheek Horn**: {self.traits['CHEEK_HORN']}\n"\
+            output +=f"**Main Horn**: {self.traits['MAIN_HORN']}\n"\
+                     f"**Cheek Horn**: {self.traits['CHEEK_HORN']}\n"\
                      f"**Face Horn**: {self.traits['FACE_HORN']}\n"\
                      f"**Tail**: {self.traits['TAIL']}\n"\
                      f"**Tail Tip**: {self.traits['TAIL_TIP']}\n"\
