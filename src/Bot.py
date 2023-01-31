@@ -416,6 +416,7 @@ async def updateImage(ctx,creature_id,newborn=None,pup=None,adult=None):
     """ADMIN COMMAND: Updates a chorumfur with a given id's displayed image.
     .updateImage <creature_id> <newborn url> <pup url> <adult url>.
     All keywords are optional but at least one must be specified."""
+    await ctx.send(ctx.kwargs)
     creature_to_update = database_methods.get_creature_from_db(creature_id)
     if newborn:
         creature_to_update.imageLink_nb = newborn
