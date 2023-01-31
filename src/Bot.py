@@ -416,21 +416,21 @@ async def updateImage(ctx,creature_id,**kwargs):
     """ADMIN COMMAND: Updates a chorumfur with a given id's displayed image.
     .updateImage <creature_id> newborn=<url> pup=<url> adult=<url>.
     All keywords are optional but at least one must be specified."""
-    if 'adult' not in kwargs and 'newborn' not in kwargs and 'pup' not in kwargs:
-        await ctx.send("Image links are not detected.  "\
-            "Must specify at least one of `newborn=<link> pup=<link> adult=<link>")
+    #if 'adult' not in kwargs and 'newborn' not in kwargs and 'pup' not in kwargs:
+        #await ctx.send("Image links are not detected.  "\
+            #"Must specify at least one of `newborn=<link> pup=<link> adult=<link>")
+    #else:
+    creature_to_update = database_methods.get_creature_from_db(creature_id)
+    if 'adult' in kwargs:
+        creature_to_update.imageLink = kwargs['adult']
+    if 'newborn' in kwargs:
+        creature_to_update.imageLink_nb = kwargs['newborn']
+    if 'pup' in kwargs:
+        creature_to_update.imageLink_pup = kwargs['pups']
+    if database_methods.update_creature(creature_to_update):
+        await ctx.send("Chorumfur has been updated successfully.")
     else:
-        creature_to_update = database_methods.get_creature_from_db(creature_id)
-        if 'adult' in kwargs:
-            creature_to_update.imageLink = kwargs['adult']
-        if 'newborn' in kwargs:
-            creature_to_update.imageLink_nb = kwargs['newborn']
-        if 'pup' in kwargs:
-            creature_to_update.imageLink_pup = kwargs['pups']
-        if database_methods.update_creature(creature_to_update):
-            await ctx.send("Chorumfur has been updated successfully.")
-        else:
-            await ctx.send("The chorumfur could not be updated.")
+        await ctx.send("The chorumfur could not be updated.")
 
 @client.command()
 @is_guild_owner_or_me()
