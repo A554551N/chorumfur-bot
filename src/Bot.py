@@ -106,8 +106,9 @@ async def getCreature(ctx,creatureId):
     if requestedCreature:
         user = client.get_user(requestedCreature.owner)
         requestedCreature.ownerName = user.name
-        await ctx.send(requestedCreature.outputCreature())
-        await ctx.send(requestedCreature.imageLink)
+        returned_values = requestedCreature.outputCreature()
+        await ctx.send(returned_values[0])
+        await ctx.send(returned_values[1])
     else:
         await ctx.send(f"ID Number {creatureId} not found")
 
@@ -179,7 +180,7 @@ async def makeRandomCreature(ctx,creatureName):
     if creature_id:
         creature_to_add.creatureId=creature_id
         await ctx.send(f"{creatureName} added to database with ID #{creature_id}")
-        await ctx.send(creature_to_add.outputCreature())
+        await ctx.send(creature_to_add.outputCreature()[0])
     else:
         await ctx.send(f"An error occurred adding {creatureName} to the database")
 
