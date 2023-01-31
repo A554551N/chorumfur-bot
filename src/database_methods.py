@@ -209,11 +209,13 @@ def add_creature_to_db(creature_to_add,conn=None):
                           creature_owner,
                           creature_create_date,
                           creature_image_link,
+                          creature_image_link_newborn,
+                          creature_image_link_pup,
                           creature_generation,
                           creature_traits,
                           creature_parent_a,
                           creature_parent_b)
-                          VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+                          VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                           RETURNING creature_id
                           """
     cur = conn.cursor()
@@ -222,6 +224,8 @@ def add_creature_to_db(creature_to_add,conn=None):
                  creature_to_add.owner,
                  creature_to_add.createDate,
                  creature_to_add.imageLink,
+                 creature_to_add.imageLink_nb,
+                 creature_to_add.imageLink_pup,
                  creature_to_add.generation,
                  pickle.dumps(creature_to_add.traits),
                  creature_to_add.parents[0],
@@ -238,6 +242,8 @@ def get_creature_from_db(creature_id,conn=None):
                                  creature_id,
                                  creature_create_date,
                                  creature_image_link,
+                                 creature_image_link_newborn,
+                                 creature_image_link_pup,
                                  creature_generation,
                                  creature_traits,
                                  creature_parent_a,
@@ -253,11 +259,13 @@ def get_creature_from_db(creature_id,conn=None):
                                      creatureId=returned_row[2],
                                      createDate=returned_row[3],
                                      imageLink=returned_row[4],
-                                     generation=returned_row[5])
-        if returned_row[6]:
-            returned_creature.traits=pickle.loads(returned_row[6])
-        if returned_row[7] or returned_row[8]:
-            returned_creature.parents = [returned_row[7],returned_row[8]]
+                                     imageLink_nb=returned_row[5],
+                                     imageLink_pup=returned_row[6],
+                                     generation=returned_row[7])
+        if returned_row[7]:
+            returned_creature.traits=pickle.loads(returned_row[8])
+        if returned_row[9] or returned_row[10]:
+            returned_creature.parents = [returned_row[9],returned_row[10]]
         return returned_creature
     return None
 
@@ -267,6 +275,8 @@ def update_creature(creature_to_update,conn=None):
                           UPDATE creatures
                           SET creature_name = %s,
                               creature_image_link = %s,
+                              creature_image_link_newborn = %s,
+                              creature_image_link_pup = %s,
                               creature_owner = %s,
                               creature_traits = %s
                           WHERE creature_id = %s
@@ -274,6 +284,8 @@ def update_creature(creature_to_update,conn=None):
     cur = conn.cursor()
     cur.execute(update_creature_sql,(creature_to_update.name,
                                      creature_to_update.imageLink,
+                                     creature_to_update.imageLink_nb,
+                                     creature_to_update.imageLink_pup,
                                      creature_to_update.owner,
                                      pickle.dumps(creature_to_update.traits),
                                      creature_to_update.creatureId))
@@ -289,6 +301,8 @@ def get_parents_from_db(creature,conn=None):
                                  creature_id,
                                  creature_create_date,
                                  creature_image_link,
+                                 creature_image_link_newborn,
+                                 creature_image_link_pup,
                                  creature_generation,
                                  creature_traits,
                                  creature_parent_a,
@@ -299,18 +313,21 @@ def get_parents_from_db(creature,conn=None):
     cur.execute(get_parents_sql,(creature.parents[0],creature.parents[1]))
     returned_rows = cur.fetchall()
     if returned_rows:
+        print("results found")
         returned_parents = []
         for returned_row in returned_rows:
             returned_creature = Creature(name=returned_row[0],
-                                         owner=returned_row[1],
-                                         creatureId=returned_row[2],
-                                         createDate=returned_row[3],
-                                         imageLink=returned_row[4],
-                                         generation=returned_row[5])
-            if returned_row[6]:
-                returned_creature.traits=pickle.loads(returned_row[6])
-            if returned_row[7] or returned_row[8]:
-                returned_creature.parents = [returned_row[7],returned_row[8]]
+                                     owner=returned_row[1],
+                                     creatureId=returned_row[2],
+                                     createDate=returned_row[3],
+                                     imageLink=returned_row[4],
+                                     imageLink_nb=returned_row[5],
+                                     imageLink_pup=returned_row[6],
+                                     generation=returned_row[7])
+            if returned_row[8]:
+                returned_creature.traits=pickle.loads(returned_row[8])
+            if returned_row[9] or returned_row[10]:
+                returned_creature.parents = [returned_row[9],returned_row[10]]
             returned_parents.append(returned_creature)
         return returned_parents
     return None
@@ -476,4 +493,7 @@ def get_requested_tickets_from_db(type_to_show,conn=None):
         return returned_rows
     return None
 if __name__ == "__main__":
-    print(get_all_items_from_db())
+    test_creature = get_creature_from_db(39)
+    print(test_creature.parents)
+    parents = get_parents_from_db(test_creature)
+    print(parents)
