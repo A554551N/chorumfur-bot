@@ -49,6 +49,16 @@ class CreaturesCog(commands.GroupCog, name='Chorumfur Management',group_name='ch
         else:
             await ctx.send("An error has occurred, your creature has not been transferred.")
 
+    @commands.command(aliases=['ml','lair'])
+    async def myLair(self,ctx):
+        """Displays a list of all chorumfurs in your lair."""
+        user_id = ctx.message.author.id
+        returned_creatures = database_methods.get_my_creatures_from_db(user_id)
+        output="**ID# | Creature Name**\n```"
+        for creature in returned_creatures:
+            output+=f"{creature[0]} | {creature[1]}\n"
+        output+="```**For more information run `.getCreature <Creature ID>`**"
+        await ctx.send(output)
 
 async def setup(bot):
     await bot.add_cog(CreaturesCog(bot))
