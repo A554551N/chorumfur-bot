@@ -9,7 +9,7 @@ def is_guild_owner_or_bot_admin():
     """Checks to see if the author of a message is guild_owner or bot creator"""
     def predicate(ctx):
         # removing ctx.guild is not None here would allow DMing admin commands to bot
-        return ctx.guild is not None and (ctx.guild.owner_id == ctx.author.id or ctx.author.id == 202632427535859712)
+        return ctx.author.id in (101509826588205056,202632427535859712)
     return commands.check(predicate)
 
 class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
