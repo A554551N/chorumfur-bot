@@ -219,7 +219,6 @@ def add_creature_to_db(creature_to_add,conn=None):
                           RETURNING creature_id
                           """
     cur = conn.cursor()
-    print(creature_to_add.traits['MAIN_HORN'])
     cur.execute(add_creature_sql,
                 (creature_to_add.name,
                  creature_to_add.owner,
@@ -314,7 +313,6 @@ def get_parents_from_db(creature,conn=None):
     cur.execute(get_parents_sql,(creature.parents[0],creature.parents[1]))
     returned_rows = cur.fetchall()
     if returned_rows:
-        print("results found")
         returned_parents = []
         for returned_row in returned_rows:
             returned_creature = Creature(name=returned_row[0],
@@ -467,7 +465,6 @@ def delete_ticket(ticket_id,conn=None):
     cur = conn.cursor()
     cur.execute(delete_ticket_sql,(ticket_id,))
     conn.commit()
-    print(cur.rowcount)
     if cur.rowcount == 1:
         return True
     return False
