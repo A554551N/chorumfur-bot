@@ -117,45 +117,11 @@ async def setup_hook():
         await client.load_extension(cog)
 
 # BEGIN COMMANDS SECTION
+# MARK FOR REMOVAL
 @client.command()
 async def shop(ctx):
     """Command triggers the shop interface"""
     await ctx.send('The shop is still under construction, stay tuned!')
-
-@client.command()
-@is_guild_owner_or_me()
-async def makeCreature(ctx,creature_name,main_horn_trait,
-                                       cheek_horn_trait,
-                                       face_horn_trait,
-                                       tail_trait,
-                                       tail_tip_trait,
-                                       fluff_trait,
-                                       mutation_trait,
-                                       owner = None):
-    """ADMIN COMMAND: Adds a creature to the database with specific traits"""
-    if owner is None:
-        owner_id = ctx.message.author.id
-    else:
-        owner_id = strip_mention_format(owner)
-    if not ctx.message.attachments:
-        image_link = None
-    else:
-        image_link = ctx.message.attachments[0].url
-    creature_to_add = Creature(name = creature_name,
-                                      owner = owner_id,
-                                      imageLink = image_link,
-                                      traits={
-                                        'MAIN_HORN':main_horn_trait,
-                                        'CHEEK_HORN':cheek_horn_trait,
-                                        'FACE_HORN':face_horn_trait,
-                                        'TAIL':tail_trait,
-                                        'TAIL_TIP':tail_tip_trait,
-                                        'FLUFF': fluff_trait,
-                                        'MUTATION': mutation_trait
-                                      })
-    creature_id = database_methods.add_creature_to_db(creature_to_add)
-    msg=f"{creature_name} created with Id #{creature_id}"
-    await ctx.send(msg)
 
 @client.command()
 @is_guild_owner_or_me()
