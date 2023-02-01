@@ -1,16 +1,15 @@
+"""Manages user interaction using discord.py"""
 import os
-import discord
 import logging
+import discord
 from discord.ext import commands
-from Creature import Creature
-from User import User
-from Item import Item
-from Breeding import Breeding
-from Ticket import Ticket
-from ConstantData import Constants
-import database_methods
+from src.Creature import Creature
+from src.User import User
+from src.Item import Item
+from src.Ticket import Ticket
+from src.ConstantData import Constants
+from src import database_methods
 
-#discord_py_logfile_location = os.path.abspath(os.path.join(os.path.dirname(__file__), '../discord.log'))
 app_logfile_location = os.path.abspath(os.path.join(os.path.dirname(__file__), '../chorumfur-bot.log'))
 logging.basicConfig(filename=app_logfile_location,format='%(asctime)s %(message)s')
 logger = logging.getLogger(__name__)
