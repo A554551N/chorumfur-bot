@@ -244,14 +244,6 @@ async def removeItemFromInv(ctx,item_id_to_remove,user_id = None,quantity=1):
         await ctx.send("Item not found, or not successfully removed.")
 
 @client.command()
-async def getItem(ctx,item_id):
-    """Displays details of a given Item ID"""
-    item=database_methods.get_item_from_db(item_id)
-    await ctx.send(f"{ctx.message.author.mention}\n{item.outputItem()}")
-    if item.imageLink != "":
-        await ctx.send(item.imageLink)
-
-@client.command()
 async def breed(ctx,creature_a_id,creature_b_id):
     """Submit a breeding request in format .breed <creature_a> <creature_b>"""
     breed_request=create_breeding_ticket(requesting_user_id=ctx.message.author.id,
@@ -300,18 +292,6 @@ async def declineBreeding(ctx,ticket_id):
         database_methods.update_ticket_in_db(ticket)
         msg = f"Ticket {ticket.id} has been rejected.  Status is now {ticket.status}"
     await ctx.send(msg)
-
-@client.command(aliases=['mt'])
-async def myTickets(ctx):
-    """Retreives all tickets that belong to the user and displays them in a list"""
-    user_id = ctx.message.author.id
-    returned_tickets = database_methods.get_my_tickets_from_db(user_id)
-    output="**ID# | Ticket Name - Ticket Status**\n```"
-    for ticket in returned_tickets:
-        output+=f"{ticket[0]} | {ticket[1]} - {ticket[2]}\n"
-    output+="```**For more information run `.getTicket <ticket ID>`**"
-    await ctx.send(output)
-
 
 @is_guild_owner_or_me()
 @client.command(aliases=['gdt'])

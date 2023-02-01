@@ -32,5 +32,16 @@ class TicketCog(commands.GroupCog, name='Ticket Management',group_name='tickets'
                 msg="An error occurred deleting your ticket from the database."
         await ctx.send(msg)
 
+    @commands.command(aliases=['mt'])
+    async def myTickets(self,ctx):
+        """Retreives all tickets that belong to the user and displays them in a list"""
+        user_id = ctx.message.author.id
+        returned_tickets = database_methods.get_my_tickets_from_db(user_id)
+        output="**ID# | Ticket Name - Ticket Status**\n```"
+        for ticket in returned_tickets:
+            output+=f"{ticket[0]} | {ticket[1]} - {ticket[2]}\n"
+        output+="```**For more information run `.getTicket <ticket ID>`**"
+        await ctx.send(output)
+
 async def setup(bot):
     await bot.add_cog(TicketCog(bot))

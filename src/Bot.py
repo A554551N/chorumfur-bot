@@ -301,18 +301,6 @@ async def declineBreeding(ctx,ticket_id):
         msg = f"Ticket {ticket.id} has been rejected.  Status is now {ticket.status}"
     await ctx.send(msg)
 
-@client.command(aliases=['mt'])
-async def myTickets(ctx):
-    """Retreives all tickets that belong to the user and displays them in a list"""
-    user_id = ctx.message.author.id
-    returned_tickets = database_methods.get_my_tickets_from_db(user_id)
-    output="**ID# | Ticket Name - Ticket Status**\n```"
-    for ticket in returned_tickets:
-        output+=f"{ticket[0]} | {ticket[1]} - {ticket[2]}\n"
-    output+="```**For more information run `.getTicket <ticket ID>`**"
-    await ctx.send(output)
-
-
 @is_guild_owner_or_me()
 @client.command(aliases=['gdt'])
 async def getDetailedTicket(ctx,ticket_id):
