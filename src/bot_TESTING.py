@@ -17,7 +17,11 @@ logger.setLevel(20)
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
-
+cogs = ['cogs.cog_admin',
+        'cogs.cog_breeding',
+        'cogs.cog_creatures',
+        'cogs.cog_inventory',
+        'cogs.cog_tickets']
 game = discord.Game('with all these Chorumfurs!')
 
 client = commands.Bot(command_prefix='!',intents=intents,activity=game)
@@ -108,7 +112,8 @@ async def on_member_join(member):
 
 @client.event
 async def setup_hook():
-    await client.load_extension('cogs.bot_get')
+    for cog in cogs:
+        await client.load_extension(cog)
 
 # BEGIN COMMANDS SECTION
 @client.command()
