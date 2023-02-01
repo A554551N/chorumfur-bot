@@ -21,7 +21,8 @@ cogs = ['cogs.cog_admin',
         'cogs.cog_breeding',
         'cogs.cog_creatures',
         'cogs.cog_inventory',
-        'cogs.cog_tickets']
+        'cogs.cog_tickets',
+        'cogs.cog_users']
 game = discord.Game('with all these Chorumfurs!')
 
 client = commands.Bot(command_prefix='!',intents=intents,activity=game)
@@ -120,26 +121,6 @@ async def setup_hook():
 async def shop(ctx):
     """Command triggers the shop interface"""
     await ctx.send('The shop is still under construction, stay tuned!')
-
-@client.command()
-async def crystal(ctx):
-    """gets the status of the user's breeding crystal and displays it in in chat"""
-    user = database_methods.get_user_from_db(ctx.message.author.id)
-    if user:
-        msg=f"**Last Breeding:** {user.lastBreed}\n"\
-        f"Crystal Full in {user.daysUntilFull()} days"
-        await ctx.send(msg)
-        await ctx.send(Constants.CRYSTAL_IMAGE_STAGES[user.breedingLevel()])
-
-@client.command(aliases=['join'])
-async def joinGame(ctx):
-    """Adds a new user to the users database"""
-    new_user = User(ctx.message.author.id)
-    if database_methods.add_user_to_database(new_user):
-        msg=f"Welcome to Chorumfur {client.get_user(ctx.message.author.id)}"
-    else:
-        msg="Failed to add new user, perhaps you are already registered?  Try .me"
-    await ctx.send(msg)
 
 @client.command()
 @is_guild_owner_or_me()
