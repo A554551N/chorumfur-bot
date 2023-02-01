@@ -173,7 +173,23 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         else:
             await ctx.send("The chorumfur could not be updated.")
 
-
+    @commands.command()
+    @is_guild_owner_or_bot_admin()
+    async def adminBreed(self,ctx,creature_a_id,creature_b_id,new_owner=None):
+        """ADMIN: Submit a breeding request in format .breed <creature_a> <creature_b> <new owner>
+        DOES NOT USE BREEDING CRYSTAL"""
+        if new_owner is None:
+            new_owner = ctx.message.author.id
+        else:
+            new_owner = support_functions.strip_mention_format(new_owner)
+        ticket = support_functions.create_breeding_ticket(requesting_user_id=new_owner,
+                                       creature_a_id=creature_a_id,
+                                       creature_b_id=creature_b_id)
+        support_functions.enact_breeding(ticket)
+        ticket.id = database_methods.add_ticket_to_db(ticket)
+        await support_functions.send_ticket_to_channel(self.client,ticket)
+        await ctx.send("Breeding has been successfully submitted.  "\
+                       f"Ticket # is {ticket.id}")
 
 async def setup(bot):
     await bot.add_cog(AdminCog(bot))

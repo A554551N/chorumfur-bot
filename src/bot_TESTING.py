@@ -123,24 +123,6 @@ async def shop(ctx):
     """Command triggers the shop interface"""
     await ctx.send('The shop is still under construction, stay tuned!')
 
-@client.command()
-@is_guild_owner_or_me()
-async def adminBreed(ctx,creature_a_id,creature_b_id,new_owner=None):
-    """ADMIN: Submit a breeding request in format .breed <creature_a> <creature_b> <new owner>
-       DOES NOT USE BREEDING CRYSTAL"""
-    if new_owner is None:
-        new_owner = ctx.message.author.id
-    else:
-        new_owner = strip_mention_format(new_owner)
-    ticket = create_breeding_ticket(requesting_user_id=new_owner,
-                           creature_a_id=creature_a_id,
-                           creature_b_id=creature_b_id)
-    enact_breeding(ticket)
-    ticket.id = database_methods.add_ticket_to_db(ticket)
-    await send_ticket_to_channel(ticket)
-    await ctx.send("Breeding has been successfully submitted.  "\
-                          f"Ticket # is {ticket.id}")
-
 # END OF COMMANDS SECTION
 
 # Gets bot token and stores it in the token variable
