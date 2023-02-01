@@ -57,8 +57,8 @@ def enact_breeding(ticket):
     return ticket
 
 async def pend_breeding(ctx,ticket):
-    """Creates a Ticket in a Pending state and submits the information to the 
-    pending_breedings channel.  Returns the modified Ticket."""
+    """Creates a Ticket in a Pending state and submits the information to the
+     pending_breedings channel.  Returns the modified Ticket."""
     ticket.update_ticket_status(2)
     ticket.id = database_methods.add_ticket_to_db(ticket)
     pending_breedings = client.get_channel(1067121489444339844)
@@ -101,6 +101,7 @@ async def on_command_error(ctx, error):
 
 @client.event
 async def on_member_join(member):
+    """Triggers when a member joins and sends them a welcome message"""
     landing_zone = client.get_channel(1067121892223369278)
     rules_channel = client.get_channel(1067133274796871803)
     await landing_zone.send(f"Welcome to Chorumfur, {member.mention}!  To get started, check out the {rules_channel.mention} "\
@@ -135,6 +136,7 @@ async def crystal(ctx):
 
 @client.command()
 async def inventory(ctx):
+    """Displays a user's inventory"""
     await ctx.send(f"Fetching Inventory {ctx.message.author.mention}")
     user = database_methods.get_user_from_db(ctx.message.author.id)
     await ctx.send(user.outputInventory())
@@ -142,16 +144,18 @@ async def inventory(ctx):
 
 @client.command()
 async def getID(ctx):
+    # Marked for removal
     userId = ctx.message.author.id
     await ctx.send(f"Your unique ID is {userId}")
 
 @client.command(aliases=['gc','getcreature'],require_var_positional=True)
 async def getCreature(ctx,creatureId):
-    requestedCreature = database_methods.get_creature_from_db(creatureId)
-    if requestedCreature:
-        user = client.get_user(requestedCreature.owner)
-        requestedCreature.ownerName = user.name
-        returned_values = requestedCreature.outputCreature()
+    """Takes in a creature ID and sends a formatted output of the creature to discord"""
+    requested_creature = database_methods.get_creature_from_db(creatureId)
+    if requested_creature:
+        user = client.get_user(requested_creature.owner)
+        requested_creature.ownerName = user.name
+        returned_values = requested_creature.outputCreature()
         await ctx.send(returned_values[0])
         await ctx.send(returned_values[1])
     else:
@@ -159,8 +163,9 @@ async def getCreature(ctx,creatureId):
 
 @client.command(aliases=['join'])
 async def joinGame(ctx):
-    newUser = User(ctx.message.author.id)
-    if database_methods.add_user_to_database(newUser):
+    """Adds a new user to the users database"""
+    new_user = User(ctx.message.author.id)
+    if database_methods.add_user_to_database(new_user):
         msg=f"Welcome to Chorumfur {client.get_user(ctx.message.author.id)}"
     else:
         msg="Failed to add new user, perhaps you are already registered?  Try .me"
@@ -168,7 +173,7 @@ async def joinGame(ctx):
 
 @client.command()
 @is_guild_owner_or_me()
-async def makeCreature(ctx,creatureName,main_horn_trait,
+async def makeCreature(ctx,creature_name,main_horn_trait,
                                        cheek_horn_trait,
                                        face_horn_trait,
                                        tail_trait,
@@ -185,7 +190,7 @@ async def makeCreature(ctx,creatureName,main_horn_trait,
         image_link = None
     else:
         image_link = ctx.message.attachments[0].url
-    creature_to_add = Creature(name = creatureName,
+    creature_to_add = Creature(name = creature_name,
                                       owner = owner_id,
                                       imageLink = image_link,
                                       traits={
@@ -198,7 +203,7 @@ async def makeCreature(ctx,creatureName,main_horn_trait,
                                         'MUTATION': mutation_trait
                                       })
     creature_id = database_methods.add_creature_to_db(creature_to_add)
-    msg=f"{creatureName} created with Id #{creature_id}"
+    msg=f"{creature_name} created with Id #{creature_id}"
     await ctx.send(msg)
 
 @client.command(aliases=['rename'])
@@ -217,8 +222,10 @@ async def renameCreature(ctx,creature_id,new_name):
 @client.command()
 @is_guild_owner_or_me()
 async def makeRandomCreature(ctx,creatureName):
-    userId = ctx.message.author.id
-    creature_to_add = Creature(creatureName,userId)
+    """Takes in a creature name and stores a creature with that name in the database
+    with randomized traits.  Outputs the creature to the interface after completion."""
+    user_id = ctx.message.author.id
+    creature_to_add = Creature(creatureName,user_id)
     creature_to_add.randomize_creature()
     creature_id = database_methods.add_creature_to_db(creature_to_add)
     if creature_id:
@@ -230,21 +237,23 @@ async def makeRandomCreature(ctx,creatureName):
 
 @client.command()
 @is_guild_owner_or_me()
-async def makeItem(ctx,itemName,itemDesc,itemValue):
+async def makeItem(ctx,item_name,item_desc,item_value):
+    """Takes in a name, description, and value and stores a new item in the items database."""
     if ctx.message.attachments:
-        imageLink = ctx.message.attachments[0].url
+        image_link = ctx.message.attachments[0].url
     else:
-        imageLink = ""
-    itemToAdd = Item(itemName,itemDesc,itemValue,imageLink)
-    itemId = database_methods.add_item_to_db(itemToAdd)
-    if itemId:
-        await ctx.send(f'{itemName} created with ID # {itemId}')
+        image_link = ""
+    item_to_add = Item(item_name,item_desc,item_value,image_link)
+    item_id = database_methods.add_item_to_db(item_to_add)
+    if item_id:
+        await ctx.send(f'{item_name} created with ID # {item_id}')
     else:
-        await ctx.send(f'{itemName} cannot be created, an error occurred.')
+        await ctx.send(f'{item_name} cannot be created, an error occurred.')
 
 @client.command()
 @is_guild_owner_or_me()
 async def getAllItems(ctx):
+    """Retrieves all items defined in the items database and displays them as a list."""
     output = "**Item ID | Item Name - Item Value**\n```"
     for item in database_methods.get_all_items_from_db():
         output+= f"{item[0]} | {item[1]} - {item[2]}\n"
@@ -288,8 +297,6 @@ async def getItem(ctx,item_id):
 @client.command()
 async def breed(ctx,creature_a_id,creature_b_id):
     """Submit a breeding request in format .breed <creature_a> <creature_b>"""
-    # Considering moving this into a method that returns the finished ticket.
-    # I have a feeling I'm going to want this somewhere.
     breed_request=create_breeding_ticket(requesting_user_id=ctx.message.author.id,
                                         creature_a_id=creature_a_id,
                                         creature_b_id=creature_b_id)
@@ -325,6 +332,7 @@ async def acceptBreeding(ctx,ticket_id):
 
 @client.command(aliases=['decline'])
 async def declineBreeding(ctx,ticket_id):
+    """.declineBreeding <ticket_id> moves a ticket from pending state to cancelled."""
     ticket = database_methods.get_ticket_from_db(ticket_id)
     if ticket.other_user() != ctx.message.author.id:
         msg = "You do not have permission to modify this ticket."
@@ -338,13 +346,13 @@ async def declineBreeding(ctx,ticket_id):
 
 @client.command(aliases=['gt'])
 async def getTicket(ctx,ticket_id):
-    """Retreives a ticket from the database by ID number."""
+    """Retreives a ticket from the database by ID number and displays a summary."""
     returned_ticket = database_methods.get_ticket_from_db(ticket_id)
     await ctx.send(returned_ticket.output_ticket())
 
 @client.command(aliases=['mt'])
 async def myTickets(ctx):
-    """Retreives data on all tickets user currently has and returns it as a formatted output"""
+    """Retreives all tickets that belong to the user and displays them in a list"""
     user_id = ctx.message.author.id
     returned_tickets = database_methods.get_my_tickets_from_db(user_id)
     output="**ID# | Ticket Name - Ticket Status**\n```"
@@ -374,7 +382,7 @@ async def advanceTicket(ctx,ticket_id):
     else:
         status_code += 1
         ticket.status = Constants.TICKET_STATUS[status_code]
-        database_methods.update_ticket_status()
+        database_methods.update_ticket_status(status_code)
 
 @client.command()
 async def cancelTicket(ctx,ticket_id):
@@ -404,7 +412,7 @@ async def giveCreature(ctx,creature_id,new_owner):
     else:
         creature_to_give.owner = strip_mention_format(new_owner)
         if database_methods.update_creature(creature_to_give):
-            await ctx.send(f"Creature has been given to requested user.")
+            await ctx.send("Creature has been given to requested user.")
         else:
             await ctx.send("An error has occurred, your creature has not been transferred.")
 
@@ -439,6 +447,8 @@ async def updateImage(ctx,creature_id,*args):
     .updateImage <creature_id> newborn|<newborn url> pup|<pup url> adult|<adult url>.
     All keywords are optional but at least one must be specified."""
     creature_to_update = database_methods.get_creature_from_db(creature_id)
+    # This code is necessary to parse arguments from *args.  Can be refactored
+    # if support for kwargs is found.
     for argument in args:
         split_argument = argument.split("|")
         if split_argument[0].lower() == 'adult':
@@ -469,12 +479,10 @@ async def adminBreed(ctx,creature_a_id,creature_b_id,new_owner=None):
     await send_ticket_to_channel(ticket)
     await ctx.send("Breeding has been successfully submitted.  "\
                           f"Ticket # is {ticket.id}")
-    #pup_ids=[]
-    #for pup in pups:
-    #    pup_ids.append(database_methods.add_creature_to_db(pup))
-    #await ctx.send(f"Breeding Complete, ID #s {pup_ids} added to DB")
 
 # END OF COMMANDS SECTION
+
+# Gets bot token and stores it in the token variable
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__), '../token.txt')))
 token = f.readline()
 
