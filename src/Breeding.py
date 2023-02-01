@@ -28,7 +28,6 @@ class Breeding:
             for trait in pup.traits:
                 pup.traits[trait] = self.select_trait_to_pass(trait)
             pups.append(pup)
-        for test_pup in pups:
         return pups
 
     def select_trait_to_pass(self,trait_type):
