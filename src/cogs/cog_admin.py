@@ -1,5 +1,6 @@
 from discord.ext import commands
 from Creature import Creature
+from Item import Item
 import database_methods
 import support_functions
 
@@ -61,6 +62,21 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
             await ctx.send(creature_to_add.outputCreature()[0])
         else:
             await ctx.send(f"An error occurred adding {creatureName} to the database")
+
+    @commands.command()
+    @is_guild_owner_or_bot_admin()
+    async def makeItem(self,ctx,item_name,item_desc,item_value):
+        """Takes in a name, description, and value and stores a new item in the items database."""
+        if ctx.message.attachments:
+            image_link = ctx.message.attachments[0].url
+        else:
+            image_link = ""
+        item_to_add = Item(item_name,item_desc,item_value,image_link)
+        item_id = database_methods.add_item_to_db(item_to_add)
+        if item_id:
+            await ctx.send(f'{item_name} created with ID # {item_id}')
+        else:
+            await ctx.send(f'{item_name} cannot be created, an error occurred.')
 
 async def setup(bot):
     await bot.add_cog(AdminCog(bot))

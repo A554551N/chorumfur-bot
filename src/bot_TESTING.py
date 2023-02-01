@@ -123,22 +123,6 @@ async def shop(ctx):
     """Command triggers the shop interface"""
     await ctx.send('The shop is still under construction, stay tuned!')
 
-
-@client.command()
-@is_guild_owner_or_me()
-async def makeItem(ctx,item_name,item_desc,item_value):
-    """Takes in a name, description, and value and stores a new item in the items database."""
-    if ctx.message.attachments:
-        image_link = ctx.message.attachments[0].url
-    else:
-        image_link = ""
-    item_to_add = Item(item_name,item_desc,item_value,image_link)
-    item_id = database_methods.add_item_to_db(item_to_add)
-    if item_id:
-        await ctx.send(f'{item_name} created with ID # {item_id}')
-    else:
-        await ctx.send(f'{item_name} cannot be created, an error occurred.')
-
 @client.command()
 @is_guild_owner_or_me()
 async def getAllItems(ctx):
