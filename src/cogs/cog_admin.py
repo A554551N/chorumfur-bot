@@ -138,5 +138,19 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
             database_methods.update_ticket_status(ticket)
             await ctx.send(f"Ticket {ticket.id} updated to status {ticket.status}")
 
+    @commands.command()
+    @is_guild_owner_or_bot_admin()
+    async def showTickets(self,ctx,type_to_show='open'):
+        """Shows a summary view of all open tickets based on a parameter.  Accepts 'open'
+        to show all open tickets or 'pending' to show tickets in a Breeding Pending state."""
+        type_to_show = type_to_show.lower()
+        returned_tickets = database_methods.get_requested_tickets_from_db(type_to_show)
+        output="**ID# | Ticket Name - Ticket Status**\n```"
+        for ticket in returned_tickets:
+            output+=f"{ticket[0]} | {ticket[1]} - {ticket[2]}\n"
+        output+="```**For more information run `.getTicket <ticket ID>`**"
+        await ctx.send(output)
+
+
 async def setup(bot):
     await bot.add_cog(AdminCog(bot))

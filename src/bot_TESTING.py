@@ -125,19 +125,6 @@ async def shop(ctx):
 
 @client.command()
 @is_guild_owner_or_me()
-async def showTickets(ctx,type_to_show='open'):
-    """Shows a summary view of all open tickets based on a parameter.  Accepts 'open'
-    to show all open tickets or 'pending' to show tickets in a Breeding Pending state."""
-    type_to_show = type_to_show.lower()
-    returned_tickets = database_methods.get_requested_tickets_from_db(type_to_show)
-    output="**ID# | Ticket Name - Ticket Status**\n```"
-    for ticket in returned_tickets:
-        output+=f"{ticket[0]} | {ticket[1]} - {ticket[2]}\n"
-    output+="```**For more information run `.getTicket <ticket ID>`**"
-    await ctx.send(output)
-
-@client.command()
-@is_guild_owner_or_me()
 async def updateImage(ctx,creature_id,*args):
     """ADMIN COMMAND: Updates a chorumfur with a given id's displayed image.
     .updateImage <creature_id> newborn|<newborn url> pup|<pup url> adult|<adult url>.
