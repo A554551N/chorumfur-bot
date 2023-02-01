@@ -125,29 +125,6 @@ async def shop(ctx):
 
 @client.command()
 @is_guild_owner_or_me()
-async def getAllItems(ctx):
-    """Retrieves all items defined in the items database and displays them as a list."""
-    output = "**Item ID | Item Name - Item Value**\n```"
-    for item in database_methods.get_all_items_from_db():
-        output+= f"{item[0]} | {item[1]} - {item[2]}\n"
-    output+= "```**For more information run `.getItem <Item ID>`**"
-    await ctx.send(output)
-
-@client.command()
-@is_guild_owner_or_me()
-async def addItemToInv(ctx,item_id_to_add,user_id = None,quantity=1):
-    """adds an item to a given users inventory with a given quantity.
-    If no user ID is specified, items will be given to the user who invoked the command.
-    If a quantity is not specified, it will add 1."""
-    if user_id is None:
-        user_id = ctx.message.author.id
-    if database_methods.add_item_to_user(user_id,item_id_to_add,quantity):
-        await ctx.send("Inventory update successful.")
-    else:
-        await ctx.send("Inventory update failed.")
-
-@client.command()
-@is_guild_owner_or_me()
 async def removeItemFromInv(ctx,item_id_to_remove,user_id = None,quantity=1):
     """ADMIN COMMAND: Removes a given quantity of an item from a given user's inventory.
     If no user is specified, removes an item from your own inventory.

@@ -88,5 +88,18 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         output+= "```**For more information run `.getItem <Item ID>`**"
         await ctx.send(output)
 
+    @commands.command()
+    @is_guild_owner_or_bot_admin()
+    async def addItemToInv(self,ctx,item_id_to_add,user_id = None,quantity=1):
+        """adds an item to a given users inventory with a given quantity.
+        If no user ID is specified, items will be given to the user who invoked the command.
+        If a quantity is not specified, it will add 1."""
+        if user_id is None:
+            user_id = ctx.message.author.id
+        if database_methods.add_item_to_user(user_id,item_id_to_add,quantity):
+            await ctx.send("Inventory update successful.")
+        else:
+            await ctx.send("Inventory update failed.")
+
 async def setup(bot):
     await bot.add_cog(AdminCog(bot))
