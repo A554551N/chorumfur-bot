@@ -3,12 +3,12 @@ import os
 import logging
 import discord
 from discord.ext import commands
-from src.Creature import Creature
-from src.User import User
-from src.Item import Item
-from src.Ticket import Ticket
-from src.ConstantData import Constants
-from src import database_methods
+from Creature import Creature
+from User import User
+from Item import Item
+from Ticket import Ticket
+from ConstantData import Constants
+import database_methods
 
 app_logfile_location = os.path.abspath(os.path.join(os.path.dirname(__file__), '../chorumfur-bot.log'))
 logging.basicConfig(filename=app_logfile_location,format='%(asctime)s %(message)s')
