@@ -176,19 +176,6 @@ async def makeCreature(ctx,creature_name,main_horn_trait,
     msg=f"{creature_name} created with Id #{creature_id}"
     await ctx.send(msg)
 
-@client.command(aliases=['rename'])
-async def renameCreature(ctx,creature_id,new_name):
-    """Renames a creature with a given creature ID"""
-    requested_creature = database_methods.get_creature_from_db(creature_id)
-    if ctx.message.author.id != requested_creature.owner:
-        await ctx.send("Only a chorumfur's owner can change its' name.")
-    else:
-        requested_creature.name = new_name
-        if database_methods.update_creature(requested_creature):
-            await ctx.send("Chorumfur data successfully updated!")
-        else:
-            await ctx.send("Your chorumfur could not be renamed.")
-    
 @client.command()
 @is_guild_owner_or_me()
 async def makeRandomCreature(ctx,creatureName):
@@ -372,19 +359,6 @@ async def cancelTicket(ctx,ticket_id):
         else:
             msg="An error occurred deleting your ticket from the database."
     await ctx.send(msg)
-
-@client.command()
-async def giveCreature(ctx,creature_id,new_owner):
-    """Gives creatures with a given ID to a mentioned new owner."""
-    creature_to_give = database_methods.get_creature_from_db(creature_id)
-    if creature_to_give.owner != ctx.message.author.id:
-        await ctx.send("You may only give away chorumfurs that you own.")
-    else:
-        creature_to_give.owner = strip_mention_format(new_owner)
-        if database_methods.update_creature(creature_to_give):
-            await ctx.send("Creature has been given to requested user.")
-        else:
-            await ctx.send("An error has occurred, your creature has not been transferred.")
 
 @client.command()
 @is_guild_owner_or_me()
