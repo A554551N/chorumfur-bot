@@ -14,7 +14,6 @@ app_logfile_location = os.path.abspath(os.path.join(os.path.dirname(__file__), '
 logging.basicConfig(filename=app_logfile_location,format='%(asctime)s %(message)s')
 logger = logging.getLogger(__name__)
 logger.setLevel(20)
-#handler = logging.FileHandler(filename=discord_py_logfile_location, encoding='utf-8', mode='w')
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
@@ -85,7 +84,7 @@ def create_breeding_ticket(requesting_user_id,creature_a_id,creature_b_id):
                            creature_b=creature_b,
                            parents_of_a=parents_of_a,
                            parents_of_b=parents_of_b)
-                           
+
 @client.event
 async def on_ready():
     """Called when discord bot is ready to use"""
@@ -141,12 +140,6 @@ async def inventory(ctx):
     user = database_methods.get_user_from_db(ctx.message.author.id)
     await ctx.send(user.outputInventory())
     await ctx.send("For more information on an item, use .getItem <ID Number>")
-
-@client.command()
-async def getID(ctx):
-    # Marked for removal
-    userId = ctx.message.author.id
-    await ctx.send(f"Your unique ID is {userId}")
 
 @client.command(aliases=['gc','getcreature'],require_var_positional=True)
 async def getCreature(ctx,creatureId):
