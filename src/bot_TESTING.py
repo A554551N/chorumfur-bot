@@ -124,13 +124,6 @@ async def shop(ctx):
     await ctx.send('The shop is still under construction, stay tuned!')
 
 @is_guild_owner_or_me()
-@client.command(aliases=['gdt'])
-async def getDetailedTicket(ctx,ticket_id):
-    """Retrieves a ticket from the database and outputs a detailed breeding ticket"""
-    returned_ticket = database_methods.get_ticket_from_db(ticket_id)
-    await ctx.send(returned_ticket.output_detailed_ticket())
-
-@is_guild_owner_or_me()
 @client.command(aliases=['at'])
 async def advanceTicket(ctx,ticket_id):
     """Advances the status of a given ticket one step"""

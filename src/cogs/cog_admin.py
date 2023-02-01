@@ -114,5 +114,12 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         else:
             await ctx.send("Item not found, or not successfully removed.")
 
+    @commands.command(aliases=['gdt'])
+    @is_guild_owner_or_bot_admin()
+    async def getDetailedTicket(self,ctx,ticket_id):
+        """Retrieves a ticket from the database and outputs a detailed breeding ticket"""
+        returned_ticket = database_methods.get_ticket_from_db(ticket_id)
+        await ctx.send(returned_ticket.output_detailed_ticket())
+
 async def setup(bot):
     await bot.add_cog(AdminCog(bot))
