@@ -1,6 +1,7 @@
 from discord.ext import commands
 from Creature import Creature
 from Item import Item
+from ConstantData import Constants
 import database_methods
 import support_functions
 
@@ -120,6 +121,22 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         """Retrieves a ticket from the database and outputs a detailed breeding ticket"""
         returned_ticket = database_methods.get_ticket_from_db(ticket_id)
         await ctx.send(returned_ticket.output_detailed_ticket())
+
+    @is_guild_owner_or_bot_admin()
+    @commands.command(aliases=['at'])
+    async def advanceTicket(self,ctx,ticket_id):
+        """Advances the status of a given ticket one step"""
+        ticket = database_methods.get_ticket_from_db(ticket_id)
+        status_code = Constants.TICKET_STATUS.index(ticket.status)
+        if status_code == 2:
+            await ctx.send("Ticket is currently awaiting confirmation from a user.  It cannot be updated.")
+        elif status_code == 5:
+            await ctx.send("Ticket already has a status of Complete, cannot advance.")
+        else:
+            status_code += 1
+            ticket.status = Constants.TICKET_STATUS[status_code]
+            database_methods.update_ticket_status(ticket)
+            await ctx.send(f"Ticket {ticket.id} updated to status {ticket.status}")
 
 async def setup(bot):
     await bot.add_cog(AdminCog(bot))

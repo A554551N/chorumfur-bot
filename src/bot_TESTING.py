@@ -123,21 +123,6 @@ async def shop(ctx):
     """Command triggers the shop interface"""
     await ctx.send('The shop is still under construction, stay tuned!')
 
-@is_guild_owner_or_me()
-@client.command(aliases=['at'])
-async def advanceTicket(ctx,ticket_id):
-    """Advances the status of a given ticket one step"""
-    ticket = database_methods.get_ticket_from_db(ticket_id)
-    status_code = Constants.TICKET_STATUS.index(ticket.status)
-    if status_code == 2:
-        await ctx.send("Ticket is currently awaiting confirmation from a user.  It cannot be updated.")
-    elif status_code == 5:
-        await ctx.send("Ticket already has a status of Complete, cannot advance.")
-    else:
-        status_code += 1
-        ticket.status = Constants.TICKET_STATUS[status_code]
-        database_methods.update_ticket_status(status_code)
-
 @client.command()
 @is_guild_owner_or_me()
 async def showTickets(ctx,type_to_show='open'):
