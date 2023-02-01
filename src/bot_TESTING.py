@@ -126,14 +126,6 @@ async def crystal(ctx):
         await ctx.send(msg)
         await ctx.send(Constants.CRYSTAL_IMAGE_STAGES[user.breedingLevel()])
 
-@client.command()
-async def inventory(ctx):
-    """Displays a user's inventory"""
-    await ctx.send(f"Fetching Inventory {ctx.message.author.mention}")
-    user = database_methods.get_user_from_db(ctx.message.author.id)
-    await ctx.send(user.outputInventory())
-    await ctx.send("For more information on an item, use .getItem <ID Number>")
-
 @client.command(aliases=['join'])
 async def joinGame(ctx):
     """Adds a new user to the users database"""

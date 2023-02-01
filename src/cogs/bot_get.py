@@ -30,5 +30,13 @@ class GetGroupCog(commands.GroupCog, name='Get',group_name='get'):
         else:
             await ctx.send(f"ID Number {creatureId} not found")
 
+    @commands.command()
+    async def inventory(self,ctx):
+        """Displays a user's inventory"""
+        await ctx.send(f"Fetching Inventory {ctx.message.author.mention}")
+        user = database_methods.get_user_from_db(ctx.message.author.id)
+        await ctx.send(user.outputInventory())
+        await ctx.send("For more information on an item, use .getItem <ID Number>")
+
 async def setup(bot):
     await bot.add_cog(GetGroupCog(bot))
