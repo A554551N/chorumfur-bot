@@ -134,19 +134,6 @@ async def inventory(ctx):
     await ctx.send(user.outputInventory())
     await ctx.send("For more information on an item, use .getItem <ID Number>")
 
-@client.command(aliases=['gc','getcreature'],require_var_positional=True)
-async def getCreature(ctx,creatureId):
-    """Takes in a creature ID and sends a formatted output of the creature to discord"""
-    requested_creature = database_methods.get_creature_from_db(creatureId)
-    if requested_creature:
-        user = client.get_user(requested_creature.owner)
-        requested_creature.ownerName = user.name
-        returned_values = requested_creature.outputCreature()
-        await ctx.send(returned_values[0])
-        await ctx.send(returned_values[1])
-    else:
-        await ctx.send(f"ID Number {creatureId} not found")
-
 @client.command(aliases=['join'])
 async def joinGame(ctx):
     """Adds a new user to the users database"""

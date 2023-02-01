@@ -116,17 +116,6 @@ async def shop(ctx):
     """Command triggers the shop interface"""
     await ctx.send('The shop is still under construction, stay tuned!')
 
-# @client.command()
-# async def me(ctx):
-#    """gets user profile and displays it in chat"""
-#    user = database_methods.get_user_from_db(ctx.message.author.id)
-#    if user:
-#        user.name = client.get_user(ctx.message.author.id)
-#        msg = f"{ctx.message.author.mention}\n{user.outputProfile()}"
-#    else:
-#        msg = "A profile was not found for you.  If you haven't use .joinGame"
-#    await ctx.send(msg)
-
 @client.command()
 async def crystal(ctx):
     """gets the status of the user's breeding crystal and displays it in in chat"""
@@ -144,19 +133,6 @@ async def inventory(ctx):
     user = database_methods.get_user_from_db(ctx.message.author.id)
     await ctx.send(user.outputInventory())
     await ctx.send("For more information on an item, use .getItem <ID Number>")
-
-@client.command(aliases=['gc','getcreature'],require_var_positional=True)
-async def getCreature(ctx,creatureId):
-    """Takes in a creature ID and sends a formatted output of the creature to discord"""
-    requested_creature = database_methods.get_creature_from_db(creatureId)
-    if requested_creature:
-        user = client.get_user(requested_creature.owner)
-        requested_creature.ownerName = user.name
-        returned_values = requested_creature.outputCreature()
-        await ctx.send(returned_values[0])
-        await ctx.send(returned_values[1])
-    else:
-        await ctx.send(f"ID Number {creatureId} not found")
 
 @client.command(aliases=['join'])
 async def joinGame(ctx):

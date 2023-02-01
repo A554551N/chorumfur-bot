@@ -17,5 +17,18 @@ class GetGroupCog(commands.GroupCog, name='Get',group_name='get'):
             msg = "A profile was not found for you.  If you haven't use .joinGame"
         await ctx.send(msg)
 
+    @commands.command(aliases=['gc','getcreature'],require_var_positional=True)
+    async def getCreature(self,ctx,creatureId):
+        """Takes in a creature ID and sends a formatted output of the creature to discord"""
+        requested_creature = database_methods.get_creature_from_db(creatureId)
+        if requested_creature:
+            user = self.client.get_user(requested_creature.owner)
+            requested_creature.ownerName = user.name
+            returned_values = requested_creature.outputCreature()
+            await ctx.send(returned_values[0])
+            await ctx.send(returned_values[1])
+        else:
+            await ctx.send(f"ID Number {creatureId} not found")
+
 async def setup(bot):
     await bot.add_cog(GetGroupCog(bot))
