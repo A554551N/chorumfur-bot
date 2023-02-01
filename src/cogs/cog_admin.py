@@ -46,6 +46,21 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         msg=f"{creature_name} created with Id #{creature_id}"
         await ctx.send(msg)
 
+    @commands.command()
+    @is_guild_owner_or_bot_admin()
+    async def makeRandomCreature(self,ctx,creatureName):
+        """Takes in a creature name and stores a creature with that name in the database
+        with randomized traits.  Outputs the creature to the interface after completion."""
+        user_id = ctx.message.author.id
+        creature_to_add = Creature(creatureName,user_id)
+        creature_to_add.randomize_creature()
+        creature_id = database_methods.add_creature_to_db(creature_to_add)
+        if creature_id:
+            creature_to_add.creatureId=creature_id
+            await ctx.send(f"{creatureName} added to database with ID #{creature_id}")
+            await ctx.send(creature_to_add.outputCreature()[0])
+        else:
+            await ctx.send(f"An error occurred adding {creatureName} to the database")
 
 async def setup(bot):
     await bot.add_cog(AdminCog(bot))
