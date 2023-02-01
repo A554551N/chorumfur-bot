@@ -106,22 +106,15 @@ async def on_member_join(member):
     await landing_zone.send(f"Welcome to Chorumfur, {member.mention}!  To get started, check out the {rules_channel.mention} "\
         "and then use `.joinGame` to start playing!")
 
+@client.event
+async def setup_hook():
+    await client.load_extension('cogs.bot_get')
+
 # BEGIN COMMANDS SECTION
 @client.command()
 async def shop(ctx):
     """Command triggers the shop interface"""
     await ctx.send('The shop is still under construction, stay tuned!')
-
-@client.command()
-async def me(ctx):
-    """gets user profile and displays it in chat"""
-    user = database_methods.get_user_from_db(ctx.message.author.id)
-    if user:
-        user.name = client.get_user(ctx.message.author.id)
-        msg = f"{ctx.message.author.mention}\n{user.outputProfile()}"
-    else:
-        msg = "A profile was not found for you.  If you haven't use .joinGame"
-    await ctx.send(msg)
 
 @client.command()
 async def crystal(ctx):
