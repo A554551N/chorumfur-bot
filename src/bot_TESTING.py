@@ -301,12 +301,6 @@ async def declineBreeding(ctx,ticket_id):
         msg = f"Ticket {ticket.id} has been rejected.  Status is now {ticket.status}"
     await ctx.send(msg)
 
-@client.command(aliases=['gt'])
-async def getTicket(ctx,ticket_id):
-    """Retreives a ticket from the database by ID number and displays a summary."""
-    returned_ticket = database_methods.get_ticket_from_db(ticket_id)
-    await ctx.send(returned_ticket.output_ticket())
-
 @client.command(aliases=['mt'])
 async def myTickets(ctx):
     """Retreives all tickets that belong to the user and displays them in a list"""
@@ -340,25 +334,6 @@ async def advanceTicket(ctx,ticket_id):
         status_code += 1
         ticket.status = Constants.TICKET_STATUS[status_code]
         database_methods.update_ticket_status(status_code)
-
-@client.command()
-async def cancelTicket(ctx,ticket_id):
-    """Cancels an in progress breeding ticket"""
-    ticket = database_methods.get_ticket_from_db(ticket_id)
-    if ctx.message.author.id != ticket.requestor.userId:
-        msg = "You do not have permission to modify this ticket."
-    elif ticket.status == Constants.TICKET_STATUS[5]:
-        msg = "You cannot cancel a completed ticket."
-    else:
-        if database_methods.delete_ticket(ticket_id):
-            msg = "Your ticket has been successfully removed from the database."
-            tickets_channel = client.get_channel(1061868480086941716)
-            artist = client.get_user(101509826588205056)
-            await tickets_channel.send(f"{artist.mention} **User has requested cancellation"\
-                                f"of ticket #{ticket.id}**")
-        else:
-            msg="An error occurred deleting your ticket from the database."
-    await ctx.send(msg)
 
 @client.command()
 @is_guild_owner_or_me()
