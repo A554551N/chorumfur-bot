@@ -101,5 +101,18 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         else:
             await ctx.send("Inventory update failed.")
 
+    @commands.command()
+    @is_guild_owner_or_bot_admin()
+    async def removeItemFromInv(self,ctx,item_id_to_remove,user_id = None,quantity=1):
+        """ADMIN COMMAND: Removes a given quantity of an item from a given user's inventory.
+        If no user is specified, removes an item from your own inventory.
+        If no quantity is specified, removes 1."""
+        if user_id is None:
+            user_id = ctx.message.author.id
+        if database_methods.remove_item_from_user(user_id,item_id_to_remove,quantity):
+            await ctx.send("Item removed from User Inventory")
+        else:
+            await ctx.send("Item not found, or not successfully removed.")
+
 async def setup(bot):
     await bot.add_cog(AdminCog(bot))
