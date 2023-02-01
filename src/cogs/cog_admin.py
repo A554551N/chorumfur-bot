@@ -151,6 +151,29 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         output+="```**For more information run `.getTicket <ticket ID>`**"
         await ctx.send(output)
 
+    @commands.command()
+    @is_guild_owner_or_bot_admin()
+    async def updateImage(self,ctx,creature_id,*args):
+        """ADMIN COMMAND: Updates a chorumfur with a given id's displayed image.
+        .updateImage <creature_id> newborn|<newborn url> pup|<pup url> adult|<adult url>.
+        All keywords are optional but at least one must be specified."""
+        creature_to_update = database_methods.get_creature_from_db(creature_id)
+        # This code is necessary to parse arguments from *args.  Can be refactored
+        # if support for kwargs is found.
+        for argument in args:
+            split_argument = argument.split("|")
+            if split_argument[0].lower() == 'adult':
+                creature_to_update.imageLink = split_argument[1]
+            if split_argument[0].lower() == 'newborn':
+                creature_to_update.imageLink_nb = split_argument[1]
+            if split_argument[0].lower() == 'pup':
+                creature_to_update.imageLink_pup = split_argument[1]
+        if database_methods.update_creature(creature_to_update):
+            await ctx.send("Chorumfur has been updated successfully.")
+        else:
+            await ctx.send("The chorumfur could not be updated.")
+
+
 
 async def setup(bot):
     await bot.add_cog(AdminCog(bot))
