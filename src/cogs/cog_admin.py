@@ -78,5 +78,15 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         else:
             await ctx.send(f'{item_name} cannot be created, an error occurred.')
 
+    @commands.command()
+    @is_guild_owner_or_bot_admin()
+    async def getAllItems(self,ctx):
+        """Retrieves all items defined in the items database and displays them as a list."""
+        output = "**Item ID | Item Name - Item Value**\n```"
+        for item in database_methods.get_all_items_from_db():
+            output+= f"{item[0]} | {item[1]} - {item[2]}\n"
+        output+= "```**For more information run `.getItem <Item ID>`**"
+        await ctx.send(output)
+
 async def setup(bot):
     await bot.add_cog(AdminCog(bot))
