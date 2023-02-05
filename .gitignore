@@ -163,3 +163,6 @@ token.txt
 
 #Removes db_pass.txt
 db_pass.txt
+
+#removes test_environment.py
+src/test_environment.py
