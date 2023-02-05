@@ -1,7 +1,7 @@
 """Manages user interaction using discord.py"""
 import os
 import logging
-from test_environment import EnvironmentVars
+from environment import EnvironmentVars
 import discord
 from discord.ext import commands
 
