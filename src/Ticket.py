@@ -68,6 +68,8 @@ class Ticket:
             can_breed = False
         elif self.creature_a.creatureId == self.creature_b.creatureId:
             can_breed = False
+        elif (self.creature_a.calculate_age().days < 15) or (self.creature_b.calculate_age().days < 15):
+            can_breed = False
         return can_breed
 
     def requestor_owns_both(self):
