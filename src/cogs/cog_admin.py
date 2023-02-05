@@ -60,8 +60,8 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
             creature_id = database_methods.add_creature_to_db(creature_to_add)
             if creature_id:
                 creature_to_add.creatureId=creature_id
-                await ctx.send(f"{creature_to_add.creatureName} added to database with ID #{creature_id}")
-                await ctx.send(creature_to_add.outputCreature()[0])
+                await ctx.send(f"{creature_to_add.name} added to database with ID #{creature_id}")
+                #await ctx.send(creature_to_add.outputCreature()[0])
             else:
                 await ctx.send("An error occurred adding new creatures to DB")
 
