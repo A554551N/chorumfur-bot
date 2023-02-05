@@ -1,6 +1,7 @@
 """Manages user interaction using discord.py"""
 import os
 import logging
+from test_environment import EnvironmentVars
 import discord
 from discord.ext import commands
 
@@ -20,7 +21,7 @@ cogs = ['cogs.cog_admin',
         'cogs.cog_users']
 
 game = discord.Game('with all these Chorumfurs!')
-client = commands.Bot(command_prefix='.',intents=intents,activity=game)
+client = commands.Bot(command_prefix=EnvironmentVars.bot_invocation_var,intents=intents,activity=game)
 
 @client.event
 async def on_ready():
