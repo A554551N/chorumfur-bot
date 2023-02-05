@@ -85,12 +85,15 @@ class Creature:
         random_traits['MUTATION'] = self.randomize_trait(Constants.MUTATION)
         self.traits = random_traits
 
+    def calculate_age(self):
+        """Calculates the Creature's age based on its create date and returns the value as a time_delta"""
+        return datetime.today() - self.createDate
 
     def outputCreature(self,output_all = False):
         """Returns a tuple containing a formatted string with details about the
         creature and the correct image for the bot to display based on the creature's age.
         The amount of information returned in the string also varies based on creature's age."""
-        age = datetime.today() - self.createDate
+        age = self.calculate_age()
         image_link = ""
         output = f"**ID:** {self.creatureId}\n"\
                 f"**Name:** {self.name}\n"\
