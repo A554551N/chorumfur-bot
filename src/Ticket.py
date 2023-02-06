@@ -60,17 +60,25 @@ class Ticket:
 
     def requestor_can_breed(self):
         """Confirms that at least one creature is owned by the Requestor and
-        confirms that user account is able to breed.  Returns True if checks pass"""
+        confirms that user account is able to breed.
+        Also confirms that all creatures involved are adults.
+        Returns True if checks pass, or False and an error message if checks fail."""
         can_breed = True
+        breed_error = "No Error"
         if self.creature_a.owner != self.requestor.userId and self.creature_b.owner != self.requestor.userId:
             can_breed = False
+            breed_error = "You must own at least one of the creatures in the pairing."
         elif self.requestor.breedingLevel() != 5:
             can_breed = False
+            breed_error = "Your breeding crystal is not full.  Use `.crystal` to "\
+                          "see when you can breed again."
         elif self.creature_a.creatureId == self.creature_b.creatureId:
             can_breed = False
+            breed_error = "You cannot breed a creature with itself."
         elif (self.creature_a.calculate_age().days < 15 and self.creature_a.generation != 0) or (self.creature_b.calculate_age().days < 15  and self.creature_b.generation != 0):
             can_breed = False
-        return can_breed
+            breed_error = "Both creatures in the pairing must be adults."
+        return (can_breed,breed_error)
 
     def requestor_owns_both(self):
         """Confirms that the user owns both creatures and returns True if checks pass."""

@@ -33,7 +33,8 @@ class BreedingCog(commands.GroupCog, name='Breeding',group_name='breeding'):
         breed_request=support_functions.create_breeding_ticket(requesting_user_id=ctx.message.author.id,
                                                   creature_a_id=creature_a_id,
                                                   creature_b_id=creature_b_id)
-        if breed_request.requestor_can_breed():
+        check_result = breed_request.requestor_can_breed()
+        if check_result[0]:
             if breed_request.requestor_owns_both():
                 breed_request = support_functions.enact_breeding(breed_request)
                 breed_request.id = database_methods.add_ticket_to_db(breed_request)
@@ -43,9 +44,7 @@ class BreedingCog(commands.GroupCog, name='Breeding',group_name='breeding'):
             else:
                 await self.pend_breeding(ctx,breed_request)
         else:
-            await ctx.send("Breeding request was not able to be submitted at this time."\
-                " Please confirm you own at least one of the creatures submitted "\
-                "and that your breeding crystal is fully charged.")
+            await ctx.send(check_result[1])
 
     @commands.command(aliases=['accept'])
     async def acceptBreeding(self,ctx,ticket_id):
