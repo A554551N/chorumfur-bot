@@ -78,6 +78,11 @@ class Ticket:
         elif (self.creature_a.calculate_age().days < 15 and self.creature_a.generation != 0) or (self.creature_b.calculate_age().days < 15  and self.creature_b.generation != 0):
             can_breed = False
             breed_error = "Both creatures in the pairing must be adults."
+        elif (self.requestor.is_breeding_pending):
+            can_breed = False
+            breed_error = "You are currently awaiting a response to a pending breeding,"\
+            " no new breeding requests can be generated while one is pending.  If you would like to "\
+            "cancel your existing request, use `.decline <ticket #> and then try again.`"
         return (can_breed,breed_error)
 
     def requestor_owns_both(self):

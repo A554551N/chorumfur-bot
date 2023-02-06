@@ -55,21 +55,23 @@ def add_user_to_database(user_to_add,conn=None):
         user_level,
         user_wallet,
         user_lastBreed,
-        user_warnings_issued)
-        VALUES (%s,%s,%s,%s,%s)"""
+        user_warnings_issued,
+        user_pending_breeding)
+        VALUES (%s,%s,%s,%s,%s,%s)"""
     cur = conn.cursor()
     cur.execute(sql,(user_to_add.userId,
                      user_to_add.level,
                      user_to_add.wallet,
                      user_to_add.lastBreed,
-                     user_to_add.warningsIssued))
+                     user_to_add.warningsIssued,
+                     user_to_add.is_breeding_pending))
     conn.commit()
     return True
 
 @make_database_connection
 def get_user_from_db(user_id,conn=None):
     """Retrieves a user from the database with a given ID and returns a User object."""
-    sql = """SELECT user_level,user_wallet,user_lastBreed,user_warnings_issued
+    sql = """SELECT user_level,user_wallet,user_lastBreed,user_warnings_issued,user_pending_breeding
                 FROM users WHERE user_id = %s
             """
     cur = conn.cursor()
@@ -81,6 +83,7 @@ def get_user_from_db(user_id,conn=None):
                     wallet=user_data[1],
                     lastBreed=user_data[2],
                     warningsIssued=user_data[3],
+                    is_breeding_pending=user_data[4],
                     inventory=get_user_inventory(user_id))
     return None
 
@@ -390,6 +393,16 @@ def update_user_last_breed(user,conn=None):
                          WHERE user_id = %s"""
     cur = conn.cursor()
     cur.execute(update_user_sql,(user.lastBreed,user.userId))
+    conn.commit()
+    return True
+
+@make_database_connection
+def update_user_pending_breeding(user,conn=None):
+    update_user_sql = """UPDATE users
+                         SET user_pending_breeding = %s
+                         WHERE user_id = %s"""
+    cur = conn.cursor()
+    cur.execute(update_user_sql,(user.is_breeding_pending,user.userId))
     conn.commit()
     return True
 
