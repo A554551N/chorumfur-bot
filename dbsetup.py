@@ -24,7 +24,8 @@ sql_create_users_table = """CREATE TABLE IF NOT EXISTS users (
                             level integer NOT NULL,
                             wallet integer NOT NULL,
                             lastBreed string,
-                            warnings_issued integer NOT NULL)
+                            warnings_issued integer NOT NULL,
+                            user_pending_breeding boolean NOT NULL)
                         """
 sql_create_creatures_table = """CREATE TABLE IF NOT EXISTS creatures (
                                 creatureId integer PRIMARY KEY AUTOINCREMENT,
