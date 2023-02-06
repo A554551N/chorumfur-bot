@@ -52,11 +52,11 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
     @is_guild_owner_or_bot_admin()
     async def makeRandomCreature(self,ctx,quantity=1):
         """Takes in an optional quantity parameter and stores that many creatures in the database
-        with randomized traits.  Outputs the creature to the interface after completion."""
-        user_id = ctx.message.author.id
+        with randomized traits.  Outputs the creature to the interface after completion.
+        Random Creatures are always owned by account 0 (the system)"""
         creatures_to_add = []
         for count in range(1,quantity+1):
-            creature_to_add = Creature(f"Random {count}",user_id)
+            creature_to_add = Creature(f"Random {count}",0)
             creature_to_add.randomize_creature()
             creatures_to_add.append(creature_to_add)
         returned_ids = database_methods.add_multiple_creatures_to_db(creatures_to_add)
