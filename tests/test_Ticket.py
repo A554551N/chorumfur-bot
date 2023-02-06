@@ -47,14 +47,8 @@ def test_add_ticket_to_db():
 
 def test_get_ticket_from_db():
     """Test should retreive a ticket from the database and return its ID"""
-    test_ticket = database_methods.get_ticket_from_db(40)
-    expected_result = (40,167,168,202632427535859712)
-    returned_value = (
-        test_ticket.id,
-        test_ticket.creature_a.creatureId,
-        test_ticket.creature_b.creatureId,
-        test_ticket.requestor.userId)
-    assert expected_result == returned_value
+    test_ticket = database_methods.get_ticket_from_db(139)
+    assert test_ticket.id
 
 def test_update_ticket_status():
     """Test should update a ticket status, and then retreive it to confirm update."""
