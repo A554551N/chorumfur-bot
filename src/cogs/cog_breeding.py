@@ -16,6 +16,8 @@ class BreedingCog(commands.GroupCog, name='Breeding',group_name='breeding'):
      pending_breedings channel.  Returns the modified Ticket."""
         ticket.update_ticket_status(2)
         ticket.id = database_methods.add_ticket_to_db(ticket)
+        ticket.requestor.is_breeding_pending = True
+        database_methods.update_user_pending_breeding(ticket.requestor)
         pending_breedings = self.client.get_channel(1067121489444339844)
         other_user = self.client.get_user(ticket.other_user())
         await pending_breedings.send(
@@ -62,18 +64,22 @@ class BreedingCog(commands.GroupCog, name='Breeding',group_name='breeding'):
             msg = f"Ticket {ticket.id} has been accepted.  Status is now {ticket.status}"
         await ctx.send(msg)
 
-    @commands.command(aliases=['decline'])
+    @commands.command(aliases=['decline','cancelBreeding'])
     async def declineBreeding(self,ctx,ticket_id):
         """.declineBreeding <ticket_id> moves a ticket from pending state to cancelled."""
         ticket = database_methods.get_ticket_from_db(ticket_id)
-        if ticket.other_user() != ctx.message.author.id:
+        if ctx.message.author.id not in (ticket.requestor.userId,ticket.other_user()):
             msg = "You do not have permission to modify this ticket."
         elif ticket.status != Constants.TICKET_STATUS[2]:
             msg = f"This ticket is in {ticket.status} and cannot be modified."
         else:
             ticket.update_ticket_status(6)
+            ticket.requestor.is_breeding_pending = False
             database_methods.update_ticket_in_db(ticket)
+            database_methods.update_user_pending_breeding(ticket.requestor)
             msg = f"Ticket {ticket.id} has been rejected.  Status is now {ticket.status}"
+            await ctx.send(f"{self.client.get_user(ticket.requestor.userId).mention} "\
+                           f"{self.client.get_user(ticket.other_user()).mention}")
         await ctx.send(msg)
 
 async def setup(bot):

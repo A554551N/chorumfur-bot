@@ -23,6 +23,7 @@ class User:
             number of warnings issued to this user (currently unused)
         daysSinceLastBreed : timedelta
             determines time since last breeding
+        is_breeding_pending : boolean
         BREEDINGSTONELINKS : dict
             dictionary containing links to Breeding Stone images
         Methods
@@ -34,7 +35,7 @@ class User:
             returns an int (1-6) indicating User readiness for breeding
     """
 
-    def __init__(self,userId,level=1,lastBreed=None,warningsIssued=0,name="",daysSinceLastBreed=None,wallet=0,inventory={}):
+    def __init__(self,userId,level=1,lastBreed=None,warningsIssued=0,name="",daysSinceLastBreed=None,wallet=0,inventory={},is_breeding_pending=False):
         self.userId = userId
         self.name = name
         self.level = level
@@ -48,6 +49,7 @@ class User:
         self.daysSinceLastBreed = daysSinceLastBreed
         self.lastBreed = lastBreed
         self.warningsIssued = warningsIssued
+        self.is_breeding_pending = is_breeding_pending
     
     def breedingLevel(self,test=False):
         """
