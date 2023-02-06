@@ -155,7 +155,7 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         output+="```**For more information run `.getTicket <ticket ID>`**"
         await ctx.send(output)
 
-    @commands.command()
+    @commands.command(aliases=['imageUpdate'])
     @is_guild_owner_or_bot_admin()
     async def updateImage(self,ctx,creature_id,*args):
         """ADMIN COMMAND: Updates a chorumfur with a given id's displayed image.
