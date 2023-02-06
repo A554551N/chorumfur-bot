@@ -146,9 +146,12 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         to show all open tickets or 'pending' to show tickets in a Breeding Pending state."""
         type_to_show = type_to_show.lower()
         returned_tickets = database_methods.get_requested_tickets_from_db(type_to_show)
-        output="**ID# | Ticket Name - Ticket Status**\n```"
+        largest_id = len(str(max([ticket[0] for ticket in returned_tickets])))
+        padding = max(largest_id-3,0)
+        output=f"**{' '*padding}ID# | Ticket Name - Ticket Status**\n```"
         for ticket in returned_tickets:
-            output+=f"{ticket[0]} | {ticket[1]} - {ticket[2]}\n"
+            padding = largest_id - len(str(ticket[0]))
+            output+=f"{' '*padding}{ticket[0]} | {ticket[1]} - {ticket[2]}\n"
         output+="```**For more information run `.getTicket <ticket ID>`**"
         await ctx.send(output)
 

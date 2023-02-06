@@ -87,9 +87,12 @@ class User:
 
     def outputInventory(self):
         if self.inventory:
-            output="**Item ID | Item Name | Quantity**\n```"
+            largest_id = len(str(max([item for item in self.inventory])))
+            padding = max(largest_id-3,0)
+            output=f"**{' '*padding}ID# | Item Name | Quantity**\n```"
             for item in self.inventory.keys():
-                output+=f"{item} | {self.inventory[item][0].name} | {self.inventory[item][1]}\n"
+                padding = largest_id - len(str(item))
+                output+=f"{' '*padding}{item} | {self.inventory[item][0].name} | {self.inventory[item][1]}\n"
             output +="```"
             return output
         return "You don't have any items!"

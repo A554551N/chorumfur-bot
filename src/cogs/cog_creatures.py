@@ -54,9 +54,13 @@ class CreaturesCog(commands.GroupCog, name='Chorumfur Management',group_name='ch
         """Displays a list of all chorumfurs in your lair."""
         user_id = ctx.message.author.id
         returned_creatures = database_methods.get_my_creatures_from_db(user_id)
-        output="**ID# | Creature Name**\n```"
+        list_of_ids = [creature[0] for creature in returned_creatures]
+        largest_id = len(str(max(list_of_ids)))
+        padding = max(largest_id - 3,0)
+        output=f"**{' '*padding}ID# | Creature Name**\n```"
         for creature in returned_creatures:
-            output+=f"{creature[0]} | {creature[1]}\n"
+            padding = largest_id - len(str(creature[0]))
+            output+=f"{' ' * padding}{creature[0]} | {creature[1]}\n"
         output+="```**For more information run `.getCreature <Creature ID>`**"
         await ctx.send(output)
 
