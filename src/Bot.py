@@ -2,6 +2,7 @@
 import os
 import logging
 from environment import EnvironmentVars
+from ConstantData import Constants
 import discord
 from discord.ext import commands
 
@@ -48,6 +49,15 @@ async def on_member_join(member):
 async def setup_hook():
     for cog in cogs:
         await client.load_extension(cog)
+
+@client.command()
+async def about(ctx):
+    """Displays data about chorumfur-bot"""
+    msg=f"""**Chorumfur-Bot {Constants.VERSION}**
+    Chorumfur-bot is programmed entirely in Python using the Discord.py library
+    by Justin Gordon ({client.get_user(202632427535859712)})
+    Code and documentation available at: https://github.com/A554551N/chorumfur-bot"""
+    await ctx.send(msg)
 
 # Gets bot token and stores it in the token variable
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__), '../token.txt')))
