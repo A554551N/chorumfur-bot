@@ -195,5 +195,17 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         await ctx.send("Breeding has been successfully submitted.  "\
                        f"Ticket # is {ticket.id}")
 
+    @commands.command(aliases=['agc'])
+    @is_guild_owner_or_bot_admin()
+    async def adminGiveCreature(self,ctx,creature_id,new_owner):
+        """Gives creatures with a given ID to a mentioned new owner.
+        Does not check current ownership"""
+        creature_to_give = database_methods.get_creature_from_db(creature_id)
+        creature_to_give.owner = support_functions.strip_mention_format(new_owner)
+        if database_methods.update_creature(creature_to_give):
+            await ctx.send("Creature has been given to requested user.")
+        else:
+            await ctx.send("An error has occurred, your creature has not been transferred.")
+
 async def setup(bot):
     await bot.add_cog(AdminCog(bot))

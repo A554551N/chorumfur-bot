@@ -1,14 +1,11 @@
 from discord.ext import commands
 import database_methods
+import support_functions
 
 class CreaturesCog(commands.GroupCog, name='Chorumfur Management',group_name='chorumfurs'):
     """Cog to group commands related to managing creatures"""
     def __init__(self,bot):
         self.client = bot
-
-    def strip_mention_format(self,mention):
-        """removes leading <@ and trailing > from user IDs passed as mentions"""
-        return mention[2:-1]
 
     @commands.command(aliases=['gc','getcreature'],require_var_positional=True)
     async def getCreature(self,ctx,creatureId):
@@ -43,7 +40,7 @@ class CreaturesCog(commands.GroupCog, name='Chorumfur Management',group_name='ch
         if creature_to_give.owner != ctx.message.author.id:
             await ctx.send("You may only give away chorumfurs that you own.")
         else:
-            creature_to_give.owner = self.strip_mention_format(new_owner)
+            creature_to_give.owner = support_functions.strip_mention_format(new_owner)
         if database_methods.update_creature(creature_to_give):
             await ctx.send("Creature has been given to requested user.")
         else:
