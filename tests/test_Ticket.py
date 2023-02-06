@@ -11,7 +11,7 @@ def test_cannot_breed_unowned_creatures():
     creature_b = Creature("Test_A",111)
     test_user = User(222,lastBreed=datetime(2022,1,1))
     test_ticket = Ticket('Test Ticket',test_user,creature_a,creature_b)
-    assert not test_ticket.requestor_can_breed()
+    assert not test_ticket.requestor_can_breed()[0]
 
 def test_cannot_breed_when_crystal_empty():
     """Test should reject user attempt to breed without a full crystal."""
@@ -19,7 +19,7 @@ def test_cannot_breed_when_crystal_empty():
     creature_b = Creature("Test_A",111)
     test_user = User(111,lastBreed=datetime.today())
     test_ticket = Ticket('Test Ticket',test_user,creature_a,creature_b)
-    assert not test_ticket.requestor_can_breed()
+    assert not test_ticket.requestor_can_breed()[0]
 
 def test_can_breed_when_owning_one():
     """Test should return True when user attempts to breed creature they own one of"""

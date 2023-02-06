@@ -373,7 +373,8 @@ def get_my_creatures_from_db(user_id,conn=None):
     get_creatures_sql="""SELECT creature_id,
                                 creature_name
                         FROM creatures
-                        WHERE creature_owner = %s"""
+                        WHERE creature_owner = %s
+                        ORDER BY creature_id ASC"""
     cur = conn.cursor()
     cur.execute(get_creatures_sql,(user_id,))
     returned_rows = cur.fetchall()
