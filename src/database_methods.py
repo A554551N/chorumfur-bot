@@ -6,6 +6,7 @@ database_connection(func)
 """
 
 import psycopg2
+import psycopg2.extras
 import logging
 import os
 import pickle
@@ -233,6 +234,41 @@ def add_creature_to_db(creature_to_add,conn=None):
     returned_id = cur.fetchone()[0]
     conn.commit()
     return returned_id
+
+@make_database_connection
+def add_multiple_creatures_to_db(creature_list,conn=None):
+    """Takes in a list of Creature objects and adds them to the creatures table of db.
+    Returns a tuple of IDs for the added creatures."""
+    add_creature_sql = """INSERT INTO creatures
+                          (creature_name,
+                          creature_owner,
+                          creature_create_date,
+                          creature_image_link,
+                          creature_image_link_newborn,
+                          creature_image_link_pup,
+                          creature_generation,
+                          creature_traits,
+                          creature_parent_a,
+                          creature_parent_b)
+                          VALUES %s
+                          RETURNING creature_id
+                          """
+    list_to_add = []
+    for creature_to_add in creature_list:
+        list_to_add.append((creature_to_add.name,
+                 creature_to_add.owner,
+                 creature_to_add.createDate,
+                 creature_to_add.imageLink,
+                 creature_to_add.imageLink_nb,
+                 creature_to_add.imageLink_pup,
+                 creature_to_add.generation,
+                 pickle.dumps(creature_to_add.traits),
+                 creature_to_add.parents[0],
+                 creature_to_add.parents[1]))
+    cur = conn.cursor()
+    returned_ids = psycopg2.extras.execute_values(cur,add_creature_sql,list_to_add,fetch=True)
+    conn.commit()
+    return returned_ids
 
 @make_database_connection
 def get_creature_from_db(creature_id,conn=None):

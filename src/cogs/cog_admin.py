@@ -54,16 +54,16 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         """Takes in an optional quantity parameter and stores that many creatures in the database
         with randomized traits.  Outputs the creature to the interface after completion."""
         user_id = ctx.message.author.id
+        creatures_to_add = []
         for count in range(1,quantity+1):
             creature_to_add = Creature(f"Random {count}",user_id)
             creature_to_add.randomize_creature()
-            creature_id = database_methods.add_creature_to_db(creature_to_add)
-            if creature_id:
-                creature_to_add.creatureId=creature_id
-                await ctx.send(f"{creature_to_add.name} added to database with ID #{creature_id}")
-                #await ctx.send(creature_to_add.outputCreature()[0])
-            else:
-                await ctx.send("An error occurred adding new creatures to DB")
+            creatures_to_add.append(creature_to_add)
+        returned_ids = database_methods.add_multiple_creatures_to_db(creatures_to_add)
+        output = "The following creatures have been added to the database: "
+        for returned_id in returned_ids:
+            output+= f"{returned_id[0]} "
+        await ctx.send(output)
 
     @commands.command()
     @is_guild_owner_or_bot_admin()
