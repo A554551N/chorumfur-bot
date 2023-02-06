@@ -75,7 +75,7 @@ def test_get_creature_from_db_that_doesnt_exist(testCreatureAttributes):
 def test_get_parents_from_db():
     test_creature = database_methods.get_creature_from_db(39)
     parents = database_methods.get_parents_from_db(test_creature)
-    correct_parents = [29,27]
+    correct_parents = [27,29]
     parents_returned = [parents[0].creatureId,parents[1].creatureId]
     assert correct_parents == parents_returned
 
@@ -84,4 +84,8 @@ def test_update_creature():
     test_creature = database_methods.get_creature_from_db(57)
     test_creature.name=new_name
     assert database_methods.update_creature(test_creature)
+
+def test_add_multiple_creatures_to_db():
+    creature_list = [Creature('add_multiple',99999),Creature('add_multiple',99999)]
+    assert database_methods.add_multiple_creatures_to_db(creature_list)
     
