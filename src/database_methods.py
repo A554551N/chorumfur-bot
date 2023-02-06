@@ -369,7 +369,8 @@ def get_parents_from_db(creature,conn=None):
 
 @make_database_connection
 def get_my_creatures_from_db(user_id,conn=None):
-    """Retreives all creatures from the database with a given user_id"""
+    """Retreives all creatures from the database with a given user_id.
+    Returns creature_id and creature_name"""
     get_creatures_sql="""SELECT creature_id,
                                 creature_name
                         FROM creatures
@@ -528,7 +529,14 @@ def get_requested_tickets_from_db(type_to_show,conn=None):
         return returned_rows
     return None
 if __name__ == "__main__":
-    test_creature = get_creature_from_db(39)
-    print(test_creature.parents)
-    parents = get_parents_from_db(test_creature)
-    print(parents)
+    returned_creatures = get_my_creatures_from_db(202632427535859712)
+    list_of_ids = [creature[0] for creature in returned_creatures]
+    largest_id = len(str(max(list_of_ids)))
+    padding = max(largest_id-3,0)
+    output=f"**{' '*padding}ID# | Creature Name**\n```"
+    for creature in returned_creatures:
+        padding = largest_id - len(str(creature[0]))
+        print(padding)
+        output+=f"{' ' * padding}{creature[0]} | {creature[1]}\n"
+    output+="```**For more information run `.getCreature <Creature ID>`**"
+    print(output)
