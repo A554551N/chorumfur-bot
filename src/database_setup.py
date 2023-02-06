@@ -8,7 +8,8 @@ CREATE TABLE users (
     user_level INTEGER NOT NULL,
     user_wallet INTEGER NOT NULL,
     user_lastBreed TEXT,
-    user_warnings_issued INTEGER NOT NULL
+    user_warnings_issued INTEGER NOT NULL,
+    user_pending_breeding BOOLEAN NOT NULL
     )"""
 
 SQL_CREATE_CREATURES_TABLE = """
