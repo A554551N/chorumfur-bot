@@ -12,8 +12,9 @@ class CreaturesCog(commands.GroupCog, name='Chorumfur Management',group_name='ch
         """Takes in a creature ID and sends a formatted output of the creature to discord"""
         requested_creature = database_methods.get_creature_from_db(creatureId)
         if requested_creature:
-            user = self.client.get_user(requested_creature.owner)
-            requested_creature.ownerName = user.name
+            if requested_creature.owner not in (0,1):
+                user = self.client.get_user(requested_creature.owner)
+                requested_creature.ownerName = user.name
             returned_values = requested_creature.outputCreature()
             await ctx.send(returned_values[0])
             await ctx.send(returned_values[1])
