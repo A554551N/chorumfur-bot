@@ -1,3 +1,4 @@
+from datetime import datetime
 from discord.ext import commands
 from Creature import Creature
 from Item import Item
@@ -206,6 +207,18 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
             await ctx.send("Creature has been given to requested user.")
         else:
             await ctx.send("An error has occurred, your creature has not been transferred.")
+
+    @commands.command()
+    @is_guild_owner_or_bot_admin()
+    async def giveBirth(self,ctx,ticket_id):
+        """Takes in a Ticket ID and updates the createDate of pups on the ticket."""
+        ticket = database_methods.get_ticket_from_db(ticket_id)
+        for pup in ticket.pups:
+            pup.createDate = datetime.today()
+            pup.owner = ticket.requestor.userId
+            database_methods.update_creature(pup)
+        await ctx.send(f"Litter for ticket #{ticket.id} birthed and "\
+                       f" delivered to <@{ticket.requestor.userId}>")
 
 async def setup(bot):
     await bot.add_cog(AdminCog(bot))

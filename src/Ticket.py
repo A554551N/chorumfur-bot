@@ -46,7 +46,7 @@ class Ticket:
         and updates Ticket object pups."""
         requested_breed = Breeding(creature_a=self.creature_a,
                                    creature_b=self.creature_b,
-                                   new_creature_owner=self.requestor.userId)
+                                   new_creature_owner=1)
         self.pups = requested_breed.breed()
         return self.pups
 

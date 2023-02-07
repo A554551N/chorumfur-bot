@@ -317,7 +317,8 @@ def update_creature(creature_to_update,conn=None):
                               creature_image_link_newborn = %s,
                               creature_image_link_pup = %s,
                               creature_owner = %s,
-                              creature_traits = %s
+                              creature_traits = %s,
+                              creature_create_date = %s
                           WHERE creature_id = %s
                           '''
     cur = conn.cursor()
@@ -327,6 +328,7 @@ def update_creature(creature_to_update,conn=None):
                                      creature_to_update.imageLink_pup,
                                      creature_to_update.owner,
                                      pickle.dumps(creature_to_update.traits),
+                                     creature_to_update.createDate,
                                      creature_to_update.creatureId))
     if cur.rowcount == 1:
         conn.commit()
@@ -542,14 +544,7 @@ def get_requested_tickets_from_db(type_to_show,conn=None):
         return returned_rows
     return None
 if __name__ == "__main__":
-    returned_creatures = get_my_creatures_from_db(202632427535859712)
-    list_of_ids = [creature[0] for creature in returned_creatures]
-    largest_id = len(str(max(list_of_ids)))
-    padding = max(largest_id-3,0)
-    output=f"**{' '*padding}ID# | Creature Name**\n```"
-    for creature in returned_creatures:
-        padding = largest_id - len(str(creature[0]))
-        print(padding)
-        output+=f"{' ' * padding}{creature[0]} | {creature[1]}\n"
-    output+="```**For more information run `.getCreature <Creature ID>`**"
-    print(output)
+    new_name = f"Renamed Creature"
+    test_creature = get_creature_from_db(57)
+    test_creature.name=new_name
+    update_creature(test_creature)
