@@ -47,20 +47,32 @@ class CreaturesCog(commands.GroupCog, name='Chorumfur Management',group_name='ch
         else:
             await ctx.send("An error has occurred, your creature has not been transferred.")
 
+    #@commands.command(aliases=['ml','lair'])
+    #async def myLairOld(self,ctx):
+    #    """Displays a list of all chorumfurs in your lair."""
+    #    user_id = ctx.message.author.id
+    #    returned_creatures = database_methods.get_my_creatures_from_db(user_id)
+    #    list_of_ids = [creature[0] for creature in returned_creatures]
+    #    largest_id = len(str(max(list_of_ids)))
+    #    padding = max(largest_id - 3,0)
+    #    output=f"**{' '*padding}ID# | Creature Name**\n```"
+    #    for creature in returned_creatures:
+    #        padding = largest_id - len(str(creature[0]))
+    #        output+=f"{' ' * padding}{creature[0]} | {creature[1]}\n"
+    #    output+="```**For more information run `.getCreature <Creature ID>`**"
+    #    await ctx.send(output)
+
     @commands.command(aliases=['ml','lair'])
     async def myLair(self,ctx):
         """Displays a list of all chorumfurs in your lair."""
         user_id = ctx.message.author.id
         returned_creatures = database_methods.get_my_creatures_from_db(user_id)
-        list_of_ids = [creature[0] for creature in returned_creatures]
-        largest_id = len(str(max(list_of_ids)))
-        padding = max(largest_id - 3,0)
-        output=f"**{' '*padding}ID# | Creature Name**\n```"
-        for creature in returned_creatures:
-            padding = largest_id - len(str(creature[0]))
-            output+=f"{' ' * padding}{creature[0]} | {creature[1]}\n"
-        output+="```**For more information run `.getCreature <Creature ID>`**"
-        await ctx.send(output)
+        msg_list = support_functions.format_output("{} - {}\n",
+                                                  ("ID#","Creature Name"),
+                                                   returned_creatures)
+        for msg in msg_list:
+            await ctx.send(msg)
+        await ctx.send("**For more information run `.getCreature <Creature ID>`**")
 
 async def setup(bot):
     await bot.add_cog(CreaturesCog(bot))
