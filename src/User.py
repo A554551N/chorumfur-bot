@@ -86,18 +86,6 @@ class User:
                 return 0
             return 30 - self.daysSinceLastBreed
         return 0
-
-    def outputInventory(self):
-        if self.inventory:
-            largest_id = len(str(max([item for item in self.inventory])))
-            padding = max(largest_id-3,0)
-            output=f"**{' '*padding}ID# | Item Name | Quantity**\n```"
-            for item in self.inventory.keys():
-                padding = largest_id - len(str(item))
-                output+=f"{' '*padding}{item} | {self.inventory[item][0].name} | {self.inventory[item][1]}\n"
-            output +="```"
-            return output
-        return "You don't have any items!"
     
     def update_last_breed(self):
         self.lastBreed = datetime.today()
