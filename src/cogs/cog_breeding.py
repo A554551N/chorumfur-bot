@@ -5,8 +5,8 @@ from ConstantData import Constants
 import database_methods
 
 
-class BreedingCog(commands.GroupCog, name='Breeding',group_name='breeding'):
-    """Cog to group commands related to breeding"""
+class BreedingCog(commands.GroupCog, name='Mating',group_name='mating'):
+    """Cog to group commands related to mating"""
     def __init__(self,bot):
         self.client = bot
 
