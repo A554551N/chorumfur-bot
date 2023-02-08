@@ -185,8 +185,8 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
 
     @commands.command()
     @is_guild_owner_or_bot_admin()
-    async def adminBreed(self,ctx,creature_a_id,creature_b_id,new_owner=None):
-        """ADMIN: Submit a breeding request in format .breed <creature_a> <creature_b> <new owner>
+    async def adminMate(self,ctx,creature_a_id,creature_b_id,new_owner=None):
+        """ADMIN: Submit a mating request in format .mate <creature_a> <creature_b> <new owner>
         DOES NOT USE BREEDING CRYSTAL"""
         if new_owner is None:
             new_owner = ctx.message.author.id

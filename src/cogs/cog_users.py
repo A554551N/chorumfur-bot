@@ -12,10 +12,10 @@ class UserCog(commands.GroupCog, name='User Management', group_name='users'):
 
     @commands.command()
     async def crystal(self, ctx):
-        """gets the status of the user's breeding crystal and displays it in in chat"""
+        """gets the status of the user's mating crystal and displays it in in chat"""
         user = database_methods.get_user_from_db(ctx.message.author.id)
         if user:
-            msg = f"**Last Breeding:** {user.lastBreed}\n"\
+            msg = f"**Last Mating:** {user.lastBreed}\n"\
                 f"Crystal Full in {user.daysUntilFull()} days"
         await ctx.send(msg)
         await ctx.send(Constants.CRYSTAL_IMAGE_STAGES[user.breedingLevel()])

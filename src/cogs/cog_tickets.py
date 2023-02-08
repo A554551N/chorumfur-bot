@@ -17,7 +17,7 @@ class TicketCog(commands.GroupCog, name='Ticket Management',group_name='tickets'
 
     @commands.command()
     async def cancelTicket(self,ctx,ticket_id):
-        """Cancels an in progress breeding ticket"""
+        """Cancels an in progress pairing ticket"""
         ticket = database_methods.get_ticket_from_db(ticket_id)
         if ctx.message.author.id != ticket.requestor.userId:
             msg = "You do not have permission to modify this ticket."
