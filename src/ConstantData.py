@@ -1,7 +1,7 @@
 class Constants:
     DATETIMEFORMAT = '''%Y-%m-%d %H:%M:%S.%f'''
     DATEONLYFORMAT = '%Y-%m-%d'
-    VERSION = 'v0.1.0'
+    VERSION = 'v0.2.0'
     DEFAULT_TRAITS_DICT = {
         'MAIN_HORN': "",
         'CHEEK_HORN': "",
