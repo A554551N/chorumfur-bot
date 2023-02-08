@@ -85,11 +85,15 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
     @is_guild_owner_or_bot_admin()
     async def getAllItems(self,ctx):
         """Retrieves all items defined in the items database and displays them as a list."""
-        output = "**Item ID | Item Name - Item Value**\n```"
-        for item in database_methods.get_all_items_from_db():
-            output+= f"{item[0]} | {item[1]} - {item[2]}\n"
-        output+= "```**For more information run `.getItem <Item ID>`**"
-        await ctx.send(output)
+        returned_items = database_methods.get_all_items_from_db() or None
+        if returned_items:
+            msg_list = support_functions.format_output("{} - {} - {}\n",
+                                                       ("ID#","Item Name","Value"),
+                                                        returned_items
+                                                      )
+        for msg in msg_list:
+            await ctx.send(msg if returned_items else "No Items Found")
+        await ctx.send("**For more information run `.getItem <Item ID>`**")
 
     @commands.command()
     @is_guild_owner_or_bot_admin()
@@ -146,15 +150,16 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         """Shows a summary view of all open tickets based on a parameter.  Accepts 'open'
         to show all open tickets or 'pending' to show tickets in a Breeding Pending state."""
         type_to_show = type_to_show.lower()
-        returned_tickets = database_methods.get_requested_tickets_from_db(type_to_show)
-        largest_id = len(str(max([ticket[0] for ticket in returned_tickets])))
-        padding = max(largest_id-3,0)
-        output=f"**{' '*padding}ID# | Ticket Name - Ticket Status**\n```"
-        for ticket in returned_tickets:
-            padding = largest_id - len(str(ticket[0]))
-            output+=f"{' '*padding}{ticket[0]} | {ticket[1]} - {ticket[2]}\n"
-        output+="```**For more information run `.getTicket <ticket ID>`**"
-        await ctx.send(output)
+        returned_tickets = database_methods.get_requested_tickets_from_db(type_to_show) or None
+        if returned_tickets:
+            msg_list=support_functions.format_output("{} - {} - {}\n",
+                                            ("ID#","Ticket Name","Ticket Status"),
+                                            returned_tickets)
+            for msg in msg_list:
+                await ctx.send(msg)
+            await ctx.send("**For more information run `.getTicket <ticket ID>`**")
+        else:
+            await ctx.send("No Tickets Found")
 
     @commands.command(aliases=['imageUpdate'])
     @is_guild_owner_or_bot_admin()
@@ -180,8 +185,8 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
 
     @commands.command()
     @is_guild_owner_or_bot_admin()
-    async def adminBreed(self,ctx,creature_a_id,creature_b_id,new_owner=None):
-        """ADMIN: Submit a breeding request in format .breed <creature_a> <creature_b> <new owner>
+    async def adminMate(self,ctx,creature_a_id,creature_b_id,new_owner=None):
+        """ADMIN: Submit a mating request in format .mate <creature_a> <creature_b> <new owner>
         DOES NOT USE BREEDING CRYSTAL"""
         if new_owner is None:
             new_owner = ctx.message.author.id

@@ -37,7 +37,8 @@ class Creature:
                 creatureId=None,
                 createDate=None,
                 ownerName=None,
-                parents=[None,None]):
+                parents=[None,None],
+                available_to_breed=False):
         self.name = name
         if not createDate:
             createDate= datetime.today()
@@ -57,6 +58,7 @@ class Creature:
         self.createDate = createDate
         self.traits = dict(traits)
         self.parents = parents
+        self.available_to_breed = available_to_breed
 
     def randomize_trait(self,trait_category):
         """Takes in a trait category and returns a randomly selected trait"""

@@ -87,4 +87,7 @@ def test_update_creature():
 def test_add_multiple_creatures_to_db():
     creature_list = [Creature('add_multiple',99999),Creature('add_multiple',99999)]
     assert database_methods.add_multiple_creatures_to_db(creature_list)
-    
+
+def test_get_creatures_available_to_breed():
+    creatures_available_to_breed = database_methods.get_creatures_available_to_breed()
+    assert creatures_available_to_breed[0][0] == 27
