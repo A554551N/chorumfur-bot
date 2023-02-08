@@ -35,12 +35,11 @@ class User:
             returns an int (1-6) indicating User readiness for breeding
     """
 
-    def __init__(self,userId,level=1,lastBreed=None,warningsIssued=0,name="",daysSinceLastBreed=None,wallet=0,inventory={},is_breeding_pending=False):
+    def __init__(self,userId,level=1,lastBreed=None,warningsIssued=0,name="",daysSinceLastBreed=None,wallet=0,is_breeding_pending=False):
         self.userId = userId
         self.name = name
         self.level = level
         self.wallet = wallet
-        self.inventory = inventory
         if lastBreed == "None":
             lastBreed = None
         elif isinstance(lastBreed,str):

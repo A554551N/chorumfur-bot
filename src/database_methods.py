@@ -83,8 +83,7 @@ def get_user_from_db(user_id,conn=None):
                     wallet=user_data[1],
                     lastBreed=user_data[2],
                     warningsIssued=user_data[3],
-                    is_breeding_pending=user_data[4],
-                    inventory=get_user_inventory(user_id))
+                    is_breeding_pending=user_data[4])
     return None
 
 @make_database_connection
@@ -179,13 +178,10 @@ def get_all_items_from_db(conn=None):
 
 @make_database_connection
 def get_user_inventory(user_id,conn=None):
-    """Retreives all items associated with user and returns an array of tuples
-    (Item object,quantity)"""
+    """Retreives all items associated with user and returns a tuple of tuples
+    (Item ID, Item Name, Item Quantity)"""
     get_inventory = '''SELECT items.item_id,
 	                   items.item_name,
-                       items.item_desc,
-                       items.item_value,
-                       items.item_image_link,
                        owned_items.owned_item_quantity
                        FROM items
                        INNER JOIN owned_items ON items.item_id = owned_items.owned_item_type_id
@@ -193,16 +189,8 @@ def get_user_inventory(user_id,conn=None):
     cur = conn.cursor()
     cur.execute(get_inventory,(user_id,))
     retreived_rows = cur.fetchall()
-    inventory = {}
     if retreived_rows:
-        for row in retreived_rows:
-            item_object = Item(id=row[0],
-                        name=row[1],
-                        description=row[2],
-                        value=row[3],
-                        imageLink=row[4])
-            inventory[item_object.id] = (item_object,row[5])
-        return inventory
+        return retreived_rows
     return None
 
 @make_database_connection
