@@ -1,6 +1,8 @@
+import database_methods
+import support_functions
 from discord.ext import commands
 from ConstantData import Constants
-import database_methods
+
 
 class TicketCog(commands.GroupCog, name='Ticket Management',group_name='tickets'):
     """Cog to group commands related to managing Tickets"""
@@ -36,15 +38,16 @@ class TicketCog(commands.GroupCog, name='Ticket Management',group_name='tickets'
     async def myTickets(self,ctx):
         """Retreives all tickets that belong to the user and displays them in a list"""
         user_id = ctx.message.author.id
-        returned_tickets = database_methods.get_my_tickets_from_db(user_id)
-        largest_id = len(str(max([ticket[0] for ticket in returned_tickets])))
-        padding = max(largest_id-3,0)
-        output=f"**{' '*padding}ID# | Ticket Name - Ticket Status**\n```"
-        for ticket in returned_tickets:
-            padding = largest_id - len(str(ticket[0]))
-            output+=f"{' ' * padding}{ticket[0]} | {ticket[1]} - {ticket[2]}\n"
-        output+="```**For more information run `.getTicket <ticket ID>`**"
-        await ctx.send(output)
+        returned_tickets = database_methods.get_my_tickets_from_db(user_id) or None
+        if returned_tickets:
+            msg_list = support_functions.format_output("{} - {} - {}\n",
+                                                       ("ID#","Ticket Name", "Status"),
+                                                       returned_tickets)
+            for msg in msg_list:
+                await ctx.send(msg)
+            await ctx.send("**For more information run `.getTicket <ticket ID>`**")
+        else:
+            await ctx.send("No Tickets Found")
 
 async def setup(bot):
     await bot.add_cog(TicketCog(bot))

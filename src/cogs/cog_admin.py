@@ -155,9 +155,11 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
             msg_list=support_functions.format_output("{} - {} - {}\n",
                                             ("ID#","Ticket Name","Ticket Status"),
                                             returned_tickets)
-        for msg in msg_list:
-            await ctx.send(msg if returned_tickets else "No Tickets Found")
-        await ctx.send("**For more information run `.getTicket <ticket ID>`**")
+            for msg in msg_list:
+                await ctx.send(msg)
+            await ctx.send("**For more information run `.getTicket <ticket ID>`**")
+        else:
+            await ctx.send("No Tickets Found")
 
     @commands.command(aliases=['imageUpdate'])
     @is_guild_owner_or_bot_admin()

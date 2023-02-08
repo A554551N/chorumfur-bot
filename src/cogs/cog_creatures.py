@@ -66,13 +66,16 @@ class CreaturesCog(commands.GroupCog, name='Chorumfur Management',group_name='ch
     async def myLair(self,ctx):
         """Displays a list of all chorumfurs in your lair."""
         user_id = ctx.message.author.id
-        returned_creatures = database_methods.get_my_creatures_from_db(user_id)
-        msg_list = support_functions.format_output("{} - {}\n",
-                                                  ("ID#","Creature Name"),
-                                                   returned_creatures)
-        for msg in msg_list:
-            await ctx.send(msg)
-        await ctx.send("**For more information run `.getCreature <Creature ID>`**")
+        returned_creatures = database_methods.get_my_creatures_from_db(user_id) or None
+        if returned_creatures:
+            msg_list = support_functions.format_output("{} - {}\n",
+                                                      ("ID#","Creature Name"),
+                                                       returned_creatures)
+            for msg in msg_list:
+                await ctx.send(msg)
+            await ctx.send("**For more information run `.getCreature <Creature ID>`**")
+        else:
+            await ctx.send("No Chorumfurs Found")
 
 async def setup(bot):
     await bot.add_cog(CreaturesCog(bot))

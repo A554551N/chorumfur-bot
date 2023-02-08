@@ -1,5 +1,6 @@
-from discord.ext import commands
 import database_methods
+import support_functions
+from discord.ext import commands
 
 class InventoryCog(commands.GroupCog, name='Inventory Management',group_name='inventory'):
     """Cog to group commands related to managing inventory"""
@@ -17,10 +18,16 @@ class InventoryCog(commands.GroupCog, name='Inventory Management',group_name='in
     @commands.command()
     async def inventory(self,ctx):
         """Displays a user's inventory"""
-        await ctx.send(f"Fetching Inventory {ctx.message.author.mention}")
-        user = database_methods.get_user_from_db(ctx.message.author.id)
-        await ctx.send(user.outputInventory())
-        await ctx.send("For more information on an item, use .getItem <ID Number>")
+        returned_inventory = database_methods.get_user_inventory(ctx.message.author.id) or None
+        if returned_inventory:
+            msg_list = support_functions.format_output("{} - {} - {}\n",
+                                                       ("ID#","Item Name","Quantity"),
+                                                       returned_inventory)
+            for msg in msg_list:
+                await ctx.send(msg)
+            await ctx.send("**For more information on an item, use `.getItem <ID Number>`**")
+        else:
+            await ctx.send("No Items Found")
 
 
 async def setup(bot):
