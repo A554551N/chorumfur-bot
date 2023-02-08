@@ -290,7 +290,8 @@ def get_creature_from_db(creature_id,conn=None):
                                  creature_generation,
                                  creature_traits,
                                  creature_parent_a,
-                                 creature_parent_b
+                                 creature_parent_b,
+                                 creature_available_to_breed
                           FROM creatures
                           WHERE creature_id = %s"""
     cur = conn.cursor()
@@ -304,7 +305,8 @@ def get_creature_from_db(creature_id,conn=None):
                                      imageLink=returned_row[4],
                                      imageLink_nb=returned_row[5],
                                      imageLink_pup=returned_row[6],
-                                     generation=returned_row[7])
+                                     generation=returned_row[7],
+                                     available_to_breed=returned_row[11])
         if returned_row[8]:
             returned_creature.traits=pickle.loads(returned_row[8])
         if returned_row[9] or returned_row[10]:
@@ -322,7 +324,8 @@ def update_creature(creature_to_update,conn=None):
                               creature_image_link_pup = %s,
                               creature_owner = %s,
                               creature_traits = %s,
-                              creature_create_date = %s
+                              creature_create_date = %s,
+                              creature_available_to_breed = %s
                           WHERE creature_id = %s
                           '''
     cur = conn.cursor()
@@ -333,6 +336,7 @@ def update_creature(creature_to_update,conn=None):
                                      creature_to_update.owner,
                                      pickle.dumps(creature_to_update.traits),
                                      creature_to_update.createDate,
+                                     creature_to_update.available_to_breed,
                                      creature_to_update.creatureId))
     if cur.rowcount == 1:
         conn.commit()
