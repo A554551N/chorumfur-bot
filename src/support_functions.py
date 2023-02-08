@@ -43,6 +43,28 @@ async def send_ticket_to_channel(bot, ticket):
     await ticket_channel.send(artist.mention)
     await ticket_channel.send(ticket.output_detailed_ticket())
 
+def format_output(format_str,header_elements,returned_list_from_db):
+    """Takes in a format string, the elements that form the header,
+     a list taken from the db and returns a formatted string
+     suitable for use in list-style outputs"""
+    # PAD THE CELLS TO KEEP THE LINES STRAIGHT
+    output_len = 0 # counts characters
+    msg_list = [] # the list of messages to ret0urn
+    msg_count = 0
+    header = format_str.format(*header_elements)
+    msg_list.append(f"**{header}**```")
+    for row in returned_list_from_db:
+        output_str = format_str.format(*row)
+        output_len += len(output_str)
+        if output_len > 1900:
+            msg_list[msg_count] += "```"
+            msg_count += 1
+            output_len = 0
+        if output_len==0:
+            msg_list.append(f"**{header}**```")
+        msg_list[msg_count] += output_str
+    msg_list[msg_count] +="```"
+    return msg_list
 
 def strip_mention_format(mention):
     """removes leading <@ and trailing > from user IDs passed as mentions"""

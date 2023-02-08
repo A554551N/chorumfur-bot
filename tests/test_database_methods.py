@@ -67,5 +67,5 @@ def test_cannot_get_nonexistant_item():
 def test_get_user_inventory():
     """Tests that a user can retreive their inventory"""
     returned_inventory = database_methods.get_user_inventory(99999)
-    assert returned_inventory[1][0].name == "Beach Fun"
+    assert returned_inventory[0][1] == "Beach Fun"
     
