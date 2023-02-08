@@ -89,9 +89,7 @@ class BreedingCog(commands.GroupCog, name='Breeding',group_name='breeding'):
         or start doing the mating dance."""
         if creature_id:
             creature = database_methods.get_creature_from_db(creature_id)
-            print(creature.available_to_breed)
             creature.available_to_breed = not creature.available_to_breed
-            print(creature.available_to_breed)
             database_methods.update_creature(creature)
             await ctx.send(f"{creature.name} has {'started' if creature.available_to_breed else 'stopped'}"\
                            " doing the mating dance.")
