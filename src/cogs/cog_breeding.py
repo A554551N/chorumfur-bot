@@ -82,5 +82,29 @@ class BreedingCog(commands.GroupCog, name='Breeding',group_name='breeding'):
                            f"{self.client.get_user(ticket.other_user()).mention}")
         await ctx.send(msg)
 
+    @commands.command()
+    async def matingDance(self,ctx,creature_id=None):
+        """Checks to see which chorumfurs are doing a mating dance.
+        If an owned creature ID is supplied, that creature will stop
+        or start doing the mating dance."""
+        if creature_id:
+            creature = database_methods.get_creature_from_db(creature_id)
+            creature.available_to_breed = not creature.available_to_breed
+            database_methods.update_creature(creature)
+            await ctx.send(f"{creature.name} has {'started' if creature.available_to_breed else 'stopped'}"\
+                           " doing the mating dance.")
+        else:
+            returned_creatures = database_methods.get_creatures_available_to_breed()
+            list_of_ids = [creature[0] for creature in returned_creatures]
+            largest_id = len(str(max(list_of_ids)))
+            padding = max(largest_id - 3,0)
+            output=f"**{' '*padding}ID# | Creature Name**\n```"
+            for creature in returned_creatures:
+                padding = largest_id - len(str(creature[0]))
+                output+=f"{' ' * padding}{creature[0]} | {creature[1]}\n"
+            output+="```**For more information run `.getCreature <Creature ID>`**"
+            await ctx.send(output)
+
+
 async def setup(bot):
     await bot.add_cog(BreedingCog(bot))

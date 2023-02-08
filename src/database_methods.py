@@ -218,8 +218,9 @@ def add_creature_to_db(creature_to_add,conn=None):
                           creature_generation,
                           creature_traits,
                           creature_parent_a,
-                          creature_parent_b)
-                          VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                          creature_parent_b,
+                          creature_available_to_breed)
+                          VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                           RETURNING creature_id
                           """
     cur = conn.cursor()
@@ -233,7 +234,8 @@ def add_creature_to_db(creature_to_add,conn=None):
                  creature_to_add.generation,
                  pickle.dumps(creature_to_add.traits),
                  creature_to_add.parents[0],
-                 creature_to_add.parents[1]))
+                 creature_to_add.parents[1],
+                 creature_to_add.available_to_breed))
     returned_id = cur.fetchone()[0]
     conn.commit()
     return returned_id
@@ -252,7 +254,8 @@ def add_multiple_creatures_to_db(creature_list,conn=None):
                           creature_generation,
                           creature_traits,
                           creature_parent_a,
-                          creature_parent_b)
+                          creature_parent_b,
+                          creature_available_to_breed)
                           VALUES %s
                           RETURNING creature_id
                           """
@@ -267,7 +270,8 @@ def add_multiple_creatures_to_db(creature_list,conn=None):
                  creature_to_add.generation,
                  pickle.dumps(creature_to_add.traits),
                  creature_to_add.parents[0],
-                 creature_to_add.parents[1]))
+                 creature_to_add.parents[1],
+                 creature_to_add.available_to_breed))
     cur = conn.cursor()
     returned_ids = psycopg2.extras.execute_values(cur,add_creature_sql,list_to_add,fetch=True)
     conn.commit()
@@ -286,7 +290,8 @@ def get_creature_from_db(creature_id,conn=None):
                                  creature_generation,
                                  creature_traits,
                                  creature_parent_a,
-                                 creature_parent_b
+                                 creature_parent_b,
+                                 creature_available_to_breed
                           FROM creatures
                           WHERE creature_id = %s"""
     cur = conn.cursor()
@@ -300,7 +305,8 @@ def get_creature_from_db(creature_id,conn=None):
                                      imageLink=returned_row[4],
                                      imageLink_nb=returned_row[5],
                                      imageLink_pup=returned_row[6],
-                                     generation=returned_row[7])
+                                     generation=returned_row[7],
+                                     available_to_breed=returned_row[11])
         if returned_row[8]:
             returned_creature.traits=pickle.loads(returned_row[8])
         if returned_row[9] or returned_row[10]:
@@ -318,7 +324,8 @@ def update_creature(creature_to_update,conn=None):
                               creature_image_link_pup = %s,
                               creature_owner = %s,
                               creature_traits = %s,
-                              creature_create_date = %s
+                              creature_create_date = %s,
+                              creature_available_to_breed = %s
                           WHERE creature_id = %s
                           '''
     cur = conn.cursor()
@@ -329,6 +336,7 @@ def update_creature(creature_to_update,conn=None):
                                      creature_to_update.owner,
                                      pickle.dumps(creature_to_update.traits),
                                      creature_to_update.createDate,
+                                     creature_to_update.available_to_breed,
                                      creature_to_update.creatureId))
     if cur.rowcount == 1:
         conn.commit()
@@ -387,6 +395,19 @@ def get_my_creatures_from_db(user_id,conn=None):
     if returned_rows:
         return returned_rows
     return None
+
+@make_database_connection
+def get_creatures_available_to_breed(conn=None):
+    """Retrieve all creatures marked available to breed and return them"""
+    get_creatures_sql = """SELECT creature_id,
+                                  creature_name
+                           FROM creatures
+                           WHERE creature_available_to_breed = True
+                           ORDER BY creature_id ASC"""
+    cur = conn.cursor()
+    cur.execute(get_creatures_sql)
+    returned_rows = cur.fetchall()
+    return returned_rows or None
 
 @make_database_connection
 def update_user_last_breed(user,conn=None):
