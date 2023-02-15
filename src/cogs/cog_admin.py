@@ -136,7 +136,7 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         status_code = Constants.TICKET_STATUS.index(ticket.status)
         if status_code == 2:
             await ctx.send("Ticket is currently awaiting confirmation from a user.  It cannot be updated.")
-        elif status_code == 5:
+        elif status_code == 6:
             await ctx.send("Ticket already has a status of Complete, cannot advance.")
         else:
             status_code += 1
@@ -148,7 +148,8 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
     @is_guild_owner_or_bot_admin()
     async def showTickets(self,ctx,type_to_show='open'):
         """Shows a summary view of all open tickets based on a parameter.  Accepts 'open'
-        to show all open tickets or 'pending' to show tickets in a Breeding Pending state."""
+        to show all open tickets or 'pending' to show tickets in a Breeding Pending state.
+        'ready' displays all creatures in a Ready to Birth State"""
         type_to_show = type_to_show.lower()
         returned_tickets = database_methods.get_requested_tickets_from_db(type_to_show) or None
         if returned_tickets:

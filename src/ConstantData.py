@@ -128,6 +128,7 @@ class Constants:
                      'Awaiting Confirmation',
                      'Breeding Pending',
                      'Breeding in Progress',
+                     'Ready to Birth',
                      'Complete',
                      'Rejected']
 

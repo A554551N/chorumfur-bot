@@ -21,7 +21,7 @@ class TicketCog(commands.GroupCog, name='Ticket Management',group_name='tickets'
         ticket = database_methods.get_ticket_from_db(ticket_id)
         if ctx.message.author.id != ticket.requestor.userId:
             msg = "You do not have permission to modify this ticket."
-        elif ticket.status == Constants.TICKET_STATUS[5]:
+        elif ticket.status in (Constants.TICKET_STATUS[5],Constants.TICKET_STATUS[6]):
             msg = "You cannot cancel a completed ticket."
         else:
             if database_methods.delete_ticket(ticket_id):
