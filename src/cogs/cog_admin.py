@@ -220,9 +220,10 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         """Takes in a Ticket ID and updates the createDate of pups on the ticket."""
         ticket = database_methods.get_ticket_from_db(ticket_id)
         for pup in ticket.pups:
-            pup.createDate = datetime.today()
-            pup.owner = ticket.requestor.userId
-            database_methods.update_creature(pup)
+            new_pup = database_methods.get_creature_from_db(pup.id)
+            new_pup.createDate = datetime.today()
+            new_pup.owner = ticket.requestor.userId
+            database_methods.update_creature(new_pup)
         await ctx.send(f"Litter for ticket #{ticket.id} birthed and "\
                        f" delivered to <@{ticket.requestor.userId}>")
 
