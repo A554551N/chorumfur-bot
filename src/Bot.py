@@ -56,7 +56,14 @@ async def about(ctx):
     msg=f"""**Chorumfur-Bot {Constants.VERSION}**
     Chorumfur-bot is programmed entirely in Python using the Discord.py library
     by Justin Gordon ({client.get_user(202632427535859712)})
-    Code and documentation available at: https://github.com/A554551N/chorumfur-bot"""
+    Code and documentation available at: https://github.com/A554551N/chorumfur-bot
+
+    Chorumfurs are small ferret-like dragons originally created by Quinn#0610, then apprehendedand run off with by Lysa (Zombpossum#5577).
+
+    While the species has been around since 2019, this community has only been operating sinc late 2022.  There's a whole rich culture behind these fuzzbutts that we're excited to share and release to you all as we continue to grow and expand!
+
+    Chorumfurs are a closed species, the only way to get one is to be part of our community.
+    """
     await ctx.send(msg)
 
 # Gets bot token and stores it in the token variable
