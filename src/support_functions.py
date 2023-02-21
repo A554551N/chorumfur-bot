@@ -18,12 +18,13 @@ def create_breeding_ticket(requesting_user_id, creature_a_id, creature_b_id):
                   parents_of_b=parents_of_b)
 
 
-def enact_breeding(ticket):
+def enact_breeding(ticket,is_admin=False):
     """Performs the core logic of breeding based on a supplied Ticket object.
 Returns the updated Ticket object"""
     ticket.update_ticket_status(3)
-    ticket.requestor.update_last_breed()
-    database_methods.update_user_last_breed(ticket.requestor)
+    if not is_admin:
+        ticket.requestor.update_last_breed()
+        database_methods.update_user_last_breed(ticket.requestor)
     ticket.perform_breeding()
     ticket = add_pups_to_database(ticket)
     return ticket
