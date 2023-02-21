@@ -196,7 +196,7 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         ticket = support_functions.create_breeding_ticket(requesting_user_id=new_owner,
                                        creature_a_id=creature_a_id,
                                        creature_b_id=creature_b_id)
-        support_functions.enact_breeding(ticket)
+        support_functions.enact_breeding(ticket,is_admin=True)
         ticket.id = database_methods.add_ticket_to_db(ticket)
         await support_functions.send_ticket_to_channel(self.client,ticket)
         await ctx.send("Breeding has been successfully submitted.  "\
