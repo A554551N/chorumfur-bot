@@ -220,10 +220,12 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         """Takes in a Ticket ID and updates the createDate of pups on the ticket."""
         ticket = database_methods.get_ticket_from_db(ticket_id)
         for pup in ticket.pups:
-            new_pup = database_methods.get_creature_from_db(pup.creatureId)
-            new_pup.createDate = datetime.today()
-            new_pup.owner = ticket.requestor.userId
-            database_methods.update_creature(new_pup)
+            # leaving this here through next breeding in case any pups are still on old model
+            # new_pup = database_methods.get_creature_from_db(pup.creatureId)
+            pup.createDate = datetime.today()
+            pup.owner = ticket.requestor.userId
+            # database_methods.update_creature(new_pup)
+            support_functions.add_pups_to_database(ticket)
         await ctx.send(f"Litter for ticket #{ticket.id} birthed and "\
                        f" delivered to <@{ticket.requestor.userId}>")
 

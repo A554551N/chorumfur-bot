@@ -26,7 +26,7 @@ Returns the updated Ticket object"""
         ticket.requestor.update_last_breed()
         database_methods.update_user_last_breed(ticket.requestor)
     ticket.perform_breeding()
-    ticket = add_pups_to_database(ticket)
+    #ticket = add_pups_to_database(ticket)
     return ticket
 
 
