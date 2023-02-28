@@ -229,5 +229,26 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         await ctx.send(f"Litter for ticket #{ticket.id} birthed and "\
                        f" delivered to <@{ticket.requestor.userId}>")
 
+    @commands.command()
+    @is_guild_owner_or_bot_admin()
+    async def birthAll(self,ctx):
+        """automatically births ALL creatures in 'Ready to Birth' status."""
+        tickets = database_methods.get_tickets_from_db_by_status(5) or None
+        if tickets:
+            completed_tickets = []
+            completed_pups = 0
+            for ticket in tickets:
+                for pup in ticket.pups:
+                    pup.createDate = datetime.today()
+                    pup.owner = ticket.requestor.userId
+                    completed_pups += 1
+                support_functions.add_pups_to_database(ticket)
+                completed_tickets.append(ticket.id)
+                ticket.update_ticket_status(6)
+                database_methods.update_ticket_status(ticket)
+            await ctx.send(f"Tickets {completed_tickets} have been birthed.\nA total of {completed_pups} were born.")
+        else:
+            await ctx.send("No tickets appear to be ready for breeding or an error has occurred.")
+
 async def setup(bot):
     await bot.add_cog(AdminCog(bot))

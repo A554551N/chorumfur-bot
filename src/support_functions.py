@@ -50,7 +50,7 @@ def format_output(format_str,header_elements,returned_list_from_db):
      suitable for use in list-style outputs"""
     # PAD THE CELLS TO KEEP THE LINES STRAIGHT
     output_len = 0 # counts characters
-    msg_list = [] # the list of messages to ret0urn
+    msg_list = [] # the list of messages to return
     msg_count = 0
     header = format_str.format(*header_elements)
     msg_list.append(f"**{header}**```")

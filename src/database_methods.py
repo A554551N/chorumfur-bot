@@ -14,6 +14,7 @@ from User import User
 from Item import Item
 from Creature import Creature
 from Ticket import Ticket
+from ConstantData import Constants
 
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__),'../db_pass.txt')),encoding='utf-8')
 DB_PASSWORD = f.readline().rstrip('\n')
@@ -477,6 +478,44 @@ def get_ticket_from_db(ticket_id,conn=None):
     return None
 
 @make_database_connection
+def get_tickets_from_db_by_status(ticket_status,conn=None):
+    """Gets all tickets of a given status (as an INT) and returns a list of Ticket objects"""
+    get_ticket_sql = """SELECT ticket_id,
+                               ticket_name,
+                               ticket_requestor,
+                               ticket_date,
+                               ticket_status,
+                               ticket_creature_a,
+                               ticket_creature_b,
+                               ticket_pups
+                        FROM breeding_tickets
+                        WHERE ticket_status=%s"""
+    cur = conn.cursor()
+    cur.execute(get_ticket_sql,(Constants.TICKET_STATUS[ticket_status],))
+    result = cur.fetchall()
+    if result:
+        # this is VERY slow code, need to find a better way to handle getting
+        # user and creature here.
+        returned_tickets = []
+        for ticket in result:
+            requestor = get_user_from_db(ticket[2])
+            tkt_creature_a = get_creature_from_db(ticket[5])
+            tkt_creature_b = get_creature_from_db(ticket[6])
+            tkt_pups = pickle.loads(ticket[7])
+            returned_ticket =Ticket(
+                ticket_name = ticket[1],
+                ticket_requestor = requestor,
+                creature_a = tkt_creature_a,
+                creature_b = tkt_creature_b,
+                ticket_id=ticket[0],
+                ticket_date=ticket[3],
+                ticket_status=ticket[4],
+            pups = tkt_pups)
+            returned_tickets.append(returned_ticket)
+        return returned_tickets
+    return None
+
+@make_database_connection
 def update_ticket_status(ticket_to_update,conn=None):
     """Advances"""
     update_status_sql = """UPDATE breeding_tickets
@@ -550,13 +589,14 @@ def get_requested_tickets_from_db(type_to_show,conn=None):
                                ticket_name,
                                ticket_status
                         FROM breeding_tickets
-                        WHERE ticket_status = 'Complete'"""
+                        WHERE ticket_status = 'Ready to Birth'"""
     cur = conn.cursor()
     cur.execute(options[type_to_show])
     returned_rows = cur.fetchall()
     if returned_rows:
         return returned_rows
     return None
+
 if __name__ == "__main__":
     new_name = f"Renamed Creature"
     test_creature = get_creature_from_db(57)
