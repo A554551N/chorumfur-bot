@@ -19,7 +19,7 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
     def __init__(self, bot):
         self.client = bot
 
-    @commands.command()
+    @commands.command(aliases=['mc'])
     @is_guild_owner_or_bot_admin()
     async def makeCreature(self,ctx,creature_name,main_horn_trait,
                                        cheek_horn_trait,
@@ -49,7 +49,7 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         msg=f"{creature_name} created with Id #{creature_id}"
         await ctx.send(msg)
 
-    @commands.command()
+    @commands.command(aliases=['mrc'])
     @is_guild_owner_or_bot_admin()
     async def makeRandomCreature(self,ctx,quantity=1):
         """Takes in an optional quantity parameter and stores that many creatures in the database
@@ -66,7 +66,7 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
             output+= f"{returned_id[0]} "
         await ctx.send(output)
 
-    @commands.command()
+    @commands.command(aliases=['mi'])
     @is_guild_owner_or_bot_admin()
     async def makeItem(self,ctx,item_name,item_desc,item_value):
         """Takes in a name, description, and value and stores a new item in the items database."""
@@ -81,7 +81,7 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         else:
             await ctx.send(f'{item_name} cannot be created, an error occurred.')
 
-    @commands.command()
+    @commands.command(aliases=['gai'])
     @is_guild_owner_or_bot_admin()
     async def getAllItems(self,ctx):
         """Retrieves all items defined in the items database and displays them as a list."""
@@ -95,7 +95,7 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
             await ctx.send(msg if returned_items else "No Items Found")
         await ctx.send("**For more information run `.getItem <Item ID>`**")
 
-    @commands.command()
+    @commands.command(aliases=['addInv'])
     @is_guild_owner_or_bot_admin()
     async def addItemToInv(self,ctx,item_id_to_add,user_id = None,quantity=1):
         """adds an item to a given users inventory with a given quantity.
@@ -108,7 +108,7 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         else:
             await ctx.send("Inventory update failed.")
 
-    @commands.command()
+    @commands.command(aliases=['remInv'])
     @is_guild_owner_or_bot_admin()
     async def removeItemFromInv(self,ctx,item_id_to_remove,user_id = None,quantity=1):
         """ADMIN COMMAND: Removes a given quantity of an item from a given user's inventory.
@@ -144,7 +144,7 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
             database_methods.update_ticket_status(ticket)
             await ctx.send(f"Ticket {ticket.id} updated to status {ticket.status}")
 
-    @commands.command()
+    @commands.command(aliases=['st'])
     @is_guild_owner_or_bot_admin()
     async def showTickets(self,ctx,type_to_show='open'):
         """Shows a summary view of all open tickets based on a parameter.  Accepts 'open'
@@ -162,7 +162,7 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         else:
             await ctx.send("No Tickets Found")
 
-    @commands.command(aliases=['imageUpdate'])
+    @commands.command(aliases=['imageUpdate','ui'])
     @is_guild_owner_or_bot_admin()
     async def updateImage(self,ctx,creature_id,*args):
         """ADMIN COMMAND: Updates a chorumfur with a given id's displayed image.
@@ -184,7 +184,7 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         else:
             await ctx.send("The chorumfur could not be updated.")
 
-    @commands.command()
+    @commands.command(aliases=['adm'])
     @is_guild_owner_or_bot_admin()
     async def adminMate(self,ctx,creature_a_id,creature_b_id,new_owner=None):
         """ADMIN: Submit a mating request in format .mate <creature_a> <creature_b> <new owner>
@@ -214,7 +214,7 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         else:
             await ctx.send("An error has occurred, your creature has not been transferred.")
 
-    @commands.command()
+    @commands.command(aliases=['birth'])
     @is_guild_owner_or_bot_admin()
     async def giveBirth(self,ctx,ticket_id):
         """Takes in a Ticket ID and updates the createDate of pups on the ticket."""
