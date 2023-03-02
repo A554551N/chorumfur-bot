@@ -138,6 +138,12 @@ class Constants:
         3 : ".25",
         4 : ".10"
     }
+
+    NPCS = (
+        "Stevos A",
+        "Stevos B"
+    )
+
     # PARENT_PASS_TRAITS = 25
     GRANDPARENT_PASS_TRAITS = 15
     CHANCE_TO_PASS_MUTATION = 10

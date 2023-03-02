@@ -19,7 +19,8 @@ cogs = ['cogs.cog_admin',
         'cogs.cog_creatures',
         'cogs.cog_inventory',
         'cogs.cog_tickets',
-        'cogs.cog_users']
+        'cogs.cog_users',
+        'cogs.cog_activities']
 
 game = discord.Game('with all these Chorumfurs!')
 client = commands.Bot(command_prefix=EnvironmentVars.bot_invocation_var,intents=intents,activity=game)
