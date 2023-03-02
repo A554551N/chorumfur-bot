@@ -58,7 +58,7 @@ async def about(ctx):
     by Justin Gordon ({client.get_user(202632427535859712)})
     Code and documentation available at: https://github.com/A554551N/chorumfur-bot
 
-    Chorumfurs are small ferret-like dragons originally created by Quinn#0610, then apprehendedand run off with by Lysa (Zombpossum#5577).
+    Chorumfurs are small ferret-like dragons originally created by Quinn#0610, then apprehended and run off with by Lysa (Zombpossum#5577).
 
     While the species has been around since 2019, this community has only been operating sinc late 2022.  There's a whole rich culture behind these fuzzbutts that we're excited to share and release to you all as we continue to grow and expand!
 
