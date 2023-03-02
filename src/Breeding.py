@@ -4,7 +4,29 @@ from Creature import Creature
 from ConstantData import Constants
 
 class Breeding:
-    """A class to represent a proposed pairing of two creatures"""
+    """A class to represent a proposed pairing of two creatures
+       
+       Attributes
+       ----------
+       creature_a: Creature
+            a creature object that becomes parent A
+       creature_b: Creature
+            a creature object that becomes parent B
+        new_creature_owner: int
+            a user ID to assign to new creatures created by this Breeding
+        parents_of_a: tuple
+            an up-to-2-element tuple containing creature objects representing parents of creature_a
+        parents_of_b: tuple
+            an up-to-2-element tuple containing creature objects representing parents of creature_b
+        
+        Methods
+        --------
+        breed()
+            produces a variable number of Creature objects with randomized traits based on parents
+        select_trait_to_pass()
+            chooses a trait from the available options to pass to a child
+        """
+    
     def __init__(self,creature_a,creature_b,new_creature_owner,parents_of_a=None,parents_of_b=None):
         self.creature_a = creature_a
         self.creature_b = creature_b
@@ -22,6 +44,7 @@ class Breeding:
         creature_a and creature_b.  Returns an array of Creatures."""
         # This is where weighting happens.
         number_of_pups = 0
+        pallet_choices = ["Parent A","Parent B","Mixed"]
         random_count_roll = Decimal(str(random.random()))
         for current_count in Constants.PUP_WEIGHTING:
             pup_weight = Decimal(Constants.PUP_WEIGHTING[current_count])
@@ -32,9 +55,11 @@ class Breeding:
                 break
         pups = []
         for pup_count in range(1,(number_of_pups+1)):
+            pallet = pallet_choices[random.randint(0,2)]
             pup = Creature(name=f"Pup {pup_count}",
                            owner=self.new_creature_owner,
-                           generation=self.new_creature_generation)
+                           generation=self.new_creature_generation,
+                           pallet=pallet)
             for trait in pup.traits:
                 pup.traits[trait] = self.select_trait_to_pass(trait)
             pups.append(pup)
@@ -58,14 +83,5 @@ class Breeding:
         return self.creature_b.traits[trait_type]
 
 if __name__ == '__main__':
-    parent_a = Creature('parent a',1)
-    parent_a.randomize_creature()
-    parent_b = Creature('parent b',1)
-    parent_b.randomize_creature()
-    number_of_pups = {1:0,2:0,3:0,4:0}
-    number_of_tests = 1000
-    test_breed = Breeding(parent_a,parent_b,1)
-    for test in range(number_of_tests):
-        spawn = test_breed.breed()
-        number_of_pups[len(spawn)] += 1
-    print(number_of_pups)
+    for i in range(1000):
+        print(random.randint(0,2))
