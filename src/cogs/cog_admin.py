@@ -118,6 +118,8 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         If no quantity is specified, removes 1."""
         if user_id is None:
             user_id = ctx.message.author.id
+        else:
+            user_id = support_functions.strip_mention_format(user_id)
         if database_methods.remove_item_from_user(user_id,item_id_to_remove,quantity):
             await ctx.send("Item removed from User Inventory")
         else:
