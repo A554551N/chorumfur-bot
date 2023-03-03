@@ -1,8 +1,39 @@
 """Contains methods for interacting with the backend database
 Methods
 -------
-database_connection(func)
+make_database_connection(func)
     Decorator that safely constructs and destructs the database
+
+is_database_connected()
+    Returns True if database is connected
+
+add_user_to_db()
+    adds a user with given parameters to the database
+
+get_user_from_db()
+    queries the db for a given user ID and returns a User object
+
+add_item_to_user()
+    adds an item with a given ID to a given user's inventory
+
+remove_item_from_user()
+    removes an item with a given ID from a given user's inventory
+
+get_item_from_db()
+    queries the db for a given Item ID and returns an Item object
+
+add_item_to_db()
+    adds an item with given parameters to the items db
+
+get_all_items_from_db()
+    returns all items defined in the items db
+
+get_user_inventory():
+    queries the owned_items table for all Items associated with a user,
+    returns a tuple of records
+
+add_creature_to_db():
+    adds a creature with given parameters to the db
 """
 
 import psycopg2
@@ -369,6 +400,16 @@ def get_creatures_available_to_breed(conn=None):
     cur.execute(get_creatures_sql)
     returned_rows = cur.fetchall()
     return returned_rows or None
+
+@make_database_connection
+def get_wild_chorumfur_ids(conn=None):
+    """Retrieves all creature records with an owner of 0"""
+    get_creatures_sql = """SELECT creature_id
+                           FROM creatures
+                           WHERE creature_owner = 0"""
+    cur = conn.cursor()
+    cur.execute(get_creatures_sql)
+    return cur.fetchall() or None
 
 @make_database_connection
 def update_user_last_breed(user,conn=None):
