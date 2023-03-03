@@ -49,8 +49,8 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
                         msg += f'\nChorumfur #{chorumfur_to_add.creatureId} has decided to join your lair!'
 
             elif outcome.type == 'currency':
-                msg=outcome.text.format(outcome.reward)
-                # ADD A CURRENCY MANIP METHOD IN DATABASE_METHODS
+                msg=outcome.text.format(creature.name,outcome.reward)
+                database_methods.update_currency_in_wallet(ctx.author.id,outcome.reward)
 
             elif outcome.type == 'text':
                 msg = outcome.text.format(creature.name)
