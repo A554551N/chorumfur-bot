@@ -87,3 +87,9 @@ def test_breeding_level_image(user_attributes):
                         user_attributes["warningsIssued"])
     assert ("https://chorumfur-bot.s3.us-east-2.amazonaws.com"\
             "/items/Breeding+Crystal5.png") == Constants.CRYSTAL_IMAGE_STAGES[test_user.breedingLevel()]
+
+def test_update_wallet():
+    wallet_before = database_methods.get_user_from_db(202632427535859712).wallet
+    database_methods.update_currency_in_wallet(202632427535859712,50)
+    wallet_after = database_methods.get_user_from_db(202632427535859712).wallet
+    assert wallet_after == (wallet_before+50)
