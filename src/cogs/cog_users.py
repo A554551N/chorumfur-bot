@@ -40,6 +40,16 @@ class UserCog(commands.GroupCog, name='User Management', group_name='users'):
         else:
             msg = "A profile was not found for you.  If you haven't use .joinGame"
         await ctx.send(msg)
+    
+    @commands.command()
+    async def wallet(self,ctx):
+        """gets and displays user wallet"""
+        user = database_methods.get_user_from_db(ctx.author.id) or None
+        if user:
+            msg = f"> **{ctx.author.name}'s Wallet:** {user.wallet} baubles"
+        else:
+            msg = f"No wallet found for {ctx.author.name} or an error has occurred"
+        await ctx.send(msg)
 
 
 async def setup(bot):
