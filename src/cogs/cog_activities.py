@@ -1,5 +1,5 @@
+from datetime import datetime
 import random
-from decimal import Decimal
 from discord.ext import commands
 import database_methods
 import support_functions
@@ -19,9 +19,10 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
             The ID of the creature that is foraging
         """
         creature = database_methods.get_creature_from_db(creature_id) or None
-        if creature.owner != ctx.author.id:
-            await ctx.send("You can only send chorumfurs from your lair to forage")
-        else:
+        can_forage = self.creature_can_forage(creature,ctx.author.id)
+        if can_forage[0]:
+            creature.last_forage = datetime.today()
+            database_methods.update_creature(creature)
             subtype = support_functions.roll_random_result(forage_outcomes.outcome_types)
             possible_outcomes = forage_outcomes.outcome_subtypes[subtype]
             outcome = support_functions.roll_random_result(possible_outcomes)
@@ -58,6 +59,30 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
             await ctx.send(f"---DEBUG---\n{outcome.text}\n"\
                            f"Event Type: {outcome.type}\n"\
                             f"Reward: {outcome.reward}")
+        else:
+            await ctx.send(can_forage[1])
 
+    def creature_can_forage(self,creature,user_id):
+        """Checks to see if the creature meets the requirements to forage.
+        Parameters
+        ----------
+        creature: Creature
+            the creature to validate
+        user_id: int
+            the ID of the user running the command"""
+        msg = ""
+        valid = True
+        if creature.owner != user_id:
+            msg = "You can only send chorumfurs you own to forage."
+            valid = False
+        elif not creature.is_active:
+            msg = "Only the chorumfurs in your party can forage."
+            valid = False
+        elif creature.last_forage and (datetime.today() - creature.last_forage).seconds//3600 < 6:
+            msg = "Each chorumfur can only forage once every six hours.  "\
+                  f"You can forage again in {6 - (datetime.today() - creature.last_forage).seconds//3600} hours,"
+            valid = False
+        return (valid,msg)
+    
 async def setup(bot):
     await bot.add_cog(ActivitiesCog(bot))
