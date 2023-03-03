@@ -250,5 +250,20 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         else:
             await ctx.send("No tickets appear to be ready for breeding or an error has occurred.")
 
+    @commands.command()
+    @is_guild_owner_or_bot_admin()
+    async def updateWallet(self,ctx,user_to_change,amount):
+        """Adds or removes the requested amount from a user's wallet (expressed as a positive or negative number)
+        Parameters
+        ----------
+        user_to_change: str
+            an @mentioned user
+        amount: int
+            a positive (to add) or negative (to remove) amount of currency"""
+
+        user_id = support_functions.strip_mention_format(user_to_change)
+        database_methods.update_currency_in_wallet(user_id,amount)
+        await ctx.send("User wallet updated.")
+
 async def setup(bot):
     await bot.add_cog(AdminCog(bot))
