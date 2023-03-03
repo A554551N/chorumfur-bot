@@ -67,7 +67,7 @@ class UserCog(commands.GroupCog, name='User Management', group_name='users'):
                         await ctx.send(f"{creature.name} {'is now' if creature.is_active else 'is no longer'} in your party.")
                     else:
                         await ctx.send(f"{creature.name} is adventuring and "\
-                        f"cannot be removed from the party for {24 - time_since_last_forage.hours} hours.")
+                        f"cannot be removed from the party for {24 - (time_since_last_forage.seconds//3600)} hours.")
                 else:
                     creature.is_active = not creature.is_active
                     database_methods.update_creature(creature)
