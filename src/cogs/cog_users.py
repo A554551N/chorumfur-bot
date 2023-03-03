@@ -3,6 +3,7 @@ from discord.ext import commands
 from ConstantData import Constants
 from User import User
 import database_methods
+import support_functions
 
 
 class UserCog(commands.GroupCog, name='User Management', group_name='users'):
@@ -56,7 +57,6 @@ class UserCog(commands.GroupCog, name='User Management', group_name='users'):
     async def activateCreature(self,ctx,creature_to_activate):
         """Adds a given chorumfur to the user's adventuring party."""
         creature = database_methods.get_creature_from_db(creature_to_activate) or None
-        print(creature.name)
         if creature:
             if ctx.author.id == creature.owner:
                 if creature.last_forage:
@@ -77,8 +77,13 @@ class UserCog(commands.GroupCog, name='User Management', group_name='users'):
         else:
             await ctx.send("That creature doesn't seem to exist or an error has occurred.")
 
-    #@commands.command(aliases=['party'])
-    #async def showParty(self,ctx):
+    @commands.command(aliases=['party'])
+    async def showParty(self,ctx):
+        """Shows all of a user's active creatures"""
+        active_creatures = database_methods.get_active_creatures_for_user(ctx.author.id)
+        msg_list = support_functions.format_output("{} - {}\n",('ID#','Creature Name'),active_creatures)
+        for msg in msg_list:
+            await ctx.send(msg)
 
         
 async def setup(bot):

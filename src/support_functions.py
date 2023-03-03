@@ -48,8 +48,19 @@ async def send_ticket_to_channel(bot, ticket):
 
 def format_output(format_str,header_elements,returned_list_from_db):
     """Takes in a format string, the elements that form the header,
-     a list taken from the db and returns a formatted string
-     suitable for use in list-style outputs"""
+     a list taken from the db and returns a list of formatted string
+     suitable for use in list-style outputs
+     
+    Parameters
+    ----------
+    format_str : str
+        string formatted as '{} - {}\n' with appropriate # of slots
+    header_elements : tuple
+        tuple containing all header elements
+    returned_list_from_db : tuple
+        a tuple containing all of the returned records from the db
+    """
+    
     # PAD THE CELLS TO KEEP THE LINES STRAIGHT
     output_len = 0 # counts characters
     msg_list = [] # the list of messages to return

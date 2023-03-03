@@ -686,6 +686,21 @@ def get_requested_tickets_from_db(type_to_show,conn=None):
         return returned_rows
     return None
 
+@make_database_connection
+def get_active_creatures_for_user(user_id,conn=None):
+    """Retrieves all creatures that are active for a given user
+    
+    Parameters
+    ----------
+    user_id: int
+        the user_id to query for"""
+    get_creatures_sql="""SELECT creature_id,creature_name FROM creatures
+                         WHERE creature_owner = %s AND creature_is_active = TRUE"""
+    cur = conn.cursor()
+    cur.execute(get_creatures_sql,(user_id,))
+    result = cur.fetchall()
+    return result or None
+
 def pack_creature(returned_row):
     returned_creature = Creature(name=returned_row[0],
                                      owner=returned_row[1],
