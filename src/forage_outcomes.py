@@ -7,12 +7,24 @@ def randomize_npc():
     
 EventMessage = namedtuple('EventMessage','text type reward')
 text_only_events = {
-    EventMessage("This is sample text event A","text",None) : ".5",
-    EventMessage("This is sample text event B","text",None) : ".5"
+    EventMessage("""{} darts off suddenly, they poke their head out of a nearby bush with a large bug in their mouth.
+    Before anyone can react, they chomp it down. Well, at least they aren't picky.""","text",None) : ".125",
+    EventMessage("{} thinks today is a beautiful day.  Time for mischief!","text",None) : ".125",
+    EventMessage("{} stares off into the distance, existential crisis or bug?  Only they know for sure","text",None) : ".125",
+    EventMessage("""{} begins to wiggle and hum, soon they're throwing themselves in a wild jumping dance
+                 as they scream at the top of their lungs, the song of their people. I'm sure someone enjoys it.""","text",None) : ".125",
+    EventMessage("""{} chitters and hisses, looking rather unsure before swatting at an odd looking item.
+                 Before anyone can stop them, they swat it hard into a puddle, oh well, hopefully it wasn't anything important.""","text",None) : ".125",
+    EventMessage("{} wanders off for a few minutes and comes back with a wet streak on their face. Someone had a sippy sip!","text",None) : ".125",
+    EventMessage("""{} grabs a small fuzzy worm near by and flings their head, throwing the worm into the distance before rushing after it.
+                 They return and repeat the process until collapsing on the ground happily.
+                 The worm hurries and scoots away. Be free, little worm!""","text",None) : ".125",
+    EventMessage("{} suddenly stops and looks embarrassed, as a stink begins to grow around them. DUDE! What did they eat?!","text",None) : ".125",
+    
 }
 # will likely be supplanted by an imported Event
 event_currency_events = {
-    EventMessage("You got 1 event currency!","event_curr",1) : "1"
+    EventMessage("You got 1 {}!","event_curr",1) : "1"
 }
 
 npc_events = {
@@ -20,7 +32,7 @@ npc_events = {
 }
 
 lure_events = {
-    EventMessage("A wild chorumfur joins your lair!","lure","ID#HERE") : "1"
+    EventMessage("A wild chorumfur joins your lair!","lure",None) : "1"
 }
 
 # I think both of these will eventually be supplanted by an imported Event
