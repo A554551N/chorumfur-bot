@@ -101,6 +101,26 @@ def add_user_to_database(user_to_add,conn=None):
     return True
 
 @make_database_connection
+def update_currency_in_wallet(user_id,amount_change,conn=None):
+    """Adds or removes currency from a user record in the database
+    
+    Parameters
+    -----------
+    user_id: int
+        user ID to change
+    amount_change: int
+        amount to add or remove (expressed as a positive or negative int)
+    """
+
+    wallet_sql = """UPDATE users
+                    SET user_wallet = user_wallet+%s
+                    WHERE user_id = %s"""
+    cur = conn.cursor()
+    cur.execute(wallet_sql,(amount_change,user_id))
+    conn.commit()
+    return True
+
+@make_database_connection
 def get_user_from_db(user_id,conn=None):
     """Retrieves a user from the database with a given ID and returns a User object."""
     sql = """SELECT user_id,user_level,user_wallet,user_lastBreed,user_warnings_issued,user_pending_breeding
