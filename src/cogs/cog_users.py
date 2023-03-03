@@ -51,6 +51,18 @@ class UserCog(commands.GroupCog, name='User Management', group_name='users'):
             msg = f"No wallet found for {ctx.author.name} or an error has occurred"
         await ctx.send(msg)
 
+    @commands.command(aliases=['activate'])
+    async def activateCreature(self,ctx,creature_to_activate):
+        creature = database_methods.get_creature_from_db(creature_to_activate) or None
+        if ctx.author.id is creature.owner:
+            if creature:
+                creature.is_active = not creature.is_active
+                database_methods.update_creature(creature)
+                await ctx.send(f"{creature.name} {'is now' if creature.is_active else 'is no longer'} in your party.")
+            else:
+                await ctx.send("That creature doesn't seem to exist or an error has occurred.")
+        else:
+            await ctx.send("You can only add your own chorumfurs to your party.")
 
 async def setup(bot):
     await bot.add_cog(UserCog(bot))

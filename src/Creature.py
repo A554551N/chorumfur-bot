@@ -32,6 +32,10 @@ class Creature:
             True if creature should appear in .matingDance, otherwise False
         pallet: string
             which parent's pallet to apply for art (THIS IS NEVER SENT TO DATABASE)
+        is_active: bool
+            True if creature is active in a user's party, otherwise False
+        last_forage: datetime
+            Datetime when this creature was last used to .forage
 
         Methods
         ---------
@@ -55,7 +59,9 @@ class Creature:
                 ownerName=None,
                 parents=[None,None],
                 available_to_breed=False,
-                pallet="N/A"):
+                pallet="N/A",
+                is_active=False,
+                last_forage=None):
         self.name = name
         if not createDate:
             createDate= datetime.today()
@@ -77,6 +83,8 @@ class Creature:
         self.parents = parents
         self.available_to_breed = available_to_breed
         self.pallet = pallet
+        self.is_active = is_active
+        self.last_forage = last_forage
 
     def randomize_trait(self,trait_category):
         """Takes in a trait category and returns a randomly selected trait"""
