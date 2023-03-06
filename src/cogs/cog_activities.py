@@ -27,6 +27,11 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
             subtype = support_functions.roll_random_result(forage_outcomes.outcome_types)
             possible_outcomes = forage_outcomes.outcome_subtypes[subtype]
             outcome = support_functions.roll_random_result(possible_outcomes)
+            print(f"User: {ctx.author.name}\n"\
+                  f"Type: {subtype}\n"\
+                  f"Outcome Text: {outcome.text}\n"\
+                  f"Outcome Type: {outcome.type}\n"\
+                  f"Outcome Reward: {outcome.reward}")
             msg = ""
             if outcome.type == 'event_curr':
                 msg = outcome.text.format(curr_name = limited_time_events.march_event.event_currency_name,
@@ -64,9 +69,6 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
                 msg = outcome.text.format(creature_name=creature.name)
                 database_methods.add_item_to_user(ctx.author.id,outcome.reward.item_id,outcome.reward.quantity)
             await ctx.send(f"{creature.name} is foraging!\n{msg}")
-            await ctx.send(f"---DEBUG---\n{outcome.text}\n"\
-                           f"Event Type: {outcome.type}\n"\
-                            f"Reward: {outcome.reward}")
         else:
             await ctx.send(can_forage[1])
 
