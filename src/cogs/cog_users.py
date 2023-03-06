@@ -57,10 +57,13 @@ class UserCog(commands.GroupCog, name='User Management', group_name='users'):
     async def scoutingParty(self,ctx,creature_to_activate=None):
         """Adds a given chorumfur to the user's adventuring party."""
         if not creature_to_activate:
-            active_creatures = database_methods.get_active_creatures_for_user(ctx.author.id)
-            msg_list = support_functions.format_output("{} - {}\n",('ID#','Creature Name'),active_creatures)
-            for msg in msg_list:
-                await ctx.send(msg)
+            active_creatures = database_methods.get_active_creatures_for_user(ctx.author.id) or None
+            if active_creatures:
+                msg_list = support_functions.format_output("{} - {}\n",('ID#','Creature Name'),active_creatures)
+                for msg in msg_list:
+                    await ctx.send(msg)
+            else:
+                await ctx.send("Your scouting party currently doesn't have any members.")
         else:
             activated_creatures = database_methods.get_active_creatures_for_user(ctx.author.id) or None
             creature = database_methods.get_creature_from_db(creature_to_activate) or None
