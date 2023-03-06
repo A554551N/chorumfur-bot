@@ -1,6 +1,7 @@
 from datetime import datetime
 import random
 from discord.ext import commands
+from ConstantData import Constants
 import database_methods
 import support_functions
 import forage_outcomes
@@ -28,9 +29,12 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
             outcome = support_functions.roll_random_result(possible_outcomes)
             msg = ""
             if outcome.type == 'event_curr':
-                msg = outcome.text.format(limited_time_events.march_event.event_currency_name)
-                database_methods.add_item_to_user(ctx.author.id,limited_time_events.march_event.event_currency_id)
-                
+                msg = outcome.text.format(curr_name = limited_time_events.march_event.event_currency_name,
+                                          amount=outcome.reward,
+                                          creature_name=creature.name)
+                database_methods.add_item_to_user(ctx.author.id,
+                                                  limited_time_events.march_event.event_currency_id,
+                                                  outcome.reward)
             elif outcome.type == 'lure':
                 msg = outcome.text
                 if outcome.reward is not None:
@@ -50,11 +54,15 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
                         msg += f'\nChorumfur #{chorumfur_to_add.creatureId} has decided to join your lair!'
 
             elif outcome.type == 'currency':
-                msg=outcome.text.format(creature.name,outcome.reward)
+                msg=outcome.text.format(creature_name=creature.name,amount=outcome.reward)
                 database_methods.update_currency_in_wallet(ctx.author.id,outcome.reward)
 
             elif outcome.type == 'text':
-                msg = outcome.text.format(creature.name)
+                msg = outcome.text.format(creature_name=creature.name,random_npc=Constants.NPCS[random.randint(0,len(Constants.NPCS)-1)])
+            
+            elif outcome.type == 'item':
+                msg = outcome.text.format(creature_name=creature.name)
+                database_methods.add_item_to_user(ctx.author.id,outcome.reward.item_id,outcome.reward.quantity)
             await ctx.send(f"{creature.name} is foraging!\n{msg}")
             await ctx.send(f"---DEBUG---\n{outcome.text}\n"\
                            f"Event Type: {outcome.type}\n"\
@@ -78,10 +86,10 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
         elif not creature.is_active:
             msg = "Only the chorumfurs in your party can forage."
             valid = False
-        elif creature.last_forage and (datetime.today() - creature.last_forage).seconds//3600 < 6:
-            msg = "Each chorumfur can only forage once every six hours.  "\
-                  f"You can forage again in {6 - (datetime.today() - creature.last_forage).seconds//3600} hours,"
-            valid = False
+        #elif creature.last_forage and (datetime.today() - creature.last_forage).seconds//3600 < 6:
+            #msg = "Each chorumfur can only forage once every six hours.  "\
+            #      f"You can forage again in {6 - (datetime.today() - creature.last_forage).seconds//3600} hours,"
+            #valid = False
         return (valid,msg)
     
 async def setup(bot):
