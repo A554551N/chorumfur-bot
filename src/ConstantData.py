@@ -140,8 +140,10 @@ class Constants:
     }
 
     NPCS = (
-        "Stevos A",
-        "Stevos B"
+        "Ruma",
+        "Beans",
+        "Rice",
+        "Spork"
     )
 
     # PARENT_PASS_TRAITS = 25
