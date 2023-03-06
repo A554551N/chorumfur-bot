@@ -66,7 +66,7 @@ class UserCog(commands.GroupCog, name='User Management', group_name='users'):
             creature = database_methods.get_creature_from_db(creature_to_activate) or None
             if creature:
                 if ctx.author.id == creature.owner:
-                    if creature.calculate_age().days > 14:
+                    if creature.calculate_age().days > 14 or creature.generation == 0:
                         if creature.is_active  or not activated_creatures or (not creature.is_active and len(activated_creatures) < 5):
                             if creature.last_forage:
                                 time_since_last_forage = datetime.today() - creature.last_forage
