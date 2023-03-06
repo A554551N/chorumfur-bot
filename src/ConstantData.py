@@ -1,7 +1,7 @@
 class Constants:
     DATETIMEFORMAT = '''%Y-%m-%d %H:%M:%S.%f'''
     DATEONLYFORMAT = '%Y-%m-%d'
-    VERSION = 'v0.2.5'
+    VERSION = 'v0.3.0'
     DEFAULT_TRAITS_DICT = {
         'MAIN_HORN': "",
         'CHEEK_HORN': "",
@@ -138,17 +138,25 @@ class Constants:
         3 : ".25",
         4 : ".10"
     }
+
+    NPCS = (
+        "Ruma",
+        "Beans",
+        "Rice",
+        "Spork"
+    )
+
     # PARENT_PASS_TRAITS = 25
     GRANDPARENT_PASS_TRAITS = 15
     CHANCE_TO_PASS_MUTATION = 10
     CHANCE_TO_ADD_MUTATION = 1
     MAX_LITTER_SIZE = 4
 
-    CRYSTAL_IMAGE_STAGES = [
+    CRYSTAL_IMAGE_STAGES = (
         "https://chorumfur-bot.s3.us-east-2.amazonaws.com/items/Breeding+Crystal.png",
         "https://chorumfur-bot.s3.us-east-2.amazonaws.com/items/Breeding+Crystal1.png",
         "https://chorumfur-bot.s3.us-east-2.amazonaws.com/items/Breeding+Crystal2.png",
         "https://chorumfur-bot.s3.us-east-2.amazonaws.com/items/Breeding+Crystal3.png",
         "https://chorumfur-bot.s3.us-east-2.amazonaws.com/items/Breeding+Crystal4.png",
         "https://chorumfur-bot.s3.us-east-2.amazonaws.com/items/Breeding+Crystal5.png"
-    ]
+    )

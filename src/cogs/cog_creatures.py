@@ -47,25 +47,11 @@ class CreaturesCog(commands.GroupCog, name='Chorumfur Management',group_name='ch
         else:
             await ctx.send("An error has occurred, your creature has not been transferred.")
 
-    #@commands.command(aliases=['ml','lair'])
-    #async def myLairOld(self,ctx):
-    #    """Displays a list of all chorumfurs in your lair."""
-    #    user_id = ctx.message.author.id
-    #    returned_creatures = database_methods.get_my_creatures_from_db(user_id)
-    #    list_of_ids = [creature[0] for creature in returned_creatures]
-    #    largest_id = len(str(max(list_of_ids)))
-    #    padding = max(largest_id - 3,0)
-    #    output=f"**{' '*padding}ID# | Creature Name**\n```"
-    #    for creature in returned_creatures:
-    #        padding = largest_id - len(str(creature[0]))
-    #        output+=f"{' ' * padding}{creature[0]} | {creature[1]}\n"
-    #    output+="```**For more information run `.getCreature <Creature ID>`**"
-    #    await ctx.send(output)
-
-    @commands.command(aliases=['ml','lair'])
-    async def myLair(self,ctx):
-        """Displays a list of all chorumfurs in your lair."""
-        user_id = ctx.message.author.id
+    @commands.command(aliases=['lair'])
+    async def showLair(self,ctx,user_to_show = None):
+        """Displays a list of all chorumfurs in an @mentioned user's lair.
+        If no user is supplied, returns your lair as always"""
+        user_id = support_functions.strip_mention_format(user_to_show) if user_to_show else ctx.message.author.id
         returned_creatures = database_methods.get_my_creatures_from_db(user_id) or None
         if returned_creatures:
             msg_list = support_functions.format_output("{} - {}\n",

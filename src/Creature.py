@@ -20,11 +20,31 @@ class Creature:
             Friendly name for Creature Owner
         imageLink: string
             link to an image of the creature
+        imageLink_nb: string
+            link to an image of the creature as a newborn
+        imageLink_pup: string
+            link to an image of the creature as a pup
         generation: int
             incremented from parent
+        parents: list
+            IDs indicating a chorumfur's parents (not applicable to Gen 0)
+        avaialable_to_breed: bool
+            True if creature should appear in .matingDance, otherwise False
+        pallet: string
+            which parent's pallet to apply for art (THIS IS NEVER SENT TO DATABASE)
+        is_active: bool
+            True if creature is active in a user's party, otherwise False
+        last_forage: datetime
+            Datetime when this creature was last used to .forage
 
         Methods
         ---------
+        randomize_trait()
+            selects a trait from a list of possibilities and returns it
+        randomize_creature()
+            replaces a creatures traits with random ones
+        calculate_age()
+            determines a creature's age based on creation date
         outputCreature()
             returns a formatted string with date about creature
     """
@@ -38,7 +58,10 @@ class Creature:
                 createDate=None,
                 ownerName=None,
                 parents=[None,None],
-                available_to_breed=False):
+                available_to_breed=False,
+                pallet="N/A",
+                is_active=False,
+                last_forage=None):
         self.name = name
         if not createDate:
             createDate= datetime.today()
@@ -59,6 +82,9 @@ class Creature:
         self.traits = dict(traits)
         self.parents = parents
         self.available_to_breed = available_to_breed
+        self.pallet = pallet
+        self.is_active = is_active
+        self.last_forage = last_forage
 
     def randomize_trait(self,trait_category):
         """Takes in a trait category and returns a randomly selected trait"""
@@ -102,8 +128,9 @@ class Creature:
                 f"**Owner:** {self.ownerName}\n"\
                 f"**Age:** {age}\n"\
                 f"**Create Date:** {datetime.strftime(self.createDate,Constants.DATEONLYFORMAT)}\n"\
-                f"**Generation:** {self.generation}\n"\
-                 "**---Traits---**\n"
+                f"**Generation:** {self.generation}\n"
+        output += f"**Pallet:** {self.pallet}\n" if output_all else ""
+        output += "**---Traits---**\n"
         if age.days <= 7 and self.generation != 0 and not output_all:
             image_link = self.imageLink_nb
         elif age.days <= 14 and self.generation != 0 and not output_all:

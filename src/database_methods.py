@@ -1,8 +1,39 @@
 """Contains methods for interacting with the backend database
 Methods
 -------
-database_connection(func)
+make_database_connection(func)
     Decorator that safely constructs and destructs the database
+
+is_database_connected()
+    Returns True if database is connected
+
+add_user_to_db()
+    adds a user with given parameters to the database
+
+get_user_from_db()
+    queries the db for a given user ID and returns a User object
+
+add_item_to_user()
+    adds an item with a given ID to a given user's inventory
+
+remove_item_from_user()
+    removes an item with a given ID from a given user's inventory
+
+get_item_from_db()
+    queries the db for a given Item ID and returns an Item object
+
+add_item_to_db()
+    adds an item with given parameters to the items db
+
+get_all_items_from_db()
+    returns all items defined in the items db
+
+get_user_inventory():
+    queries the owned_items table for all Items associated with a user,
+    returns a tuple of records
+
+add_creature_to_db():
+    adds a creature with given parameters to the db
 """
 
 import psycopg2
@@ -14,6 +45,7 @@ from User import User
 from Item import Item
 from Creature import Creature
 from Ticket import Ticket
+from ConstantData import Constants
 
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__),'../db_pass.txt')),encoding='utf-8')
 DB_PASSWORD = f.readline().rstrip('\n')
@@ -69,21 +101,36 @@ def add_user_to_database(user_to_add,conn=None):
     return True
 
 @make_database_connection
+def update_currency_in_wallet(user_id,amount_change,conn=None):
+    """Adds or removes currency from a user record in the database
+    
+    Parameters
+    -----------
+    user_id: int
+        user ID to change
+    amount_change: int
+        amount to add or remove (expressed as a positive or negative int)
+    """
+
+    wallet_sql = """UPDATE users
+                    SET user_wallet = user_wallet+%s
+                    WHERE user_id = %s"""
+    cur = conn.cursor()
+    cur.execute(wallet_sql,(amount_change,user_id))
+    conn.commit()
+    return True
+
+@make_database_connection
 def get_user_from_db(user_id,conn=None):
     """Retrieves a user from the database with a given ID and returns a User object."""
-    sql = """SELECT user_level,user_wallet,user_lastBreed,user_warnings_issued,user_pending_breeding
+    sql = """SELECT user_id,user_level,user_wallet,user_lastBreed,user_warnings_issued,user_pending_breeding
                 FROM users WHERE user_id = %s
             """
     cur = conn.cursor()
     cur.execute(sql,(user_id,))
     user_data = cur.fetchone()
     if user_data:
-        return User(userId = user_id,
-                    level=user_data[0],
-                    wallet=user_data[1],
-                    lastBreed=user_data[2],
-                    warningsIssued=user_data[3],
-                    is_breeding_pending=user_data[4])
+        return pack_user(user_data)
     return None
 
 @make_database_connection
@@ -207,8 +254,10 @@ def add_creature_to_db(creature_to_add,conn=None):
                           creature_traits,
                           creature_parent_a,
                           creature_parent_b,
-                          creature_available_to_breed)
-                          VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                          creature_available_to_breed,
+                          creature_is_active,
+                          creature_last_forage)
+                          VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                           RETURNING creature_id
                           """
     cur = conn.cursor()
@@ -223,7 +272,9 @@ def add_creature_to_db(creature_to_add,conn=None):
                  pickle.dumps(creature_to_add.traits),
                  creature_to_add.parents[0],
                  creature_to_add.parents[1],
-                 creature_to_add.available_to_breed))
+                 creature_to_add.available_to_breed,
+                 creature_to_add.is_active,
+                 creature_to_add.last_forage))
     returned_id = cur.fetchone()[0]
     conn.commit()
     return returned_id
@@ -243,7 +294,9 @@ def add_multiple_creatures_to_db(creature_list,conn=None):
                           creature_traits,
                           creature_parent_a,
                           creature_parent_b,
-                          creature_available_to_breed)
+                          creature_available_to_breed,
+                          creature_is_active,
+                          creature_last_forage)
                           VALUES %s
                           RETURNING creature_id
                           """
@@ -259,7 +312,9 @@ def add_multiple_creatures_to_db(creature_list,conn=None):
                  pickle.dumps(creature_to_add.traits),
                  creature_to_add.parents[0],
                  creature_to_add.parents[1],
-                 creature_to_add.available_to_breed))
+                 creature_to_add.available_to_breed,
+                 creature_to_add.is_active,
+                 creature_to_add.last_forage))
     cur = conn.cursor()
     returned_ids = psycopg2.extras.execute_values(cur,add_creature_sql,list_to_add,fetch=True)
     conn.commit()
@@ -279,27 +334,16 @@ def get_creature_from_db(creature_id,conn=None):
                                  creature_traits,
                                  creature_parent_a,
                                  creature_parent_b,
-                                 creature_available_to_breed
+                                 creature_available_to_breed,
+                                 creature_is_active,
+                                 creature_last_forage
                           FROM creatures
                           WHERE creature_id = %s"""
     cur = conn.cursor()
     cur.execute(get_creature_sql,(creature_id,))
     returned_row = cur.fetchone()
     if returned_row:
-        returned_creature = Creature(name=returned_row[0],
-                                     owner=returned_row[1],
-                                     creatureId=returned_row[2],
-                                     createDate=returned_row[3],
-                                     imageLink=returned_row[4],
-                                     imageLink_nb=returned_row[5],
-                                     imageLink_pup=returned_row[6],
-                                     generation=returned_row[7],
-                                     available_to_breed=returned_row[11])
-        if returned_row[8]:
-            returned_creature.traits=pickle.loads(returned_row[8])
-        if returned_row[9] or returned_row[10]:
-            returned_creature.parents = [returned_row[9],returned_row[10]]
-        return returned_creature
+        return pack_creature(returned_row)
     return None
 
 @make_database_connection
@@ -313,7 +357,9 @@ def update_creature(creature_to_update,conn=None):
                               creature_owner = %s,
                               creature_traits = %s,
                               creature_create_date = %s,
-                              creature_available_to_breed = %s
+                              creature_available_to_breed = %s,
+                              creature_is_active = %s,
+                              creature_last_forage = %s
                           WHERE creature_id = %s
                           '''
     cur = conn.cursor()
@@ -325,6 +371,8 @@ def update_creature(creature_to_update,conn=None):
                                      pickle.dumps(creature_to_update.traits),
                                      creature_to_update.createDate,
                                      creature_to_update.available_to_breed,
+                                     creature_to_update.is_active,
+                                     creature_to_update.last_forage,
                                      creature_to_update.creatureId))
     if cur.rowcount == 1:
         conn.commit()
@@ -343,7 +391,10 @@ def get_parents_from_db(creature,conn=None):
                                  creature_generation,
                                  creature_traits,
                                  creature_parent_a,
-                                 creature_parent_b
+                                 creature_parent_b,
+                                 creature_available_to_breed,
+                                 creature_is_active,
+                                 creature_last_forage
                           FROM creatures
                           WHERE creature_id = %s OR creature_id = %s"""
     cur = conn.cursor()
@@ -352,18 +403,7 @@ def get_parents_from_db(creature,conn=None):
     if returned_rows:
         returned_parents = []
         for returned_row in returned_rows:
-            returned_creature = Creature(name=returned_row[0],
-                                     owner=returned_row[1],
-                                     creatureId=returned_row[2],
-                                     createDate=returned_row[3],
-                                     imageLink=returned_row[4],
-                                     imageLink_nb=returned_row[5],
-                                     imageLink_pup=returned_row[6],
-                                     generation=returned_row[7])
-            if returned_row[8]:
-                returned_creature.traits=pickle.loads(returned_row[8])
-            if returned_row[9] or returned_row[10]:
-                returned_creature.parents = [returned_row[9],returned_row[10]]
+            returned_creature = pack_creature(returned_row)
             returned_parents.append(returned_creature)
         return returned_parents
     return None
@@ -396,6 +436,16 @@ def get_creatures_available_to_breed(conn=None):
     cur.execute(get_creatures_sql)
     returned_rows = cur.fetchall()
     return returned_rows or None
+
+@make_database_connection
+def get_wild_chorumfur_ids(conn=None):
+    """Retrieves all creature records with an owner of 0"""
+    get_creatures_sql = """SELECT creature_id
+                           FROM creatures
+                           WHERE creature_owner = 0"""
+    cur = conn.cursor()
+    cur.execute(get_creatures_sql)
+    return cur.fetchall() or None
 
 @make_database_connection
 def update_user_last_breed(user,conn=None):
@@ -477,6 +527,84 @@ def get_ticket_from_db(ticket_id,conn=None):
     return None
 
 @make_database_connection
+def get_tickets_from_db_by_status(ticket_status,conn=None):
+    """Gets all tickets of a given status (as an INT) and returns a list of Ticket objects"""
+    get_ticket_sql = """SELECT ticket_id,
+	                           ticket_name,
+	                           ticket_requestor,
+	                           ticket_date,
+	                           ticket_status,
+	                           ticket_creature_a,
+	                           ticket_creature_b,
+	                           ticket_pups,
+                               users.user_id,
+	                           users.user_level,
+	                           users.user_wallet,
+	                           users.user_lastbreed,
+	                           users.user_warnings_issued,
+	                           users.user_pending_breeding,
+	                           creature_a.creature_name,
+                               creature_a.creature_owner,
+                               creature_a.creature_id,
+	                           creature_a.creature_create_date,
+	                           creature_a.creature_image_link,
+                               creature_a.creature_image_link_newborn,
+                               creature_a.creature_image_link_pup,
+	                           creature_a.creature_generation,
+	                           creature_a.creature_traits,
+	                           creature_a.creature_parent_a,
+	                           creature_a.creature_parent_b,
+	                           creature_a.creature_available_to_breed,
+                               creature_a.creature_is_active,
+                               creature_a.creature_last_forage,
+	                           creature_b.creature_name as b_creature_name,
+                               creature_b.creature_owner as b_owner,
+                               creature_b.creature_id as b_creature_id,
+	                           creature_b.creature_create_date as b_create_date,
+	                           creature_b.creature_image_link as b_image_link,
+                               creature_b.creature_image_link_newborn as b_newborn,
+                               creature_b.creature_image_link_pup as b_pup,
+	                           creature_b.creature_generation as b_generation,
+	                           creature_b.creature_traits as b_traits,
+	                           creature_b.creature_parent_a as b_parent_a,
+	                           creature_b.creature_parent_b as b_parent_b,
+	                           creature_b.creature_available_to_breed as b_available_to_breed
+                               creature_b.creature_is_active as b_is_active
+                               creature_b.creature_last_forage as b_last_forage
+	                    FROM breeding_tickets
+	                    JOIN users ON breeding_tickets.ticket_requestor = users.user_id
+	                    JOIN creatures creature_a on breeding_tickets.ticket_creature_a = creature_a.creature_id
+	                    JOIN creatures creature_b on breeding_tickets.ticket_creature_b = creature_b.creature_id
+	                    WHERE breeding_tickets.ticket_status = %s
+	                    ORDER BY ticket_id ASC"""
+    cur = conn.cursor()
+    cur.execute(get_ticket_sql,(Constants.TICKET_STATUS[ticket_status],))
+    result = cur.fetchall()
+    if result:
+        returned_tickets = []
+        for result_row in result:
+            ticket = result_row[:8]
+            requestor_result = result_row[8:14]
+            creature_a_result = result_row[14:26]
+            creature_b_result = result_row[26:]
+            requestor = pack_user(requestor_result)
+            tkt_creature_a = pack_creature(creature_a_result)
+            tkt_creature_b = pack_creature(creature_b_result)
+            tkt_pups = pickle.loads(ticket[7])
+            returned_ticket =Ticket(
+                ticket_name = ticket[1],
+                ticket_requestor = requestor,
+                creature_a = tkt_creature_a,
+                creature_b = tkt_creature_b,
+                ticket_id=ticket[0],
+                ticket_date=ticket[3],
+                ticket_status=ticket[4],
+            pups = tkt_pups)
+            returned_tickets.append(returned_ticket)
+        return returned_tickets
+    return None
+
+@make_database_connection
 def update_ticket_status(ticket_to_update,conn=None):
     """Advances"""
     update_status_sql = """UPDATE breeding_tickets
@@ -550,15 +678,57 @@ def get_requested_tickets_from_db(type_to_show,conn=None):
                                ticket_name,
                                ticket_status
                         FROM breeding_tickets
-                        WHERE ticket_status = 'Complete'"""
+                        WHERE ticket_status = 'Ready to Birth'"""
     cur = conn.cursor()
     cur.execute(options[type_to_show])
     returned_rows = cur.fetchall()
     if returned_rows:
         return returned_rows
     return None
+
+@make_database_connection
+def get_active_creatures_for_user(user_id,conn=None):
+    """Retrieves all creatures that are active for a given user
+    
+    Parameters
+    ----------
+    user_id: int
+        the user_id to query for"""
+    get_creatures_sql="""SELECT creature_id,creature_name FROM creatures
+                         WHERE creature_owner = %s AND creature_is_active = TRUE"""
+    cur = conn.cursor()
+    cur.execute(get_creatures_sql,(user_id,))
+    result = cur.fetchall()
+    return result or None
+
+def pack_creature(returned_row):
+    returned_creature = Creature(name=returned_row[0],
+                                     owner=returned_row[1],
+                                     creatureId=returned_row[2],
+                                     createDate=returned_row[3],
+                                     imageLink=returned_row[4],
+                                     imageLink_nb=returned_row[5],
+                                     imageLink_pup=returned_row[6],
+                                     generation=returned_row[7],
+                                     available_to_breed=returned_row[11],
+                                     is_active=returned_row[12],
+                                     last_forage=returned_row[13])
+    if returned_row[8]:
+        returned_creature.traits=pickle.loads(returned_row[8])
+    if returned_row[9] or returned_row[10]:
+        returned_creature.parents = [returned_row[9],returned_row[10]]
+    return returned_creature
+
+def pack_user(user_data):
+    return User(userId = user_data[0],
+                level=user_data[1],
+                wallet=user_data[2],
+                lastBreed=user_data[3],
+                warningsIssued=user_data[4],
+                is_breeding_pending=user_data[5])
+
 if __name__ == "__main__":
-    new_name = f"Renamed Creature"
+    new_name = "Renamed Creature"
     test_creature = get_creature_from_db(57)
     test_creature.name=new_name
     update_creature(test_creature)

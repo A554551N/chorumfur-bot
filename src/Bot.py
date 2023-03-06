@@ -19,7 +19,8 @@ cogs = ['cogs.cog_admin',
         'cogs.cog_creatures',
         'cogs.cog_inventory',
         'cogs.cog_tickets',
-        'cogs.cog_users']
+        'cogs.cog_users',
+        'cogs.cog_activities']
 
 game = discord.Game('with all these Chorumfurs!')
 client = commands.Bot(command_prefix=EnvironmentVars.bot_invocation_var,intents=intents,activity=game)
@@ -58,9 +59,9 @@ async def about(ctx):
     by Justin Gordon ({client.get_user(202632427535859712)})
     Code and documentation available at: https://github.com/A554551N/chorumfur-bot
 
-    Chorumfurs are small ferret-like dragons originally created by Quinn#0610, then apprehendedand run off with by Lysa (Zombpossum#5577).
+    Chorumfurs are small ferret-like dragons originally created by Quinn#0610, then apprehended and run off with by Lysa (Zombpossum#5577).
 
-    While the species has been around since 2019, this community has only been operating sinc late 2022.  There's a whole rich culture behind these fuzzbutts that we're excited to share and release to you all as we continue to grow and expand!
+    While the species has been around since 2019, this community has only been operating since late 2022.  There's a whole rich culture behind these fuzzbutts that we're excited to share and release to you all as we continue to grow and expand!
 
     Chorumfurs are a closed species, the only way to get one is to be part of our community.
     """
