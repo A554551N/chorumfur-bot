@@ -90,7 +90,7 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
             valid = False
         elif creature.last_forage and (datetime.today() - creature.last_forage).seconds//3600 < 6:
             msg = "Each chorumfur can only forage once every six hours.  "\
-                  f"You can forage again in {6 - (datetime.today() - creature.last_forage).seconds//3600} hours,"
+                  f"You can forage again in {6 - (datetime.today() - creature.last_forage).seconds//3600} hours"
             valid = False
         return (valid,msg)
     
