@@ -129,7 +129,7 @@ class Creature:
                 f"**Age:** {age}\n"\
                 f"**Create Date:** {datetime.strftime(self.createDate,Constants.DATEONLYFORMAT)}\n"\
                 f"**Generation:** {self.generation}\n"
-        output += f"**Pallet:** {self.pallet}\n" if output_all else ""
+        output += f"**Pallet:** {self.pallet}\n" if output_all and self.pallet else ""
         output += "**---Traits---**\n"
         if age.days <= 7 and self.generation != 0 and not output_all:
             image_link = self.imageLink_nb
