@@ -34,6 +34,10 @@ get_user_inventory():
 
 add_creature_to_db():
     adds a creature with given parameters to the db
+
+get_multiple_creatures_from_db()
+    takes in a list or tuple of creature IDs and returns a list of Creature objects
+    matching those IDs
 """
 
 import psycopg2
@@ -319,6 +323,43 @@ def add_multiple_creatures_to_db(creature_list,conn=None):
     returned_ids = psycopg2.extras.execute_values(cur,add_creature_sql,list_to_add,fetch=True)
     conn.commit()
     return returned_ids
+
+@make_database_connection
+def get_multiple_creatures_from_db(creature_ids,conn=None):
+    """Takes in a list or tuple of creature_ids and returns a list of creature
+    objects that match those IDs
+    
+    Parameters
+    ----------
+    creature_ids : list
+        a list of creature IDs"""
+    
+    creature_ids_tuple=(*creature_ids,)
+    get_multiple_sql = '''SELECT creature_name,
+                                 creature_owner,
+                                 creature_id,
+                                 creature_create_date,
+                                 creature_image_link,
+                                 creature_image_link_newborn,
+                                 creature_image_link_pup,
+                                 creature_generation,
+                                 creature_traits,
+                                 creature_parent_a,
+                                 creature_parent_b,
+                                 creature_available_to_breed,
+                                 creature_is_active,
+                                 creature_last_forage
+                          FROM creatures
+                          WHERE creature_id in %s
+                          ORDER BY creature_id ASC'''
+    cur = conn.cursor()
+    # tuple must be contained inside of a tuple
+    cur.execute(get_multiple_sql,(creature_ids_tuple,))
+    returned_rows = cur.fetchall()
+    returned_creatures = []
+    for row in returned_rows:
+        returned_creatures.append(pack_creature(row))
+    return returned_creatures
 
 @make_database_connection
 def get_creature_from_db(creature_id,conn=None):
@@ -730,7 +771,5 @@ def pack_user(user_data):
                 is_breeding_pending=user_data[5])
 
 if __name__ == "__main__":
-    new_name = "Renamed Creature"
-    test_creature = get_creature_from_db(57)
-    test_creature.name=new_name
-    update_creature(test_creature)
+    creatures = get_multiple_creatures_from_db([29,32])
+    print(creatures)
