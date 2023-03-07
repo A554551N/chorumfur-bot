@@ -58,8 +58,6 @@ class BreedingCog(commands.GroupCog, name='Mating',group_name='mating'):
         elif ticket.status != Constants.TICKET_STATUS[2]:
             msg = f"This ticket is in {ticket.status} and cannot be modified."
         else:
-            ticket.requestor.is_breeding_pending = False
-            database_methods.update_user_pending_breeding(ticket.requestor)
             ticket = support_functions.enact_breeding(ticket)
             database_methods.update_ticket_in_db(ticket)
             await support_functions.send_ticket_to_channel(self.client,ticket)

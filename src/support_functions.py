@@ -25,6 +25,8 @@ def enact_breeding(ticket,is_admin=False):
 Returns the updated Ticket object"""
     ticket.update_ticket_status(3)
     if not is_admin:
+        ticket.requestor.is_breeding_pending = False
+        database_methods.update_user_pending_breeding(ticket.requestor)
         ticket.requestor.update_last_breed()
         database_methods.update_user_last_breed(ticket.requestor)
     pups = ticket.perform_breeding()
@@ -36,6 +38,9 @@ async def send_ticket_to_channel(bot, ticket):
     artist = bot.get_user(101509826588205056)
     ticket_channel = bot.get_channel(1061868480086941716)
     pups = database_methods.get_multiple_creatures_from_db(ticket.pups)
+    parents = database_methods.get_parents_from_db(pups[0])
+    for pup in pups:
+        pup.parents = parents
     await ticket_channel.send(artist.mention)
     await ticket_channel.send(ticket.output_detailed_ticket(pups))
 
