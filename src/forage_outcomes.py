@@ -138,13 +138,13 @@ event_special_b_events = {
 }
 
 outcome_types = {
-    "text_event" : ".25",
+    "text_event" : ".27",
     "event_curr" : ".25",
-    "npc_event" : ".2",
+    "npc_event" : ".22",
     "currency_event" : ".15",
-    "lure_event" : ".05",
     "event_special_a" : ".05",
-    "event_special_b" : ".05"
+    "event_special_b" : ".05",
+    "lure_event" : ".01",
 }
 
 outcome_subtypes = {
