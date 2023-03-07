@@ -91,3 +91,8 @@ def test_add_multiple_creatures_to_db():
 def test_get_creatures_available_to_breed():
     creatures_available_to_breed = database_methods.get_creatures_available_to_breed()
     assert creatures_available_to_breed[0][0] == 27
+
+def test_get_multiple_creatures():
+    creatures_tuple = (29,30,32)
+    returned_creatures = database_methods.get_multiple_creatures_from_db(creatures_tuple)
+    assert returned_creatures[0].name == 'Ivan'

@@ -30,8 +30,8 @@ class Creature:
             IDs indicating a chorumfur's parents (not applicable to Gen 0)
         avaialable_to_breed: bool
             True if creature should appear in .matingDance, otherwise False
-        pallet: string
-            which parent's pallet to apply for art (THIS IS NEVER SENT TO DATABASE)
+        palette: string
+            which parent's pallet to apply for art
         is_active: bool
             True if creature is active in a user's party, otherwise False
         last_forage: datetime
@@ -59,7 +59,7 @@ class Creature:
                 ownerName=None,
                 parents=[None,None],
                 available_to_breed=False,
-                pallet="N/A",
+                palette="N/A",
                 is_active=False,
                 last_forage=None):
         self.name = name
@@ -82,7 +82,7 @@ class Creature:
         self.traits = dict(traits)
         self.parents = parents
         self.available_to_breed = available_to_breed
-        self.pallet = pallet
+        self.palette = palette
         self.is_active = is_active
         self.last_forage = last_forage
 
@@ -129,7 +129,7 @@ class Creature:
                 f"**Age:** {age}\n"\
                 f"**Create Date:** {datetime.strftime(self.createDate,Constants.DATEONLYFORMAT)}\n"\
                 f"**Generation:** {self.generation}\n"
-        output += f"**Pallet:** {self.pallet}\n" if output_all and hasattr(self,'pallet') else ""
+        output += f"**Palette:** {self.palette}\n" if output_all and hasattr(self,'palette') else ""
         output += "**---Traits---**\n"
         if age.days <= 7 and self.generation != 0 and not output_all:
             image_link = self.imageLink_nb

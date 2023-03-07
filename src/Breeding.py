@@ -44,7 +44,7 @@ class Breeding:
         creature_a and creature_b.  Returns an array of Creatures."""
         # This is where weighting happens.
         number_of_pups = 0
-        pallet_choices = ["Parent A","Parent B","Mixed"]
+        palette_choices = ["Parent A","Parent B","Mixed"]
         random_count_roll = Decimal(str(random.random()))
         for current_count in Constants.PUP_WEIGHTING:
             pup_weight = Decimal(Constants.PUP_WEIGHTING[current_count])
@@ -55,11 +55,11 @@ class Breeding:
                 break
         pups = []
         for pup_count in range(1,(number_of_pups+1)):
-            pallet = pallet_choices[random.randint(0,2)]
+            palette = palette_choices[random.randint(0,2)]
             pup = Creature(name=f"Pup {pup_count}",
                            owner=self.new_creature_owner,
                            generation=self.new_creature_generation,
-                           pallet=pallet)
+                           palette=palette)
             for trait in pup.traits:
                 pup.traits[trait] = self.select_trait_to_pass(trait)
             pups.append(pup)

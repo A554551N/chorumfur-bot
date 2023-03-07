@@ -27,24 +27,17 @@ Returns the updated Ticket object"""
     if not is_admin:
         ticket.requestor.update_last_breed()
         database_methods.update_user_last_breed(ticket.requestor)
-    ticket.perform_breeding()
-    #ticket = add_pups_to_database(ticket)
+    pups = ticket.perform_breeding()
+    ticket.pups = database_methods.add_multiple_creatures_to_db(pups)
     return ticket
-
-
-def add_pups_to_database(ticket):
-    """Iterates over the pups parameter of a ticket object and adds them to database."""
-    for pup in ticket.pups:
-        pup.creatureId = database_methods.add_creature_to_db(pup)
-    return ticket
-
 
 async def send_ticket_to_channel(bot, ticket):
     """Sends a message to the tickets channel and mentions artist"""
     artist = bot.get_user(101509826588205056)
     ticket_channel = bot.get_channel(1061868480086941716)
+    pups = database_methods.get_multiple_creatures_from_db(ticket.pups)
     await ticket_channel.send(artist.mention)
-    await ticket_channel.send(ticket.output_detailed_ticket())
+    await ticket_channel.send(ticket.output_detailed_ticket(pups))
 
 def format_output(format_str,header_elements,returned_list_from_db):
     """Takes in a format string, the elements that form the header,

@@ -4,6 +4,7 @@ from Breeding import Breeding
 
 class Ticket:
     """Implements a breeding order and methods for managing breeding orders
+    
     Parameters
     ----------
     id INTEGER - ticket ID from the database
@@ -13,6 +14,34 @@ class Ticket:
     status STRING - indicator of ticket's current status
     creature_a CREATURE - Creature object representing parent A
     creature_b CREATURE - Creature object representing parent B
+    parents_of_a TUPLE - tuple containing Creature objects representing the parents of A
+    parents_of_b TUPLE - tuple containing Creature objects representing the parents of B
+    pups LIST - a list of Creature IDs representing the pups associated with the ticket
+    
+    Methods
+    --------
+    output_ticket()
+        returns a formatted ticket suitable for end-users to view
+    
+    perform_breeding()
+        creates a Breeding object and calls breed() on it
+
+    output_detailed_ticket()
+        returns a formatted ticket suitable for artist to create new creature
+    
+    requestor_can_breed()
+        confirms that the requesting user of the ticket has permission to breed,
+        returns a boolean (True if checks pass, else False)
+    
+    requestor_owns_both()
+        confirms whether the requesting user is the only user involved in breeding.
+        returns a boolean (True if requestor owns both)
+
+    other_user()
+        returns the non-requesting user in the breeding pair
+    
+    update_ticket_status()
+        takes in an int representation of a status code and stores the textual equivalent
     """
 
     def __init__(self,ticket_name,ticket_requestor,creature_a,creature_b,
@@ -42,18 +71,17 @@ class Ticket:
               f"Parent B: {self.creature_b.creatureId}-{self.creature_b.name}\n"
 
     def perform_breeding(self):
-        """Creates a Breeding object and performs breeding, returns an array of pups
-        and updates Ticket object pups."""
+        """Creates a Breeding object and performs breeding, returns an array of pups."""
         requested_breed = Breeding(creature_a=self.creature_a,
                                    creature_b=self.creature_b,
                                    new_creature_owner=1)
-        self.pups = requested_breed.breed()
-        return self.pups
+        return requested_breed.breed()
+        
 
-    def output_detailed_ticket(self):
+    def output_detailed_ticket(self,pups):
         """Outputs a detailed ticket for the #breeding-tickets channel"""
         output=self.output_ticket()+"\n------------\n"
-        for pup in self.pups:
+        for pup in pups:
             output+=pup.outputCreature(output_all=True)[0]
             output+="----------------------\n"
         return output

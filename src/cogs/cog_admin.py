@@ -130,7 +130,8 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
     async def getDetailedTicket(self,ctx,ticket_id):
         """Retrieves a ticket from the database and outputs a detailed breeding ticket"""
         returned_ticket = database_methods.get_ticket_from_db(ticket_id)
-        await ctx.send(returned_ticket.output_detailed_ticket())
+        pups = database_methods.get_multiple_creatures_from_db(returned_ticket.pups)
+        await ctx.send(returned_ticket.output_detailed_ticket(pups))
 
     @is_guild_owner_or_bot_admin()
     @commands.command(aliases=['at'])
@@ -232,6 +233,13 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
             #support_functions.add_pups_to_database(ticket)
         await ctx.send(f"Litter for ticket #{ticket.id} birthed and "\
                        f" delivered to <@{ticket.requestor.userId}>")
+
+    @is_guild_owner_or_bot_admin
+    async def movePupsToDB
+    for ticket in (18,19,20,21,22):
+        pup_list = database_methods.add_multiple_creatures_to_db(ticket.pups)
+        ticket.pups = pup_list
+        database_methods.update_ticket_in_db(ticket)
 
     @commands.command()
     @is_guild_owner_or_bot_admin()
