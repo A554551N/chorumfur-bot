@@ -51,7 +51,7 @@ def test_breeding_level_3(user_attributes):
     """Confirms that breeding level 3 is identified correctly"""
     testUser = User(user_attributes["ID"],
                         user_attributes["level"],
-                        datetime(2022,12,19),
+                        datetime(2022,12,25),
                         user_attributes["warningsIssued"])
     assert testUser.breedingLevel(True) == 2
 
