@@ -19,7 +19,7 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
         returned_rows = database_methods.get_event_currency_leaderboard(29)
         output_list=[]
         for row in returned_rows:
-            output_list.append((self.client.get_user(row[0]),row[1]))
+            output_list.append((self.client.get_user(row[0]).name,row[1]))
         messages = support_functions.format_output('{} - {}\n',('User','Quantity'),output_list)
         for msg in messages:
             await ctx.send(msg)
