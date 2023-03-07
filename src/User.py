@@ -63,7 +63,7 @@ class User:
         else:
             today = datetime.today()
         daysSinceLastBreed = today - self.lastBreed
-        breedingLevel = math.floor(daysSinceLastBreed.days/6)
+        breedingLevel = math.floor(daysSinceLastBreed.days/3)
         if breedingLevel > 5:
             breedingLevel = 5
         elif breedingLevel < 0:
