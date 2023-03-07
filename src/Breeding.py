@@ -59,6 +59,7 @@ class Breeding:
             pup = Creature(name=f"Pup {pup_count}",
                            owner=self.new_creature_owner,
                            generation=self.new_creature_generation,
+                           parents=[self.creature_a.creatureId,self.creature_b.creatureId],
                            palette=palette)
             for trait in pup.traits:
                 pup.traits[trait] = self.select_trait_to_pass(trait)

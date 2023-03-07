@@ -10,8 +10,12 @@ class CreaturesCog(commands.GroupCog, name='Chorumfur Management',group_name='ch
     @commands.command(aliases=['gc','getcreature'],require_var_positional=True)
     async def getCreature(self,ctx,creatureId):
         """Takes in a creature ID and sends a formatted output of the creature to discord"""
-        requested_creature = database_methods.get_creature_from_db(creatureId)
+        requested_creature = database_methods.get_creature_from_db(creatureId) or None
         if requested_creature:
+            creature_parents = database_methods.get_parents_from_db(requested_creature)
+            print(creature_parents)
+            if creature_parents:
+                requested_creature.parents = creature_parents
             if requested_creature.owner not in (0,1):
                 user = self.client.get_user(requested_creature.owner)
                 requested_creature.ownerName = user.name

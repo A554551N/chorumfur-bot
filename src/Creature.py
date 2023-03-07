@@ -122,12 +122,19 @@ class Creature:
         creature and the correct image for the bot to display based on the creature's age.
         The amount of information returned in the string also varies based on creature's age."""
         age = self.calculate_age()
+        print(self.parents)
+        if self.parents[0] and self.parents[1]:
+            parent_string = f"{self.parents[0].creatureId} - {self.parents[0].name} & "\
+                            f"{self.parents[1].creatureId} - {self.parents[1].name}"
+        else:
+            parent_string = 'No Parents Found'
         image_link = ""
         output = f"**ID:** {self.creatureId}\n"\
                 f"**Name:** {self.name}\n"\
                 f"**Owner:** {self.ownerName}\n"\
                 f"**Age:** {age}\n"\
                 f"**Create Date:** {datetime.strftime(self.createDate,Constants.DATEONLYFORMAT)}\n"\
+                f"**Parents:** {parent_string}\n"\
                 f"**Generation:** {self.generation}\n"
         output += f"**Palette:** {self.palette}\n" if output_all and hasattr(self,'palette') else ""
         output += "**---Traits---**\n"
