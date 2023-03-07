@@ -301,8 +301,6 @@ def add_multiple_creatures_to_db(creature_list,conn=None):
                           creature_parent_a,
                           creature_parent_b,
                           creature_available_to_breed,
-                          creature_is_active,
-                          creature_last_forage,
                           creature_palette)
                           VALUES %s
                           RETURNING creature_id
@@ -320,8 +318,6 @@ def add_multiple_creatures_to_db(creature_list,conn=None):
                  creature_to_add.parents[0],
                  creature_to_add.parents[1],
                  creature_to_add.available_to_breed,
-                 creature_to_add.is_active,
-                 creature_to_add.last_forage,
                  creature_to_add.palette))
     cur = conn.cursor()
     returned_ids = psycopg2.extras.execute_values(cur,add_creature_sql,list_to_add,fetch=True)
