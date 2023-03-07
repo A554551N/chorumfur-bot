@@ -234,6 +234,7 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         await ctx.send(f"Litter for ticket #{ticket.id} birthed and "\
                        f" delivered to <@{ticket.requestor.userId}>")
 
+    @commands.command()
     @is_guild_owner_or_bot_admin()
     async def movePupsToDB(self,ctx):
         for ticket_id in (18,19,20,21,22):
