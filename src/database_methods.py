@@ -568,8 +568,8 @@ def get_tickets_from_db_by_status(ticket_status,conn=None):
 	                           creature_b.creature_traits as b_traits,
 	                           creature_b.creature_parent_a as b_parent_a,
 	                           creature_b.creature_parent_b as b_parent_b,
-	                           creature_b.creature_available_to_breed as b_available_to_breed
-                               creature_b.creature_is_active as b_is_active
+	                           creature_b.creature_available_to_breed as b_available_to_breed,
+                               creature_b.creature_is_active as b_is_active,
                                creature_b.creature_last_forage as b_last_forage
 	                    FROM breeding_tickets
 	                    JOIN users ON breeding_tickets.ticket_requestor = users.user_id
