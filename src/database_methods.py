@@ -357,9 +357,7 @@ def update_creature(creature_to_update,conn=None):
                               creature_owner = %s,
                               creature_traits = %s,
                               creature_create_date = %s,
-                              creature_available_to_breed = %s,
-                              creature_is_active = %s,
-                              creature_last_forage = %s
+                              creature_available_to_breed = %s
                           WHERE creature_id = %s
                           '''
     cur = conn.cursor()
@@ -372,8 +370,9 @@ def update_creature(creature_to_update,conn=None):
                                      creature_to_update.createDate,
                                      creature_to_update.available_to_breed,
                                      creature_to_update.is_active,
-                                     creature_to_update.last_forage,
-                                     creature_to_update.creatureId))
+                                     #creature_to_update.last_forage,
+                                     #creature_to_update.creatureId
+                                     ))
     if cur.rowcount == 1:
         conn.commit()
         return True
