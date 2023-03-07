@@ -668,17 +668,20 @@ def get_requested_tickets_from_db(type_to_show,conn=None):
                               ticket_name,
                               ticket_status
                         FROM breeding_tickets
-                        WHERE ticket_status != 'Complete'"""
+                        WHERE ticket_status != 'Complete'
+                        ORDER BY ticket_id ASC"""
     options['pending']="""SELECT ticket_id,
                               ticket_name,
                               ticket_status
                         FROM breeding_tickets
-                        WHERE ticket_status = 'Breeding Pending'"""
+                        WHERE ticket_status = 'Breeding Pending'
+                        ORDER BY ticket_id ASC"""
     options['ready']="""SELECT ticket_id,
                                ticket_name,
                                ticket_status
                         FROM breeding_tickets
-                        WHERE ticket_status = 'Ready to Birth'"""
+                        WHERE ticket_status = 'Ready to Birth'
+                        ORDER BY ticket_id ASC"""
     cur = conn.cursor()
     cur.execute(options[type_to_show])
     returned_rows = cur.fetchall()
