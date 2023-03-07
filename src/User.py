@@ -83,7 +83,7 @@ class User:
             self.daysSinceLastBreed = datetime.today() - self.lastBreed
             if self.daysSinceLastBreed.days < 0:
                 return 0
-            return 18 - self.daysSinceLastBreed
+            return 18 - self.daysSinceLastBreed.days
         return 0
     
     def update_last_breed(self):
