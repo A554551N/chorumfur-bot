@@ -260,8 +260,9 @@ def add_creature_to_db(creature_to_add,conn=None):
                           creature_parent_b,
                           creature_available_to_breed,
                           creature_is_active,
-                          creature_last_forage)
-                          VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                          creature_last_forage,
+                          creature_palette)
+                          VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                           RETURNING creature_id
                           """
     cur = conn.cursor()
@@ -278,7 +279,8 @@ def add_creature_to_db(creature_to_add,conn=None):
                  creature_to_add.parents[1],
                  creature_to_add.available_to_breed,
                  creature_to_add.is_active,
-                 creature_to_add.last_forage))
+                 creature_to_add.last_forage,
+                 creature_to_add.palette))
     returned_id = cur.fetchone()[0]
     conn.commit()
     return returned_id
@@ -300,7 +302,8 @@ def add_multiple_creatures_to_db(creature_list,conn=None):
                           creature_parent_b,
                           creature_available_to_breed,
                           creature_is_active,
-                          creature_last_forage)
+                          creature_last_forage,
+                          creature_palette)
                           VALUES %s
                           RETURNING creature_id
                           """
@@ -318,7 +321,8 @@ def add_multiple_creatures_to_db(creature_list,conn=None):
                  creature_to_add.parents[1],
                  creature_to_add.available_to_breed,
                  creature_to_add.is_active,
-                 creature_to_add.last_forage))
+                 creature_to_add.last_forage,
+                 creature_to_add.palette))
     cur = conn.cursor()
     returned_ids = psycopg2.extras.execute_values(cur,add_creature_sql,list_to_add,fetch=True)
     conn.commit()
@@ -348,7 +352,8 @@ def get_multiple_creatures_from_db(creature_ids,conn=None):
                                  creature_parent_b,
                                  creature_available_to_breed,
                                  creature_is_active,
-                                 creature_last_forage
+                                 creature_last_forage,
+                                 creature_palette
                           FROM creatures
                           WHERE creature_id in %s
                           ORDER BY creature_id ASC'''
@@ -377,7 +382,8 @@ def get_creature_from_db(creature_id,conn=None):
                                  creature_parent_b,
                                  creature_available_to_breed,
                                  creature_is_active,
-                                 creature_last_forage
+                                 creature_last_forage,
+                                 creature_palette
                           FROM creatures
                           WHERE creature_id = %s"""
     cur = conn.cursor()
@@ -398,7 +404,10 @@ def update_creature(creature_to_update,conn=None):
                               creature_owner = %s,
                               creature_traits = %s,
                               creature_create_date = %s,
-                              creature_available_to_breed = %s
+                              creature_available_to_breed = %s,
+                              creature_is_active = %s,
+                              creature_last_forage = %s,
+                              creature_palette = %s
                           WHERE creature_id = %s
                           '''
     cur = conn.cursor()
@@ -410,8 +419,9 @@ def update_creature(creature_to_update,conn=None):
                                      pickle.dumps(creature_to_update.traits),
                                      creature_to_update.createDate,
                                      creature_to_update.available_to_breed,
-                                     #creature_to_update.is_active,
-                                     #creature_to_update.last_forage,
+                                     creature_to_update.is_active,
+                                     creature_to_update.last_forage,
+                                     creature_to_update.palette,
                                      creature_to_update.creatureId
                                      ))
     if cur.rowcount == 1:
@@ -434,7 +444,8 @@ def get_parents_from_db(creature,conn=None):
                                  creature_parent_b,
                                  creature_available_to_breed,
                                  creature_is_active,
-                                 creature_last_forage
+                                 creature_last_forage,
+                                 creature_palette
                           FROM creatures
                           WHERE creature_id = %s OR creature_id = %s"""
     cur = conn.cursor()
@@ -597,6 +608,7 @@ def get_tickets_from_db_by_status(ticket_status,conn=None):
 	                           creature_a.creature_available_to_breed,
                                creature_a.creature_is_active,
                                creature_a.creature_last_forage,
+                               creature_a.creature_palette
 	                           creature_b.creature_name as b_creature_name,
                                creature_b.creature_owner as b_owner,
                                creature_b.creature_id as b_creature_id,
@@ -610,7 +622,8 @@ def get_tickets_from_db_by_status(ticket_status,conn=None):
 	                           creature_b.creature_parent_b as b_parent_b,
 	                           creature_b.creature_available_to_breed as b_available_to_breed,
                                creature_b.creature_is_active as b_is_active,
-                               creature_b.creature_last_forage as b_last_forage
+                               creature_b.creature_last_forage as b_last_forage,
+                               creature_b.creature_palette as b_palette
 	                    FROM breeding_tickets
 	                    JOIN users ON breeding_tickets.ticket_requestor = users.user_id
 	                    JOIN creatures creature_a on breeding_tickets.ticket_creature_a = creature_a.creature_id
@@ -625,8 +638,8 @@ def get_tickets_from_db_by_status(ticket_status,conn=None):
         for result_row in result:
             ticket = result_row[:8]
             requestor_result = result_row[8:14]
-            creature_a_result = result_row[14:28]
-            creature_b_result = result_row[28:]
+            creature_a_result = result_row[14:29]
+            creature_b_result = result_row[29:]
             requestor = pack_user(requestor_result)
             tkt_creature_a = pack_creature(creature_a_result)
             tkt_creature_b = pack_creature(creature_b_result)
@@ -755,7 +768,8 @@ def pack_creature(returned_row):
                                      generation=returned_row[7],
                                      available_to_breed=returned_row[11],
                                      is_active=returned_row[12],
-                                     last_forage=returned_row[13])
+                                     last_forage=returned_row[13],
+                                     palette=returned_row[14])
     if returned_row[8]:
         returned_creature.traits=pickle.loads(returned_row[8])
     if returned_row[9] or returned_row[10]:
