@@ -235,11 +235,13 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
                        f" delivered to <@{ticket.requestor.userId}>")
 
     @is_guild_owner_or_bot_admin
-    async def movePupsToDB
-    for ticket in (18,19,20,21,22):
-        pup_list = database_methods.add_multiple_creatures_to_db(ticket.pups)
-        ticket.pups = pup_list
-        database_methods.update_ticket_in_db(ticket)
+    async def movePupsToDB(self,ctx):
+        for ticket_id in (18,19,20,21,22):
+            ticket = database_methods.get_ticket_from_db(ticket_id)
+            pup_list = database_methods.add_multiple_creatures_to_db(ticket.pups)
+            ticket.pups = pup_list
+            await ctx.send(f"{ticket.id} - {ticket.pups}")
+            database_methods.update_ticket_in_db(ticket)
 
     @commands.command()
     @is_guild_owner_or_bot_admin()
