@@ -39,6 +39,7 @@ async def send_ticket_to_channel(bot, ticket):
     ticket_channel = bot.get_channel(1061868480086941716)
     pups = database_methods.get_multiple_creatures_from_db(ticket.pups)
     parents = database_methods.get_parents_from_db(pups[0])
+    print(parents)
     for pup in pups:
         pup.parents = parents
     await ticket_channel.send(artist.mention)
