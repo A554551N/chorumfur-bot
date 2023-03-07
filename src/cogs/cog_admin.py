@@ -228,7 +228,7 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
             # new_pup = database_methods.get_creature_from_db(pup.creatureId)
             pup.createDate = datetime.today()
             pup.owner = ticket.requestor.userId
-            database_methods.update_creature(new_pup)
+            database_methods.update_creature(pup)
             #support_functions.add_pups_to_database(ticket)
         await ctx.send(f"Litter for ticket #{ticket.id} birthed and "\
                        f" delivered to <@{ticket.requestor.userId}>")
