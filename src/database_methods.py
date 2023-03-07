@@ -585,8 +585,8 @@ def get_tickets_from_db_by_status(ticket_status,conn=None):
         for result_row in result:
             ticket = result_row[:8]
             requestor_result = result_row[8:14]
-            creature_a_result = result_row[14:26]
-            creature_b_result = result_row[26:]
+            creature_a_result = result_row[14:28]
+            creature_b_result = result_row[28:]
             requestor = pack_user(requestor_result)
             tkt_creature_a = pack_creature(creature_a_result)
             tkt_creature_b = pack_creature(creature_b_result)
