@@ -238,6 +238,7 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
     async def birthAll(self,ctx):
         """automatically births ALL creatures in 'Ready to Birth' status."""
         tickets = database_methods.get_tickets_from_db_by_status(5) or None
+        await ctx.send(tickets)
         if tickets:
             completed_tickets = []
             completed_pups = 0
