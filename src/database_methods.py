@@ -369,9 +369,9 @@ def update_creature(creature_to_update,conn=None):
                                      pickle.dumps(creature_to_update.traits),
                                      creature_to_update.createDate,
                                      creature_to_update.available_to_breed,
-                                     creature_to_update.is_active,
+                                     #creature_to_update.is_active,
                                      #creature_to_update.last_forage,
-                                     #creature_to_update.creatureId
+                                     creature_to_update.creatureId
                                      ))
     if cur.rowcount == 1:
         conn.commit()
