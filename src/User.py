@@ -69,21 +69,23 @@ class User:
         elif breedingLevel < 0:
             breedingLevel = 0
         return breedingLevel
-    
+
     def outputProfile(self):
         """outputs a profile string to display in server"""
         output = f"**{self.name}**\n"\
                 f"**Level:** {self.level}\n"\
                 f"**Last Breeding:** {self.lastBreed}\n"
         return output
-    
+
     def daysUntilFull(self):
         """calculates how many days until the breeding crystal is ready to be used."""
         if self.lastBreed:
             self.daysSinceLastBreed = datetime.today() - self.lastBreed
-            if self.daysSinceLastBreed.days < 0:
+            days_until_full = 18 - self.daysSinceLastBreed.days
+            if days_until_full <= 0:
                 return 0
-            return 18 - self.daysSinceLastBreed.days
+            else:
+                return days_until_full
         return 0
     
     def update_last_breed(self):
