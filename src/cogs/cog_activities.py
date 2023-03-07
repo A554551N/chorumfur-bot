@@ -9,6 +9,20 @@ import limited_time_events
 
 class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities'):
     """Cog to group commands related to activities for players"""
+    def __init__(self, bot):
+        self.client = bot
+
+    @commands.command()
+    async def eventScoreboard(self,ctx):
+        """Displays all users and quantities of event currency collected"""
+
+        returned_rows = database_methods.get_event_currency_leaderboard(29)
+        output_list=[]
+        for row in returned_rows:
+            output_list.append((self.client.get_user(row[0]),row[1]))
+        messages = support_functions.format_output('{} - {}\n',('User','Quantity'),output_list)
+        for msg in messages:
+            await ctx.send(msg)
 
     @commands.command()
     async def forage(self,ctx,creature_id):

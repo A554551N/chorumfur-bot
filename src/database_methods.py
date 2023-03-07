@@ -765,6 +765,27 @@ def get_active_creatures_for_user(user_id,conn=None):
     result = cur.fetchall()
     return result or None
 
+@make_database_connection
+def get_event_currency_leaderboard(event_currency,conn=None):
+    """gets all users who currently have event currency sorted from most to least.
+    
+    Parameters
+    ----------
+    event_currency : int
+        ID of the current event's currency
+    """
+
+    get_leaderboard_sql = """
+    SELECT owned_item_owner,owned_item_quantity
+    FROM owned_items
+    WHERE owned_item_type_id = %s
+    ORDER BY owned_item_quantity DESC"""
+
+    cur = conn.cursor()
+    cur.execute(get_leaderboard_sql,(event_currency,))
+    returned_rows = cur.fetchall() or None
+    return returned_rows
+
 def pack_creature(returned_row):
     returned_creature = Creature(name=returned_row[0],
                                      owner=returned_row[1],
