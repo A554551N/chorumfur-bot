@@ -131,6 +131,9 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
         """Retrieves a ticket from the database and outputs a detailed breeding ticket"""
         returned_ticket = database_methods.get_ticket_from_db(ticket_id)
         pups = database_methods.get_multiple_creatures_from_db(returned_ticket.pups)
+        parents = database_methods.get_parents_from_db(pups[0])
+        for pup in pups:
+            pup.parents = parents
         await ctx.send(returned_ticket.output_detailed_ticket(pups))
 
     @is_guild_owner_or_bot_admin()
