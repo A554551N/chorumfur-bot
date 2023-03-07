@@ -395,6 +395,13 @@ def get_creature_from_db(creature_id,conn=None):
 
 @make_database_connection
 def update_creature(creature_to_update,conn=None):
+    """takes in a Creature object and updates its database record.
+    
+    Parameters
+    -----------
+    creature_to_update : Creature
+        The Creature to update."""
+
     update_creature_sql = '''
                           UPDATE creatures
                           SET creature_name = %s,
@@ -428,6 +435,7 @@ def update_creature(creature_to_update,conn=None):
         conn.commit()
         return True
     return False
+
 @make_database_connection
 def get_parents_from_db(creature,conn=None):
     """Takes in a Creature object and returns an array of Creature objects for parents"""
