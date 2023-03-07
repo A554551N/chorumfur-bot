@@ -83,7 +83,7 @@ class User:
             daysUntilFull = datetime.today() - self.lastBreed
             if daysUntilFull.days < 0:
                 return 0
-            return 30 - self.daysSinceLastBreed
+            return 18 - self.daysSinceLastBreed
         return 0
     
     def update_last_breed(self):
