@@ -254,8 +254,10 @@ def add_creature_to_db(creature_to_add,conn=None):
                           creature_traits,
                           creature_parent_a,
                           creature_parent_b,
-                          creature_available_to_breed,)
-                          VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                          creature_available_to_breed,
+                          creature_is_active,
+                          creature_last_forage)
+                          VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                           RETURNING creature_id
                           """
     cur = conn.cursor()
@@ -271,9 +273,8 @@ def add_creature_to_db(creature_to_add,conn=None):
                  creature_to_add.parents[0],
                  creature_to_add.parents[1],
                  creature_to_add.available_to_breed,
-                 #creature_to_add.is_active,
-                 #creature_to_add.last_forage
-                 ))
+                 creature_to_add.is_active,
+                 creature_to_add.last_forage))
     returned_id = cur.fetchone()[0]
     conn.commit()
     return returned_id
