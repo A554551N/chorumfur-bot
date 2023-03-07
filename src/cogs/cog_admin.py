@@ -260,7 +260,7 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
                     pup.createDate = datetime.today()
                     pup.owner = ticket.requestor.userId
                     completed_pups += 1
-                support_functions.add_pups_to_database(ticket)
+                    database_methods.update_creature(pup)
                 completed_tickets.append(ticket.id)
                 ticket.update_ticket_status(6)
                 database_methods.update_ticket_status(ticket)
