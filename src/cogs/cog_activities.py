@@ -95,6 +95,9 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
         user_id: int
             the ID of the user running the command"""
         msg = ""
+        time_delta = None
+        if creature.last_forage:
+            time_delta = datetime.today() - creature.last_forage
         valid = True
         if creature.owner != user_id:
             msg = "You can only send chorumfurs you own to forage."
@@ -102,11 +105,9 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
         elif not creature.is_active:
             msg = "Only the chorumfurs in your party can forage."
             valid = False
-        elif creature.last_forage and (datetime.today() - creature.last_forage).seconds//3600 < 6:
-            print(f"Forage for user {user_id} failed.  Timedelta result is: {(datetime.today() - creature.last_forage)}\n"\
-                  f"Next forage should be available in {6 - (datetime.today() - creature.last_forage).seconds//3600}")
+        elif creature.last_forage and (time_delta.days == 0 and time_delta.seconds//3600 < 6):
             msg = "Each chorumfur can only forage once every six hours.  "\
-                  f"You can forage again in {6 - (datetime.today() - creature.last_forage).seconds//3600} hours"
+                  f"You can forage again in {6 - time_delta.seconds//3600} hours"
             valid = False
         return (valid,msg)
     
