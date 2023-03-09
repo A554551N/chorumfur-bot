@@ -103,6 +103,7 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
             msg = "Only the chorumfurs in your party can forage."
             valid = False
         elif creature.last_forage and (datetime.today() - creature.last_forage).seconds//3600 < 6:
+            print(f"Forage for user {user_id} failed.  Timedelta result is: {(datetime.today() - creature.last_forage).seconds//3600}")
             msg = "Each chorumfur can only forage once every six hours.  "\
                   f"You can forage again in {6 - (datetime.today() - creature.last_forage).seconds//3600} hours"
             valid = False
