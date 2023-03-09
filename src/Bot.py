@@ -52,6 +52,10 @@ async def setup_hook():
         await client.load_extension(cog)
 
 @client.command()
+async def tapTheSign(ctx):
+    await ctx.send('https://media.discordapp.net/attachments/1038243399851053158/1083524518556991568/image.png?width=473&height=702')
+
+@client.command()
 async def about(ctx):
     """Displays data about chorumfur-bot"""
     msg=f"""**Chorumfur-Bot {Constants.VERSION}**
