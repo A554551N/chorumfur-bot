@@ -39,12 +39,11 @@ get_multiple_creatures_from_db()
     takes in a list or tuple of creature IDs and returns a list of Creature objects
     matching those IDs
 """
-
-import psycopg2
-import psycopg2.extras
 import logging
 import os
 import pickle
+import psycopg2
+import psycopg2.extras
 from User import User
 from Item import Item
 from Creature import Creature
