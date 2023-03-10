@@ -3,6 +3,7 @@ class Constants:
     DATEONLYFORMAT = '%Y-%m-%d'
     VERSION = 'v0.3.10'
     CRYSTAL_CHARGE_DAYS = 18
+    FORAGE_COOLDOWN_HOURS = 6
     DEFAULT_TRAITS_DICT = {
         'MAIN_HORN': "",
         'CHEEK_HORN': "",
