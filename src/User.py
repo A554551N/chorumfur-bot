@@ -63,7 +63,8 @@ class User:
         else:
             today = datetime.today()
         daysSinceLastBreed = today - self.lastBreed
-        breedingLevel = math.floor(daysSinceLastBreed.days/3)
+        breeding_period = Constants.CRYSTAL_CHARGE_DAYS/6
+        breedingLevel = math.floor(daysSinceLastBreed.days/breeding_period)
         if breedingLevel > 5:
             breedingLevel = 5
         elif breedingLevel < 0:
@@ -81,7 +82,7 @@ class User:
         """calculates how many days until the breeding crystal is ready to be used."""
         if self.lastBreed:
             self.daysSinceLastBreed = datetime.today() - self.lastBreed
-            days_until_full = 18 - self.daysSinceLastBreed.days
+            days_until_full = Constants.CRYSTAL_CHARGE_DAYS - self.daysSinceLastBreed.days
             if days_until_full <= 0:
                 return 0
             else:
