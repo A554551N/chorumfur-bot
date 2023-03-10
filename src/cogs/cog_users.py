@@ -73,7 +73,7 @@ class UserCog(commands.GroupCog, name='User Management', group_name='users'):
                         if creature.is_active  or not activated_creatures or (not creature.is_active and len(activated_creatures) < 5):
                             if creature.last_forage:
                                 time_since_last_forage = datetime.today() - creature.last_forage
-                                if time_since_last_forage.days > 1:
+                                if time_since_last_forage.days >= 1:
                                     creature.is_active = not creature.is_active
                                     database_methods.update_creature(creature)
                                     await ctx.send(f"{creature.name} {'is now' if creature.is_active else 'is no longer'} in your party.")
