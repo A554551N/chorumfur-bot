@@ -24,7 +24,7 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
         for msg in messages:
             await ctx.send(msg)
 
-    @commands.command()
+    @commands.command(aliases=['f'])
     async def forage(self,ctx,creature_id):
         """Allows user chorumfurs to go on an adventure and discover something interesting
         
