@@ -21,6 +21,19 @@ class InventoryCog(commands.GroupCog, name='Inventory Management',group_name='in
         for msg in msg_list:
             await ctx.send(msg)
 
+    @commands.command()
+    async def useItem(self,ctx,item_id):
+        """Consumes an item from the user's inventory and performs its effect
+        
+        Parameters
+        ----------
+        item_id : int
+            item to use"""
+
+        msg_list = []
+        msg_list.append(interface_inventory.use_item_from_inventory(item_id,ctx.message.author.id))
+        for msg in msg_list:
+            await ctx.send(msg)
 
 async def setup(bot):
     await bot.add_cog(InventoryCog(bot))

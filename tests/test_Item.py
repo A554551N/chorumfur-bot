@@ -52,3 +52,11 @@ def test_get_inventory():
 
     inventory_message = interface_inventory.get_inventory(99)
     assert inventory_message != "No Items Found"
+
+def test_useItem():
+    """Tests that an Item's use effect works as intended
+    
+    Test passes if the return of the function is 'Item Used Successfully'
+    """
+    returned_messages = interface_inventory.use_item_from_inventory(99999,99)
+    assert  returned_messages[0] == 'Item Used Successfully'
