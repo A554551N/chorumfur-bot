@@ -1,6 +1,7 @@
 import pytest
 from .context import database_methods
 from .context import Item
+from .context import interface_inventory
 
 @pytest.fixture
 def testItemAttributes():
@@ -42,3 +43,12 @@ def test_getAllItemsInDB():
     """Tests that all items are retreived from database"""
     result = database_methods.get_all_items_from_db()
     assert result
+
+def test_get_inventory():
+    """Tests that .inventory is working as expected.  Test assumes that requesting
+    user is ID 99
+    
+    Test passes if returned inventory is not empty."""
+
+    inventory_message = interface_inventory.get_inventory(99)
+    assert inventory_message != "No Items Found"
