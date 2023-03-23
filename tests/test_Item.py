@@ -1,4 +1,5 @@
 import pytest
+from datetime import datetime
 from .context import database_methods
 from .context import Item
 from .context import interface_inventory
@@ -53,10 +54,34 @@ def test_get_inventory():
     inventory_message = interface_inventory.get_inventory(99)
     assert inventory_message != "No Items Found"
 
-def test_useItem():
+def test_use_test_Item():
     """Tests that an Item's use effect works as intended
     
     Test passes if the return of the function is 'Item Used Successfully'
     """
     returned_messages = interface_inventory.use_item_from_inventory(99999,99)
-    assert  returned_messages[0] == 'Item Used Successfully'
+    assert  returned_messages == 'Item Used Successfully'
+
+def test_use_unusable_item():
+    """Tests that an item that is unusable cannot be used
+    Test passes if return value reads 'This Item cannot be used'
+    """
+    returned_messages = interface_inventory.use_item_from_inventory(99998,99)
+    assert returned_messages == 'This item cannot be used'
+
+def test_unowned_item():
+    """Tests that an item not in your inventory cannot be used
+    Test passes if return value reads 'Item could not be found in your inventory'
+    """
+    returned_messages = interface_inventory.use_item_from_inventory(99999,0)
+    assert returned_messages == 'Item could not be found in your inventory'
+
+def test_breeding_reset_item():
+    """Tests that a breeding reset item successfully resets the breeding counter
+    Test passes if user.lastBreed == None"""
+    test_user = database_methods.get_user_from_db(99)
+    test_user.lastBreed = datetime.today()
+    database_methods.update_user_last_breed(test_user)
+    interface_inventory.use_item_from_inventory(30,99,99)
+    test_user = database_methods.get_user_from_db(99)
+    assert not test_user.lastBreed

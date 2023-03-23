@@ -62,7 +62,7 @@ def test_get_item_from_db():
 
 def test_cannot_get_nonexistant_item():
     """Tests to confirm that get_item_from_db fails gracefully on no record"""
-    assert not database_methods.get_item_from_db(99999)
+    assert not database_methods.get_item_from_db(999999)
 
 def test_get_user_inventory():
     """Tests that a user can retreive their inventory"""

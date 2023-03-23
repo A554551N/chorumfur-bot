@@ -49,7 +49,6 @@ from Item import Item
 from Creature import Creature
 from Ticket import Ticket
 from ConstantData import Constants
-from data import item_effects
 
 f = open(os.path.abspath(os.path.join(os.path.dirname(__file__),'../db_pass.txt')),encoding='utf-8')
 DB_PASSWORD = f.readline().rstrip('\n')
@@ -200,7 +199,6 @@ def get_item_from_db(item_id,conn=None):
                     description=retreived_row[2],
                     value=retreived_row[3],
                     imageLink=retreived_row[4])
-        returned_item = get_item_effect(returned_item)
         return returned_item
     return False
 
@@ -816,18 +814,6 @@ def pack_user(user_data):
                 lastBreed=user_data[3],
                 warningsIssued=user_data[4],
                 is_breeding_pending=user_data[5])
-
-def get_item_effect(item_to_get):
-    """Inserts the item's activation method and returns the completed
-    object.
-    
-    Parameters
-    ----------
-    item_to_get : Item
-        the item that needs its activation"""
-
-    item_to_get.activate = item_effects.items[item_to_get.id] or None
-    return item_to_get
 
 if __name__ == "__main__":
     creatures = get_multiple_creatures_from_db([29,32])
