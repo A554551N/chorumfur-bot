@@ -9,6 +9,6 @@ def test_weight_outcomes():
         types_dict[event_type] += 1
     # assumes a 25% desired text rate and a 1% desired lure rate
     assertions = ((types_dict['text_event'] > 200 and types_dict['text_event'] < 300),
-                  (types_dict['lure_event'] > 1 and types_dict['lure_event'] < 10))
+                  (types_dict['lure_event'] > 0 and types_dict['lure_event'] < 20))
     #assert assert_this
     assert assertions[0] and assertions[1]

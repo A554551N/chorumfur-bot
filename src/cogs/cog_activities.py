@@ -24,7 +24,7 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
         for msg in messages:
             await ctx.send(msg)
 
-    @commands.command()
+    @commands.command(aliases=['f'])
     async def forage(self,ctx,creature_id):
         """Allows user chorumfurs to go on an adventure and discover something interesting
         
@@ -105,9 +105,9 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
         elif not creature.is_active:
             msg = "Only the chorumfurs in your party can forage."
             valid = False
-        elif creature.last_forage and (time_delta.days == 0 and time_delta.seconds//3600 < 6):
+        elif creature.last_forage and (time_delta.days == 0 and time_delta.seconds//3600 < Constants.FORAGE_COOLDOWN_HOURS):
             msg = "Each chorumfur can only forage once every six hours.  "\
-                  f"You can forage again in {6 - time_delta.seconds//3600} hours"
+                  f"You can forage again in {Constants.FORAGE_COOLDOWN_HOURS - time_delta.seconds//3600} hour(s)"
             valid = False
         return (valid,msg)
     
