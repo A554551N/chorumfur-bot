@@ -256,7 +256,8 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
             completed_tickets = []
             completed_pups = 0
             for ticket in tickets:
-                for pup in ticket.pups:
+                list_of_pups = database_methods.get_multiple_creatures_from_db(ticket.pups)
+                for pup in list_of_pups:
                     pup.createDate = datetime.today()
                     pup.owner = ticket.requestor.userId
                     completed_pups += 1
