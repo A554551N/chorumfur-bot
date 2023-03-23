@@ -615,7 +615,7 @@ def get_tickets_from_db_by_status(ticket_status,conn=None):
 	                           creature_a.creature_available_to_breed,
                                creature_a.creature_is_active,
                                creature_a.creature_last_forage,
-                               creature_a.creature_palette
+                               creature_a.creature_palette,
 	                           creature_b.creature_name as b_creature_name,
                                creature_b.creature_owner as b_owner,
                                creature_b.creature_id as b_creature_id,
@@ -641,6 +641,7 @@ def get_tickets_from_db_by_status(ticket_status,conn=None):
     cur.execute(get_ticket_sql,(Constants.TICKET_STATUS[ticket_status],))
     result = cur.fetchall()
     if result:
+        print("THIS BRANCH HAPPENS")
         returned_tickets = []
         for result_row in result:
             ticket = result_row[:8]
@@ -662,6 +663,7 @@ def get_tickets_from_db_by_status(ticket_status,conn=None):
             pups = tkt_pups)
             returned_tickets.append(returned_ticket)
         return returned_tickets
+    print("NO TICKETS RETURNED?")
     return None
 
 @make_database_connection
