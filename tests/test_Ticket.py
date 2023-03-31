@@ -45,6 +45,15 @@ def test_add_ticket_to_db():
     test_ticket = Ticket("Test Ticket",user,creature_a,creature_b)
     assert database_methods.add_ticket_to_db(test_ticket)
 
+def test_add_mod_ticket_to_db():
+    """Test to add a modification ticket to DB"""
+    creature_a = database_methods.get_creature_from_db(27)
+    ticket_type = 'modification'
+    user = database_methods.get_user_from_db(202632427535859712)
+    user.lastBreed = datetime(2022,1,1)
+    test_ticket = Ticket("Test Ticket",user,creature_a,None,ticket_type=ticket_type)
+    assert database_methods.add_ticket_to_db(test_ticket)
+
 def test_get_ticket_from_db():
     """Test should retreive a ticket from the database and return its ID"""
     test_ticket = database_methods.get_ticket_from_db(139)
@@ -61,5 +70,5 @@ def test_update_ticket_status():
     test_ticket.update_ticket_status(4)
     database_methods.update_ticket_status(test_ticket)
     returned_ticket = database_methods.get_ticket_from_db(test_ticket.id)
-    assert returned_ticket.status == 'Breeding in Progress'
+    assert returned_ticket.status == 'Ticket in Progress'
 

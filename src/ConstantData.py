@@ -128,8 +128,8 @@ class Constants:
     TICKET_STATUS = ['On Hold',
                      'New',
                      'Awaiting Confirmation',
-                     'Breeding Pending',
-                     'Breeding in Progress',
+                     'Ticket Pending',
+                     'Ticket in Progress',
                      'Ready to Birth',
                      'Complete',
                      'Rejected']

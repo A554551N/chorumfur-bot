@@ -12,6 +12,7 @@ class Ticket:
     requestor USER - user object of user who requested breeding
     ticket_date DATETIME - datetime when ticket was instantiated
     status STRING - indicator of ticket's current status
+    type STRING - indicator of the ticket's type
     creature_a CREATURE - Creature object representing parent A
     creature_b CREATURE - Creature object representing parent B
     parents_of_a TUPLE - tuple containing Creature objects representing the parents of A
@@ -46,7 +47,7 @@ class Ticket:
 
     def __init__(self,ticket_name,ticket_requestor,creature_a,creature_b,
                  ticket_id=None,ticket_date=datetime.today(),ticket_status=Constants.TICKET_STATUS[1],
-                 parents_of_a=None,parents_of_b=None,pups=None):
+                 ticket_type = 'breeding',parents_of_a=None,parents_of_b=None,pups=None):
         self.id = ticket_id
         self.name = ticket_name
         self.requestor = ticket_requestor
@@ -55,6 +56,7 @@ class Ticket:
         else:
             self.ticket_date = ticket_date
         self.status = ticket_status
+        self.type = ticket_type
         self.creature_a = creature_a
         self.creature_b = creature_b
         self.parents_of_a = parents_of_a
@@ -63,12 +65,19 @@ class Ticket:
 
     def output_ticket(self):
         """returns a formatted string with ticket details"""
-        return f"Ticket #{self.id} - {self.name}\n"\
-              f"Requesting User: <@{self.requestor.userId}>\n"\
-              f"Open Date: {self.ticket_date}\n"\
-              f"Status: {self.status}\n"\
-              f"Parent A: {self.creature_a.creatureId}-{self.creature_a.name}\n"\
-              f"Parent B: {self.creature_b.creatureId}-{self.creature_b.name}\n"
+        if self.type == 'breeding':
+            return f"Ticket #{self.id} - {self.name}\n"\
+                f"Requesting User: <@{self.requestor.userId}>\n"\
+                f"Open Date: {self.ticket_date}\n"\
+                f"Status: {self.status}\n"\
+                f"Parent A: {self.creature_a.creatureId}-{self.creature_a.name}\n"\
+                f"Parent B: {self.creature_b.creatureId}-{self.creature_b.name}\n"
+        if self.type == 'modification':
+            return f"Ticket #{self.id} - {self.name}\n"\
+                   f"Requesting User: <@{self.requestor.userId}>\n"\
+                   f"Open Date: {self.ticket_date}\n"\
+                   f"Status: {self.status}\n"\
+                   f"Target Creature: {self.creature_a.creatureId}-{self.creature_a.name}\n"\
 
     def perform_breeding(self):
         """Creates a Breeding object and performs breeding, returns an array of pups."""
@@ -80,10 +89,13 @@ class Ticket:
 
     def output_detailed_ticket(self,pups):
         """Outputs a detailed ticket for the #breeding-tickets channel"""
-        output=self.output_ticket()+"\n------------\n"
-        for pup in pups:
-            output+=pup.outputCreature(output_all=True)[0]
-            output+="----------------------\n"
+        if self.type == 'modification':
+            output = self.output_ticket()
+        else:
+            output=self.output_ticket()+"\n------------\n"
+            for pup in pups:
+                output+=pup.outputCreature(output_all=True)[0]
+                output+="----------------------\n"
         return output
 
     def requestor_can_breed(self):

@@ -53,14 +53,13 @@ def use_item_from_inventory(item_id,user_id,target_id=None):
     if item_id in user_inventory:
         item_to_use = database_methods.get_item_from_db(item_id)
         item_to_use = get_item_effect(item_to_use)
-        print(item_to_use.name)
         try:
-            msg = item_to_use.activate(user_id)
+            msg = item_to_use.activate(user_id=user_id,target_id=target_id,item=item_to_use)
             database_methods.remove_item_from_user(user_id,item_id)
         except TypeError:
-            msg = 'This item cannot be used'
+            msg = (None,'This item cannot be used')
     else:
-        msg = 'Item could not be found in your inventory'
+        msg = (None,'Item could not be found in your inventory')
     return msg
 
 def get_item_effect(item_to_get):
