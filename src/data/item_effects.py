@@ -63,5 +63,6 @@ items = {
     28 : palette_rock_effect,
     30 : crystal_reset_effect,
     31 : palette_rock_effect,
+    33 : palette_rock_effect,
     99999 : item_99999_effect
 }
