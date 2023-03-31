@@ -52,6 +52,15 @@ def palette_rock_effect(**kwargs):
     return (None,"Ticket could not be created")
 
 items = {
+    20 : palette_rock_effect,
+    21 : palette_rock_effect,
+    22 : palette_rock_effect,
+    23 : palette_rock_effect,
+    24 : palette_rock_effect,
+    25 : palette_rock_effect,
+    26 : palette_rock_effect,
+    27 : palette_rock_effect,
+    28 : palette_rock_effect,
     30 : crystal_reset_effect,
     31 : palette_rock_effect,
     99999 : item_99999_effect
