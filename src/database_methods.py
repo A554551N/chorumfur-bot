@@ -745,7 +745,7 @@ def get_requested_tickets_from_db(type_to_show,conn=None):
                               ticket_name,
                               ticket_status
                         FROM breeding_tickets
-                        WHERE ticket_status = 'Breeding Pending'
+                        WHERE ticket_status = 'Ticket Pending'
                         ORDER BY ticket_id ASC"""
     options['ready']="""SELECT ticket_id,
                                ticket_name,
