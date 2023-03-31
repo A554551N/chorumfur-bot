@@ -1,4 +1,5 @@
 import interface_inventory
+import support_functions
 from discord.ext import commands
 
 class InventoryCog(commands.GroupCog, name='Inventory Management',group_name='inventory'):
