@@ -1,4 +1,4 @@
-import database_methods
+import interface_inventory
 import support_functions
 from discord.ext import commands
 
