@@ -4,6 +4,7 @@ from data import item_effects
 import support_functions
 from collections import namedtuple
 
+
 def get_item(item_id):
     """Get an item from the database by item ID and returns
      the appropriate Item object to the Bot
@@ -30,6 +31,7 @@ def get_inventory(user_id):
         msg_list.append("**For more information on an item, use `.getItem <ID Number>`**")
         return msg_list
     else:
+
         return ["No Items Found"]
 
 def use_item_from_inventory(item_id,user_id,target_id=None):
