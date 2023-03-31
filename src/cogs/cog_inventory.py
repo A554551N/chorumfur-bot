@@ -21,6 +21,15 @@ class InventoryCog(commands.GroupCog, name='Inventory Management',group_name='in
         msg_list = interface_inventory.get_inventory(ctx.message.author.id)
         for msg in msg_list:
             await ctx.send(msg)
+    
+    @commands.command()
+    async def giveItem(self,ctx,item_id,recipient,quantity=1):
+        giver_id = ctx.message.author.id
+        recipient_id = support_functions.strip_mention_format(recipient)
+        msg_list = []
+        msg_list.append(interface_inventory.give_item(giver_id,recipient_id,item_id,quantity))
+        for msg in msg_list:
+            await ctx.send(msg)
 
 
 async def setup(bot):
