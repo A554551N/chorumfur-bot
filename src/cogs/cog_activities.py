@@ -6,6 +6,7 @@ import database_methods
 import support_functions
 import forage_outcomes
 import limited_time_events
+from random import randint
 
 class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities'):
     """Cog to group commands related to activities for players"""
@@ -20,8 +21,12 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
 
     @commands.command()
     async def feedChorumfur(self,ctx,creature_id):
+        random_num = randint(1,10)
         creature = database_methods.get_creature_from_db(creature_id)
-        await ctx.send(f"{creature.name} eats a delicious food right from your hand.  They make a happy noise!")
+        if random_num == 10:
+            await ctx.send(f"{creature.name} turns its nose up at delicious food.")
+        else:
+            await ctx.send(f"{creature.name} eats a delicious food right from your hand.  They make a happy noise!")
 
     @commands.command()
     async def eventScoreboard(self,ctx):
