@@ -17,6 +17,9 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
     @commands.command()
     async def cleanLitterBox(self,ctx):
         """Cleans all the litter boxes in a user's lair"""
+        random_num = randint(1,100)
+        if random_num >= 95:
+            await ctx.send("You accidentally touch the poop while scooping...gross.")
         await ctx.send("Wow that was a lot of poop!  It's clean until tomorrow now at least.")
 
     @commands.command()
