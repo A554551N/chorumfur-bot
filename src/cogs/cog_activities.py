@@ -12,6 +12,17 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
     def __init__(self, bot):
         self.client = bot
 
+    #FOR APRIL FOOLS ONLY
+    @commands.command()
+    async def cleanLitterBox(self,ctx):
+        """Cleans all the litter boxes in a user's lair"""
+        await ctx.send("Wow that was a lot of poop!  It's clean until tomorrow now at least.")
+
+    @commands.command()
+    async def feedChorumfur(self,ctx,creature_id):
+        creature = database_methods.get_creature_from_db(creature_id)
+        await ctx.send(f"{creature.name} eats a delicious food right from your hand.  They make a happy noise!")
+
     @commands.command()
     async def eventScoreboard(self,ctx):
         """Displays all users and quantities of event currency collected"""
