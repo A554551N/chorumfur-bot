@@ -6,30 +6,11 @@ import database_methods
 import support_functions
 import forage_outcomes
 import limited_time_events
-from random import randint
 
 class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities'):
     """Cog to group commands related to activities for players"""
     def __init__(self, bot):
         self.client = bot
-
-    #FOR APRIL FOOLS ONLY
-    @commands.command()
-    async def cleanLitterBox(self,ctx):
-        """Cleans all the litter boxes in a user's lair"""
-        random_num = randint(1,100)
-        if random_num >= 95:
-            await ctx.send("You accidentally touch the poop while scooping...gross.")
-        await ctx.send("Wow that was a lot of poop!  It's clean until tomorrow now at least.")
-
-    @commands.command()
-    async def feedChorumfur(self,ctx,creature_id):
-        random_num = randint(1,10)
-        creature = database_methods.get_creature_from_db(creature_id)
-        if random_num == 10:
-            await ctx.send(f"{creature.name} turns its nose up at delicious food.")
-        else:
-            await ctx.send(f"{creature.name} eats a delicious food right from your hand.  They make a happy noise!")
 
     @commands.command()
     async def eventScoreboard(self,ctx):
