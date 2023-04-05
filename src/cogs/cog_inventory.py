@@ -1,4 +1,5 @@
 import interface_inventory
+import support_functions
 from discord.ext import commands
 
 class InventoryCog(commands.GroupCog, name='Inventory Management',group_name='inventory'):
@@ -20,20 +21,28 @@ class InventoryCog(commands.GroupCog, name='Inventory Management',group_name='in
         msg_list = interface_inventory.get_inventory(ctx.message.author.id)
         for msg in msg_list:
             await ctx.send(msg)
+    
+    @commands.command()
+    async def giveItem(self,ctx,item_id,recipient,quantity=1):
+        giver_id = ctx.message.author.id
+        recipient_id = support_functions.strip_mention_format(recipient)
+        msg_list = []
+        msg_list.append(interface_inventory.give_item(giver_id,recipient_id,item_id,quantity))
+        for msg in msg_list:
+            await ctx.send(msg)
 
     @commands.command()
     async def useItem(self,ctx,item_id,target=None):
-        """Consumes an item from the user's inventory and performs its effect
-        
-        Parameters
-        ----------
-        item_id : int
-            item to use"""
-
+        """Uses a consumable item from a user's inventory."""
+        user_id = ctx.message.author.id
         msg_list = []
-        msg_list.append(interface_inventory.use_item_from_inventory(item_id,ctx.message.author.id,target))
+        msg_list.append(interface_inventory.use_item_from_inventory(int(item_id),user_id,target))
         for msg in msg_list:
-            await ctx.send(msg)
+            if msg[0] == 'ticket':
+                await support_functions.send_ticket_to_channel(self.client,msg[2])
+                await ctx.send(msg[1])
+            else:
+                await ctx.send(msg[1])
 
 async def setup(bot):
     await bot.add_cog(InventoryCog(bot))

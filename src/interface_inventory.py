@@ -2,6 +2,8 @@ from datetime import datetime
 import database_methods
 from data import item_effects
 import support_functions
+from collections import namedtuple
+
 
 def get_item(item_id):
     """Get an item from the database by item ID and returns
@@ -43,25 +45,20 @@ def use_item_from_inventory(item_id,user_id,target_id=None):
         The ID of the user who invoked the command
     """
     msg = ""
-    user_inventory = database_methods.get_user_inventory(user_id)
     try:
-        ids_in_inventory = [row[0] for row in user_inventory]
+        user_inventory = format_inventory(database_methods.get_user_inventory(user_id))
     except TypeError:
-        ids_in_inventory = []
-    print(item_id)
-    print(ids_in_inventory)
-    if int(item_id) in ids_in_inventory:
+        user_inventory = []
+    if item_id in user_inventory:
         item_to_use = database_methods.get_item_from_db(item_id)
         item_to_use = get_item_effect(item_to_use)
-        print(item_to_use.name)
         try:
-            msg = item_to_use.activate(user_id)
+            msg = item_to_use.activate(user_id=user_id,target_id=target_id,item=item_to_use)
             database_methods.remove_item_from_user(user_id,item_id)
-        except TypeError as e:
-            print(e)
-            msg = 'This item cannot be used'
+        except TypeError:
+            msg = (None,'This item cannot be used')
     else:
-        msg = 'Item could not be found in your inventory'
+        msg = (None,'Item could not be found in your inventory')
     return msg
 
 def get_item_effect(item_to_get):
@@ -78,6 +75,44 @@ def get_item_effect(item_to_get):
     else:
         item_to_get.activate = None
     return item_to_get
+
+def give_item(giver_id,receiver_id,item_id,qty):
+    """Removes a given quantity of an item from one user's inventory and adds
+    it to another user's inventory.  Returns a message for the bot to display.
+    
+    Parameters
+    ----------
+    giver_id : int
+        The giver's user ID
+    receiver : string
+        The receiver's @mention formatted username
+    item_id : int
+        The item to transfer
+    qty : int
+        The quantity of items to transfer
+    """
+    item_id = int(item_id)
+    giver_inventory = format_inventory(database_methods.get_user_inventory(giver_id))
+    if item_id in giver_inventory:
+        if giver_inventory[item_id].quantity >= qty:
+            database_methods.remove_item_from_user(giver_id,item_id,qty)
+            database_methods.add_item_to_user(receiver_id,item_id,qty)
+            return "Items have been successfully transferred."
+    return "Items could not be transferred."
+
+def format_inventory(user_inventory):
+    """Takes in a user's inventory and returns a dictionary containing the items in the inventory
+    as Item objects
+    
+    Parameters
+    ---------
+    user_inventory : tuple
+        a user's inventory supplied by database_methods.get_user_inventory()"""
+    inventory_dict = {}
+    InventoryItem = namedtuple("Item","name quantity")
+    for row in user_inventory:
+        inventory_dict[row[0]] = InventoryItem(row[1],row[2])
+    return inventory_dict
 
 if __name__ == '__main__':
     test_user = database_methods.get_user_from_db(99)
