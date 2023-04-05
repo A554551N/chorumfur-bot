@@ -29,7 +29,8 @@ class Item:
                  value,
                  imageLink=""
                  ,id=None,
-                 activate_method=None):
+                 activate_method=None,
+                 item_type=None):
         self.name = name
         self.description = description
         self.value = value

@@ -48,21 +48,21 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
                   f"Outcome Reward: {outcome.reward}")
             msg = ""
             if outcome.type == 'event_curr':
-                msg = outcome.text.format(curr_name = limited_time_events.march_event.event_currency_name,
+                msg = outcome.text.format(curr_name = limited_time_events.april_event.event_currency_name,
                                           amount=outcome.reward,
                                           creature_name=creature.name)
                 database_methods.add_item_to_user(ctx.author.id,
-                                                  limited_time_events.march_event.event_currency_id,
+                                                  limited_time_events.april_event.event_currency_id,
                                                   outcome.reward)
             elif outcome.type == 'lure':
-                msg = outcome.text
-                if outcome.reward is not None:
-                    msg += f'\nChorumfur #{outcome.reward} has decided to join your lair!'
-                    lured_chorumfur = database_methods.get_creature_from_db(outcome.reward)
+                msg = outcome.text.format(creature_name=creature.name)
+                if outcome.reward.id is not None:
+                    msg += f'\nChorumfur #{outcome.reward.id} has decided to join your lair!'
+                    lured_chorumfur = database_methods.get_creature_from_db(outcome.reward.id)
                     lured_chorumfur.owner = ctx.author.id
                     database_methods.update_creature(lured_chorumfur)
                 else:
-                    wild_chorumfurs = database_methods.get_wild_chorumfur_ids()
+                    wild_chorumfurs = database_methods.get_wild_chorumfur_ids(outcome.reward.storage)
                     if not wild_chorumfurs:
                         msg += "\nIt ran away, though."
                     else:
@@ -70,7 +70,7 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
                         chorumfur_to_add = database_methods.get_creature_from_db(wild_chorumfurs[random_selection][0])
                         chorumfur_to_add.owner = ctx.author.id
                         database_methods.update_creature(chorumfur_to_add)
-                        msg += f'\nChorumfur #{chorumfur_to_add.creatureId} has decided to join your lair!'
+                        msg += f'\n`Chorumfur #{chorumfur_to_add.creatureId} has been added to your lair`'
 
             elif outcome.type == 'currency':
                 msg=outcome.text.format(creature_name=creature.name,amount=outcome.reward)

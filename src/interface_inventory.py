@@ -53,7 +53,7 @@ def use_item_from_inventory(item_id,user_id,target_id=None):
         item_to_use = database_methods.get_item_from_db(item_id)
         item_to_use = get_item_effect(item_to_use)
         try:
-            msg = item_to_use.activate(user_id=user_id,target_id=target_id,item=item_to_use)
+            msg = item_to_use.activate(user_id=int(user_id),target_id=int(target_id),item=item_to_use)
             database_methods.remove_item_from_user(user_id,item_id)
         except TypeError:
             msg = (None,'This item cannot be used')

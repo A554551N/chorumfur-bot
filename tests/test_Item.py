@@ -86,6 +86,15 @@ def test_breeding_reset_item():
     test_user = database_methods.get_user_from_db(99)
     assert not test_user.lastBreed
 
+def test_forage_reset_item():
+    """Tests that a forage reset item successfully resets the foraging counter"""
+    test_creature = database_methods.get_creature_from_db(27)
+    test_creature.last_forage = datetime.today()
+    database_methods.update_creature(test_creature)
+    interface_inventory.use_item_from_inventory(35,99,27)
+    test_creature_after = database_methods.get_creature_from_db(27)
+    assert test_creature_after.last_forage is None
+
 def test_give_item():
     """Tests that a user can give an item they own to another user"""
     giver_id = 99

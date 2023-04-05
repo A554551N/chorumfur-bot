@@ -194,7 +194,7 @@ def get_item_from_db(item_id,conn=None):
     cur.execute(get_item,(item_id,))
     retreived_row = cur.fetchone()
     if retreived_row:
-        return Item = Item(id=retreived_row[0],
+        return Item(id=retreived_row[0],
                     name=retreived_row[1],
                     description=retreived_row[2],
                     value=retreived_row[3],
@@ -497,13 +497,13 @@ def get_creatures_available_to_breed(conn=None):
     return returned_rows or None
 
 @make_database_connection
-def get_wild_chorumfur_ids(conn=None):
+def get_wild_chorumfur_ids(storage_to_retrieve=0,conn=None):
     """Retrieves all creature records with an owner of 0"""
     get_creatures_sql = """SELECT creature_id
                            FROM creatures
-                           WHERE creature_owner = 0"""
+                           WHERE creature_owner = %s"""
     cur = conn.cursor()
-    cur.execute(get_creatures_sql)
+    cur.execute(get_creatures_sql,(storage_to_retrieve,))
     return cur.fetchall() or None
 
 @make_database_connection
