@@ -79,5 +79,10 @@ items = {
     31 : palette_rock_effect,
     33 : palette_rock_effect,
     35 : forage_reset_effect,
+    36 : palette_rock_effect,
+    37 : palette_rock_effect,
+    38 : palette_rock_effect,
+    39 : palette_rock_effect,
+    40 : palette_rock_effect,
     99999 : item_99999_effect
 }
