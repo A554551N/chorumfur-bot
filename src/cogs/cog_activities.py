@@ -48,14 +48,14 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
                   f"Outcome Reward: {outcome.reward}")
             msg = ""
             if outcome.type == 'event_curr':
-                msg = outcome.text.format(curr_name = limited_time_events.march_event.event_currency_name,
+                msg = outcome.text.format(curr_name = limited_time_events.april_event.event_currency_name,
                                           amount=outcome.reward,
                                           creature_name=creature.name)
                 database_methods.add_item_to_user(ctx.author.id,
-                                                  limited_time_events.march_event.event_currency_id,
+                                                  limited_time_events.april_event.event_currency_id,
                                                   outcome.reward)
             elif outcome.type == 'lure':
-                msg = outcome.text
+                msg = outcome.text.format(creature_name=creature.name)
                 if outcome.reward.id is not None:
                     msg += f'\nChorumfur #{outcome.reward.id} has decided to join your lair!'
                     lured_chorumfur = database_methods.get_creature_from_db(outcome.reward.id)

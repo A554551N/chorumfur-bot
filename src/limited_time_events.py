@@ -68,4 +68,4 @@ march_currency_events = {
 }
 
 march_event = Event('March Event','Clover',29,march_outcomes)
-april_event = Event('Hunt and Feast','Painted Egg',34)
+april_event = Event('Hunt and Feast','Painted Egg',34,None)

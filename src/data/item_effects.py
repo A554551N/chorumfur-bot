@@ -7,6 +7,20 @@ def item_99999_effect(**kwargs):
     """Effect of item 99999, Test Item"""
     return (None,"Item Used Successfully")
 
+def forage_reset_effect(**kwargs):
+    """Resets a single chorumfur's forage timer
+    
+    Parameters
+    ----------
+    target_id : int
+        The creature_id to reset
+    """
+
+    creature_to_reset = database_methods.get_creature_from_db(kwargs['target_id'])
+    creature_to_reset.last_forage = None
+    database_methods.update_creature(creature_to_reset)
+    return (None,"Your creature feels energized and is ready to forage again!")
+
 def crystal_reset_effect(**kwargs):
     """Effect of item 30, Mating Reset
     This item will reset a user's mating crystal so they can mate again immediately
@@ -64,5 +78,6 @@ items = {
     30 : crystal_reset_effect,
     31 : palette_rock_effect,
     33 : palette_rock_effect,
+    35 : forage_reset_effect,
     99999 : item_99999_effect
 }
