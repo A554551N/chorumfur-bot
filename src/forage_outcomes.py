@@ -101,9 +101,14 @@ lure_events = {
 
 # I think both of these will eventually be supplanted by an imported Event
 event_special_events = {
-    EventMessage("Bongo Bongos Like He's Never Bongo-ed Before",
-                 "text",
-                 None) : "odds",
+    EventMessage("A small lizard scampers into {creature_name}'s path, stopping "\
+    "suddenly before his eyes grow wide and he excitedly stands on his hind legs. "\
+    "*'A chorumfur?! A real live chorumfur?! Oh, this is, oh what a momentous day! "\
+    "Could I, you know, uhm, oh shoot, uh, yes here we go, can I ask you some "\
+    "questions?.'* {creature_name} blinks and turns around to slip into the brush "\
+    "and leave the excitable lizard behind, instead of eating it.",
+    "text",
+    None) : ".106875",
     EventMessage("{creature_name} wanders through the forest, fresh with bright greens"\
                  "and flowering trees, a noise above calls their attention up, "\
                  "the unmistakable form of Ulnran runs chasing what looks like a "\
