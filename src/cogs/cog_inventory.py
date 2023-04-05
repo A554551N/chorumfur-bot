@@ -31,6 +31,19 @@ class InventoryCog(commands.GroupCog, name='Inventory Management',group_name='in
         for msg in msg_list:
             await ctx.send(msg)
 
+    @commands.command()
+    async def useItem(self,ctx,item_id,target=None):
+        """Uses a consumable item from a user's inventory."""
+        user_id = ctx.message.author.id
+        msg_list = []
+        print(item_id)
+        msg_list.append(interface_inventory.use_item_from_inventory(int(item_id),user_id,target))
+        for msg in msg_list:
+            if msg[0] == 'ticket':
+                await support_functions.send_ticket_to_channel(self.client,msg[2])
+                await ctx.send(msg[1])
+            else:
+                await ctx.send(msg[1])
 
 async def setup(bot):
     await bot.add_cog(InventoryCog(bot))

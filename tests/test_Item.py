@@ -60,21 +60,21 @@ def test_use_test_Item():
     Test passes if the return of the function is 'Item Used Successfully'
     """
     returned_messages = interface_inventory.use_item_from_inventory(99999,99)
-    assert  returned_messages == 'Item Used Successfully'
+    assert  returned_messages[1] == 'Item Used Successfully'
 
 def test_use_unusable_item():
     """Tests that an item that is unusable cannot be used
     Test passes if return value reads 'This Item cannot be used'
     """
     returned_messages = interface_inventory.use_item_from_inventory(99998,99)
-    assert returned_messages == 'This item cannot be used'
+    assert returned_messages[1] == 'This item cannot be used'
 
 def test_unowned_item():
     """Tests that an item not in your inventory cannot be used
     Test passes if return value reads 'Item could not be found in your inventory'
     """
     returned_messages = interface_inventory.use_item_from_inventory(99999,0)
-    assert returned_messages == 'Item could not be found in your inventory'
+    assert returned_messages[1] == 'Item could not be found in your inventory'
 
 def test_breeding_reset_item():
     """Tests that a breeding reset item successfully resets the breeding counter
@@ -82,7 +82,7 @@ def test_breeding_reset_item():
     test_user = database_methods.get_user_from_db(99)
     test_user.lastBreed = datetime.today()
     database_methods.update_user_last_breed(test_user)
-    interface_inventory.use_item_from_inventory(30,99,99)
+    interface_inventory.use_item_from_inventory(30,99)
     test_user = database_methods.get_user_from_db(99)
     assert not test_user.lastBreed
 
@@ -121,3 +121,9 @@ def test_cant_give_unowned_item():
 def test_cant_give_too_many_items():
     """Tests that a user can't give more of an item away than they have"""
     assert interface_inventory.give_item(99,100,99999,10000000) == "Items could not be transferred."
+
+def test_modify_creature_item():
+    """Tests that an item that modifies an existing creature's art properly
+    generates a ticket and submits it to the art system."""
+
+    assert interface_inventory.use_item_from_inventory(31,99,27)[1][:8] == 'Ticket #'

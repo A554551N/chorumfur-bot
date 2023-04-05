@@ -188,7 +188,7 @@ def remove_item_from_user(user_id,item_id,quantity_to_remove=1,conn=None):
 @make_database_connection
 def get_item_from_db(item_id,conn=None):
     """Retreives a record from the items database and returns an Item object"""
-    get_item = '''SELECT item_id,item_name,item_desc,item_value,item_image_link
+    get_item = '''SELECT item_id,item_name,item_desc,item_value,item_image_link,item_type
                 FROM items WHERE item_id=%s'''
     cur = conn.cursor()
     cur.execute(get_item,(item_id,))
@@ -198,7 +198,8 @@ def get_item_from_db(item_id,conn=None):
                     name=retreived_row[1],
                     description=retreived_row[2],
                     value=retreived_row[3],
-                    imageLink=retreived_row[4])
+                    imageLink=retreived_row[4],
+                    item_type=retreived_row[5])
     return False
 
 @make_database_connection
@@ -535,18 +536,24 @@ def add_ticket_to_db(ticket,conn=None):
                         ticket_status,
                         ticket_creature_a,
                         ticket_creature_b,
-                        ticket_pups)
-                        VALUES (%s,%s,%s,%s,%s,%s,%s)
+                        ticket_pups,
+                        ticket_type)
+                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
                         RETURNING ticket_id"""
     cur = conn.cursor()
     pickled_pups = pickle.dumps(ticket.pups)
+    if ticket.creature_b:
+        creature_b_id = ticket.creature_b.creatureId
+    else:
+        creature_b_id = None
     cur.execute(add_ticket_sql,(ticket.name,
                                 ticket.requestor.userId,
                                 ticket.ticket_date,
                                 ticket.status,
                                 ticket.creature_a.creatureId,
-                                ticket.creature_b.creatureId,
-                                pickled_pups))
+                                creature_b_id,
+                                pickled_pups,
+                                ticket.type))
     returned_id = cur.fetchone()[0]
     conn.commit()
     return returned_id
@@ -561,7 +568,8 @@ def get_ticket_from_db(ticket_id,conn=None):
                                ticket_status,
                                ticket_creature_a,
                                ticket_creature_b,
-                               ticket_pups
+                               ticket_pups,
+                               ticket_type
                         FROM breeding_tickets
                         WHERE ticket_id=%s"""
     cur = conn.cursor()
@@ -570,8 +578,8 @@ def get_ticket_from_db(ticket_id,conn=None):
     if result:
         requestor = get_user_from_db(result[2])
         tkt_creature_a = get_creature_from_db(result[5])
-        tkt_creature_b = get_creature_from_db(result[6])
-        tkt_pups = pickle.loads(result[7])
+        tkt_creature_b = get_creature_from_db(result[6]) or None
+        tkt_pups = pickle.loads(result[7]) or None
         returned_ticket =Ticket(
             ticket_name = result[1],
             ticket_requestor = requestor,
@@ -580,6 +588,7 @@ def get_ticket_from_db(ticket_id,conn=None):
             ticket_id=result[0],
             ticket_date=result[3],
             ticket_status=result[4],
+            ticket_type=result[8],
             pups = tkt_pups)
         return returned_ticket
     return None
@@ -736,7 +745,7 @@ def get_requested_tickets_from_db(type_to_show,conn=None):
                               ticket_name,
                               ticket_status
                         FROM breeding_tickets
-                        WHERE ticket_status = 'Breeding Pending'
+                        WHERE ticket_status = 'Ticket Pending'
                         ORDER BY ticket_id ASC"""
     options['ready']="""SELECT ticket_id,
                                ticket_name,

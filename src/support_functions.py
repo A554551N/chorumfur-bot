@@ -37,12 +37,16 @@ async def send_ticket_to_channel(bot, ticket):
     """Sends a message to the tickets channel and mentions artist"""
     artist = bot.get_user(101509826588205056)
     ticket_channel = bot.get_channel(1061868480086941716)
-    pups = database_methods.get_multiple_creatures_from_db(ticket.pups)
-    parents = database_methods.get_parents_from_db(pups[0])
-    for pup in pups:
-        pup.parents = parents
-    await ticket_channel.send(artist.mention)
-    await ticket_channel.send(ticket.output_detailed_ticket(pups))
+    if ticket.type == 'breeding':
+        pups = database_methods.get_multiple_creatures_from_db(ticket.pups)
+        parents = database_methods.get_parents_from_db(pups[0])
+        for pup in pups:
+            pup.parents = parents
+        await ticket_channel.send(artist.mention)
+        await ticket_channel.send(ticket.output_detailed_ticket(pups))
+    if ticket.type == 'modification':
+        await ticket_channel.send(artist.mention)
+        await ticket_channel.send(ticket.output_ticket())
 
 def format_output(format_str,header_elements,returned_list_from_db):
     """Takes in a format string, the elements that form the header,

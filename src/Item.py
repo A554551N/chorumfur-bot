@@ -21,12 +21,14 @@ class Item:
         returns a formatted string with information about the Item
     """
 
-    def __init__(self,name,description,value,imageLink="",id=None):
+    def __init__(self,name,description,value,imageLink="",id=None,item_type=None):
         self.name = name
         self.description = description
         self.value = value
         self.imageLink = imageLink
+        self.type = item_type
         self.id = id
+
 
     def outputItem(self):
         output = f"**{self.name}**\n"\
