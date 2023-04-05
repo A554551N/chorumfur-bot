@@ -36,7 +36,6 @@ class InventoryCog(commands.GroupCog, name='Inventory Management',group_name='in
         """Uses a consumable item from a user's inventory."""
         user_id = ctx.message.author.id
         msg_list = []
-        print(item_id)
         msg_list.append(interface_inventory.use_item_from_inventory(int(item_id),user_id,target))
         for msg in msg_list:
             if msg[0] == 'ticket':

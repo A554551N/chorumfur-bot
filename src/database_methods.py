@@ -194,7 +194,7 @@ def get_item_from_db(item_id,conn=None):
     cur.execute(get_item,(item_id,))
     retreived_row = cur.fetchone()
     if retreived_row:
-        return Item(id=retreived_row[0],
+        return Item = Item(id=retreived_row[0],
                     name=retreived_row[1],
                     description=retreived_row[2],
                     value=retreived_row[3],

@@ -31,7 +31,6 @@ def get_inventory(user_id):
         msg_list.append("**For more information on an item, use `.getItem <ID Number>`**")
         return msg_list
     else:
-
         return ["No Items Found"]
 
 def use_item_from_inventory(item_id,user_id,target_id=None):
