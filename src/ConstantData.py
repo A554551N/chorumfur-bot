@@ -1,7 +1,7 @@
 class Constants:
     DATETIMEFORMAT = '''%Y-%m-%d %H:%M:%S.%f'''
     DATEONLYFORMAT = '%Y-%m-%d'
-    VERSION = 'v0.3.12'
+    VERSION = 'v0.3.13'
     CRYSTAL_CHARGE_DAYS = 18
     FORAGE_COOLDOWN_HOURS = 6
     DEFAULT_TRAITS_DICT = {
