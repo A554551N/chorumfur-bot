@@ -100,7 +100,18 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
     async def addItemToInv(self,ctx,item_id_to_add,user_id = None,quantity=1):
         """adds an item to a given users inventory with a given quantity.
         If no user ID is specified, items will be given to the user who invoked the command.
-        If a quantity is not specified, it will add 1."""
+        If a quantity is not specified, it will add 1.
+        
+        Parameters
+        ----------
+        item_id : int
+            The item_id to add
+        user_id : string
+            user_id (as an @ mention)
+        quantity : int
+            number of items to add
+        """
+        
         if user_id is None:
             user_id = ctx.message.author.id
         else:
