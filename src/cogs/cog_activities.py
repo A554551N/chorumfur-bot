@@ -69,6 +69,8 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
                         random_selection = random.randint(0,len(wild_chorumfurs)-1)
                         chorumfur_to_add = database_methods.get_creature_from_db(wild_chorumfurs[random_selection][0])
                         chorumfur_to_add.owner = ctx.author.id
+                        if outcome.reward.storage == 2:
+                            chorumfur_to_add.createDate = datetime.today()
                         database_methods.update_creature(chorumfur_to_add)
                         msg += f'\n`Chorumfur #{chorumfur_to_add.creatureId} has been added to your lair`'
 
