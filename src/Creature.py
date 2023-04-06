@@ -138,9 +138,9 @@ class Creature:
                 f"**Generation:** {self.generation}\n"
         output += f"**Palette:** {self.palette}\n" if output_all and hasattr(self,'palette') else ""
         output += "**---Traits---**\n"
-        if age.days <= 7 and self.generation != 0 and not output_all:
+        if (age.days <= 7 and self.generation != 0 and not output_all) or (' Egg' in self.name):
             image_link = self.imageLink_nb
-        elif age.days <= 14 and self.generation != 0 and not output_all:
+        elif (age.days <= 14 and self.generation != 0 and not output_all) or (' Egg' in self.name):
             output += f"**Main Horn**: {self.traits['MAIN_HORN']}\n"
             image_link = self.imageLink_pup
         else:
