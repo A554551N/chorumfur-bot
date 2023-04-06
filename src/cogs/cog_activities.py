@@ -16,7 +16,7 @@ class ActivitiesCog(commands.GroupCog, name='Activities', group_name='activities
     async def eventScoreboard(self,ctx):
         """Displays all users and quantities of event currency collected"""
 
-        returned_rows = database_methods.get_event_currency_leaderboard(29)
+        returned_rows = database_methods.get_event_currency_leaderboard(34)
         output_list=[]
         for row in returned_rows:
             output_list.append((self.client.get_user(row[0]).name,row[1]))
