@@ -3,6 +3,7 @@ from discord.ext import commands
 from Ticket import Ticket
 from ConstantData import Constants
 import database_methods
+import interface_inventory
 
 
 class BreedingCog(commands.GroupCog, name='Mating',group_name='mating'):
@@ -30,23 +31,37 @@ class BreedingCog(commands.GroupCog, name='Mating',group_name='mating'):
                        f"mating with a status of {ticket.status}")
 
     @commands.command()
-    async def mate(self,ctx,creature_a_id,creature_b_id):
+    async def mate(self,ctx,creature_a_id,creature_b_id,item_to_use=None):
+        if item_to_use:
+            item_to_use = int(item_to_use)
+            print(item_to_use)
+            user_inventory = interface_inventory.format_inventory(database_methods.get_user_inventory(ctx.message.author.id))
+            print(user_inventory)
+            if item_to_use in user_inventory:
+                item = database_methods.get_item_from_db(item_to_use)
+                print(item.id)
         """Submit a mating request in format .mate <creature_a> <creature_b>"""
         breed_request=support_functions.create_breeding_ticket(requesting_user_id=ctx.message.author.id,
                                                   creature_a_id=creature_a_id,
-                                                  creature_b_id=creature_b_id)
+                                                  creature_b_id=creature_b_id,
+                                                  item_to_use=item)
+        item_check = False
+        if item and item.type == 'breeding':
+            item_check = True
+        if not item_to_use:
+            item_check = True
         check_result = breed_request.requestor_can_breed()
-        if check_result[0]:
+        if check_result[0] and item_check:
             if breed_request.requestor_owns_both():
                 breed_request = support_functions.enact_breeding(breed_request)
                 breed_request.id = database_methods.add_ticket_to_db(breed_request)
                 await support_functions.send_ticket_to_channel(self.client,breed_request)
                 await ctx.send("Pairing has been successfully submitted.  "\
-                              f"Your Ticket # is {breed_request.id}")
+                            f"Your Ticket # is {breed_request.id}")
             else:
                 await self.pend_breeding(ctx,breed_request)
         else:
-            await ctx.send(check_result[1])
+            await ctx.send(f"An error has occurred with your breeding.\n{check_result[1]}")
 
     @commands.command(aliases=['accept'])
     async def acceptPairing(self,ctx,ticket_id):

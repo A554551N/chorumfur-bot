@@ -53,9 +53,11 @@ def use_item_from_inventory(item_id,user_id,target_id=None):
         item_to_use = database_methods.get_item_from_db(item_id)
         item_to_use = get_item_effect(item_to_use)
         try:
-            msg = item_to_use.activate(user_id=int(user_id),target_id=int(target_id),item=item_to_use)
+            target_id = int(target_id) if target_id else None
+            msg = item_to_use.activate(user_id=int(user_id),target_id=target_id,item=item_to_use)
             database_methods.remove_item_from_user(user_id,item_id)
-        except TypeError:
+        except TypeError as e:
+            print(e)
             msg = (None,'This item cannot be used')
     else:
         msg = (None,'Item could not be found in your inventory')
@@ -116,6 +118,4 @@ def format_inventory(user_inventory):
 
 if __name__ == '__main__':
     test_user = database_methods.get_user_from_db(99)
-    test_user.lastBreed = datetime.today()
-    database_methods.update_user_last_breed(test_user)
-    #print(use_item_from_inventory(30,99))
+    print(use_item_from_inventory(99999,99))
