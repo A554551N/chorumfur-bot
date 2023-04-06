@@ -16,7 +16,7 @@ class CreaturesCog(commands.GroupCog, name='Chorumfur Management',group_name='ch
             print(creature_parents)
             if creature_parents:
                 requested_creature.parents = creature_parents
-            if requested_creature.owner not in (0,1):
+            if requested_creature.owner not in (0,1,2):
                 user = self.client.get_user(requested_creature.owner)
                 requested_creature.ownerName = user.name
             returned_values = requested_creature.outputCreature()
