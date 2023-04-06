@@ -325,8 +325,9 @@ def add_multiple_creatures_to_db(creature_list,conn=None):
                  creature_to_add.palette))
     cur = conn.cursor()
     returned_ids = psycopg2.extras.execute_values(cur,add_creature_sql,list_to_add,fetch=True)
+    ids_tuple = tuple((returned_id[0]) for returned_id in returned_ids)
     conn.commit()
-    return returned_ids
+    return ids_tuple
 
 @make_database_connection
 def get_multiple_creatures_from_db(creature_ids,conn=None):
@@ -337,7 +338,6 @@ def get_multiple_creatures_from_db(creature_ids,conn=None):
     ----------
     creature_ids : list
         a list of creature IDs"""
-    
     creature_ids_tuple=(*creature_ids,)
     get_multiple_sql = '''SELECT creature_name,
                                  creature_owner,
@@ -542,6 +542,7 @@ def add_ticket_to_db(ticket,conn=None):
                         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
                         RETURNING ticket_id"""
     cur = conn.cursor()
+    print(ticket.pups)
     pickled_pups = pickle.dumps(ticket.pups)
     if ticket.creature_b:
         creature_b_id = ticket.creature_b.creatureId
@@ -585,6 +586,7 @@ def get_ticket_from_db(ticket_id,conn=None):
         tkt_creature_b = get_creature_from_db(result[6]) or None
         tkt_item = get_item_from_db(result[9]) or None
         tkt_pups = pickle.loads(result[7]) or None
+        print(tkt_pups)
         returned_ticket =Ticket(
             ticket_name = result[1],
             ticket_requestor = requestor,
@@ -657,13 +659,12 @@ def get_tickets_from_db_by_status(ticket_status,conn=None):
     cur.execute(get_ticket_sql,(Constants.TICKET_STATUS[ticket_status],))
     result = cur.fetchall()
     if result:
-        print("THIS BRANCH HAPPENS")
         returned_tickets = []
         for result_row in result:
             ticket = result_row[:9]
-            requestor_result = result_row[8:14]
-            creature_a_result = result_row[14:29]
-            creature_b_result = result_row[29:]
+            requestor_result = result_row[9:15]
+            creature_a_result = result_row[15:30]
+            creature_b_result = result_row[30:]
             requestor = pack_user(requestor_result)
             tkt_creature_a = pack_creature(creature_a_result)
             tkt_creature_b = pack_creature(creature_b_result)
@@ -703,6 +704,7 @@ def update_ticket_in_db(ticket,conn=None):
                             ticket_status=%s,
                             ticket_pups=%s
                         WHERE ticket_id=%s"""
+    print(ticket.pups)
     pickled_pups = pickle.dumps(ticket.pups)
     cur = conn.cursor()
     cur.execute(update_ticket_sql,(ticket.name,

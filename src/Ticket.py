@@ -70,19 +70,21 @@ class Ticket:
     def output_ticket(self):
         """returns a formatted string with ticket details"""
         if self.type == 'breeding':
-            return f"**Ticket #{self.id} - {self.name}**\n"\
+            ticket =  f"**Ticket #{self.id} - {self.name}**\n"\
                 f"**Requesting User:** <@{self.requestor.userId}>\n"\
                 f"**Open Date:** {self.ticket_date}\n"\
                 f"**Status:** {self.status}\n"\
                 f"**Parent A:** {self.creature_a.creatureId}-{self.creature_a.name}\n"\
-                f"**Parent B:** {self.creature_b.creatureId}-{self.creature_b.name}\n"\
-                f"**Item:** {self.ticket_item.name}" 
+                f"**Parent B:** {self.creature_b.creatureId}-{self.creature_b.name}\n"
+            if self.ticket_item:
+                ticket+=f"**Item:** {self.ticket_item.name}"
         if self.type == 'modification':
-            return f"Ticket #{self.id} - {self.name}\n"\
+            ticket = f"Ticket #{self.id} - {self.name}\n"\
                    f"**Requesting User:** <@{self.requestor.userId}>\n"\
                    f"**Open Date:** {self.ticket_date}\n"\
                    f"**Status:** {self.status}\n"\
-                   f"**Target Creature:** {self.creature_a.creatureId}-{self.creature_a.name}\n"\
+                   f"**Target Creature:** {self.creature_a.creatureId}-{self.creature_a.name}\n"
+        return ticket
 
     def perform_breeding(self):
         """Creates a Breeding object and performs breeding, returns an array of pups."""

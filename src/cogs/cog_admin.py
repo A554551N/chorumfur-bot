@@ -205,7 +205,8 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
             new_owner = support_functions.strip_mention_format(new_owner)
         ticket = support_functions.create_breeding_ticket(requesting_user_id=new_owner,
                                        creature_a_id=creature_a_id,
-                                       creature_b_id=creature_b_id)
+                                       creature_b_id=creature_b_id,
+                                       item_to_use=None)
         support_functions.enact_breeding(ticket,is_admin=True)
         ticket.id = database_methods.add_ticket_to_db(ticket)
         await support_functions.send_ticket_to_channel(self.client,ticket)
@@ -229,9 +230,9 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
     async def giveBirth(self,ctx,ticket_id):
         """Takes in a Ticket ID and updates the createDate of pups on the ticket."""
         ticket = database_methods.get_ticket_from_db(ticket_id)
-        for pup in ticket.pups:
+        for pup_id in ticket.pups:
             # leaving this here through next breeding in case any pups are still on old model
-            # new_pup = database_methods.get_creature_from_db(pup.creatureId)
+            pup = database_methods.get_creature_from_db(pup_id)
             pup.createDate = datetime.today()
             pup.owner = ticket.requestor.userId
             database_methods.update_creature(pup)
@@ -258,12 +259,15 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
             completed_tickets = []
             completed_pups = 0
             for ticket in tickets:
+                print(ticket.pups)
                 list_of_pups = database_methods.get_multiple_creatures_from_db(ticket.pups)
                 for pup in list_of_pups:
                     pup.createDate = datetime.today()
                     pup.owner = ticket.requestor.userId
+                    print(pup.name)
                     completed_pups += 1
                     database_methods.update_creature(pup)
+                    print('update successful')
                 completed_tickets.append(ticket.id)
                 ticket.update_ticket_status(6)
                 database_methods.update_ticket_status(ticket)

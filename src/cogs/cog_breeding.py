@@ -32,15 +32,12 @@ class BreedingCog(commands.GroupCog, name='Mating',group_name='mating'):
 
     @commands.command()
     async def mate(self,ctx,creature_a_id,creature_b_id,item_to_use=None):
+        """Submit a mating request in format .mate <creature_a> <creature_b>"""
         if item_to_use:
             item_to_use = int(item_to_use)
-            print(item_to_use)
             user_inventory = interface_inventory.format_inventory(database_methods.get_user_inventory(ctx.message.author.id))
-            print(user_inventory)
             if item_to_use in user_inventory:
                 item = database_methods.get_item_from_db(item_to_use)
-                print(item.id)
-        """Submit a mating request in format .mate <creature_a> <creature_b>"""
         breed_request=support_functions.create_breeding_ticket(requesting_user_id=ctx.message.author.id,
                                                   creature_a_id=creature_a_id,
                                                   creature_b_id=creature_b_id,
