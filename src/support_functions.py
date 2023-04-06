@@ -5,7 +5,7 @@ from Ticket import Ticket
 import database_methods
 
 
-def create_breeding_ticket(requesting_user_id, creature_a_id, creature_b_id):
+def create_breeding_ticket(requesting_user_id, creature_a_id, creature_b_id,item_to_use):
     """Takes in a user ID and two creature IDs and returns a breeding Ticket"""
     requesting_user = database_methods.get_user_from_db(requesting_user_id)
     creature_a = database_methods.get_creature_from_db(creature_a_id)
@@ -17,7 +17,8 @@ def create_breeding_ticket(requesting_user_id, creature_a_id, creature_b_id):
                   creature_a=creature_a,
                   creature_b=creature_b,
                   parents_of_a=parents_of_a,
-                  parents_of_b=parents_of_b)
+                  parents_of_b=parents_of_b,
+                  ticket_item=item_to_use)
 
 
 def enact_breeding(ticket,is_admin=False):
@@ -29,6 +30,7 @@ Returns the updated Ticket object"""
         database_methods.update_user_pending_breeding(ticket.requestor)
         ticket.requestor.update_last_breed()
         database_methods.update_user_last_breed(ticket.requestor)
+        database_methods.remove_item_from_user(ticket.requestor.userId,ticket.ticket_item.id)
     pups = ticket.perform_breeding()
     ticket.pups = database_methods.add_multiple_creatures_to_db(pups)
     return ticket
@@ -37,12 +39,16 @@ async def send_ticket_to_channel(bot, ticket):
     """Sends a message to the tickets channel and mentions artist"""
     artist = bot.get_user(101509826588205056)
     ticket_channel = bot.get_channel(1061868480086941716)
-    pups = database_methods.get_multiple_creatures_from_db(ticket.pups)
-    parents = database_methods.get_parents_from_db(pups[0])
-    for pup in pups:
-        pup.parents = parents
-    await ticket_channel.send(artist.mention)
-    await ticket_channel.send(ticket.output_detailed_ticket(pups))
+    if ticket.type == 'breeding':
+        pups = database_methods.get_multiple_creatures_from_db(ticket.pups)
+        parents = database_methods.get_parents_from_db(pups[0])
+        for pup in pups:
+            pup.parents = parents
+        await ticket_channel.send(artist.mention)
+        await ticket_channel.send(ticket.output_detailed_ticket(pups))
+    if ticket.type == 'modification':
+        await ticket_channel.send(artist.mention)
+        await ticket_channel.send(ticket.output_ticket())
 
 def format_output(format_str,header_elements,returned_list_from_db):
     """Takes in a format string, the elements that form the header,

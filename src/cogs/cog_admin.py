@@ -148,6 +148,8 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
             await ctx.send("Ticket already has a status of Complete, cannot advance.")
         else:
             status_code += 1
+            if ticket.type == 'modification' and ticket.status == Constants.TICKET_STATUS[4]:
+                status_code = 6
             ticket.status = Constants.TICKET_STATUS[status_code]
             database_methods.update_ticket_status(ticket)
             await ctx.send(f"Ticket {ticket.id} updated to status {ticket.status}")
