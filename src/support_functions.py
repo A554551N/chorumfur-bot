@@ -30,7 +30,8 @@ Returns the updated Ticket object"""
         database_methods.update_user_pending_breeding(ticket.requestor)
         ticket.requestor.update_last_breed()
         database_methods.update_user_last_breed(ticket.requestor)
-        database_methods.remove_item_from_user(ticket.requestor.userId,ticket.ticket_item.id)
+        if ticket.ticket_item:
+            database_methods.remove_item_from_user(ticket.requestor.userId,ticket.ticket_item.id)
     pups = ticket.perform_breeding()
     ticket.pups = database_methods.add_multiple_creatures_to_db(pups)
     return ticket

@@ -288,6 +288,31 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
 
     @commands.command()
     @is_guild_owner_or_bot_admin()
+    async def resetCrystal(self,ctx,user_to_reset=None):
+        """Resets a given user's mating crystal.  If no user is specified, resets own crystal.
+        
+        Parameters
+        ---------
+        user_to_reset: string
+            @ mentioned user to reset
+        """
+
+        if not user_to_reset:
+            user_to_reset = ctx.message.author.id
+        else:
+            user_to_reset = support_functions.strip_mention_format(user_to_reset)
+        user = database_methods.get_user_from_db(user_to_reset) or None
+        try:
+            user.lastBreed = None
+            database_methods.update_user_last_breed(user)
+            await ctx.send('User crystal updated.')
+        except AttributeError:
+            await ctx.send('An error occurred with your request, most likely the user'\
+                           'targeted was not found.')
+        
+
+    @commands.command()
+    @is_guild_owner_or_bot_admin()
     async def updateWallet(self,ctx,user_to_change,amount):
         """Adds or removes the requested amount from a user's wallet (expressed as a positive or negative number)
         Parameters

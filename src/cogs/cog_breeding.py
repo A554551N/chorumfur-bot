@@ -33,6 +33,7 @@ class BreedingCog(commands.GroupCog, name='Mating',group_name='mating'):
     @commands.command()
     async def mate(self,ctx,creature_a_id,creature_b_id,item_to_use=None):
         """Submit a mating request in format .mate <creature_a> <creature_b>"""
+        item = None
         if item_to_use:
             item_to_use = int(item_to_use)
             user_inventory = interface_inventory.format_inventory(database_methods.get_user_inventory(ctx.message.author.id))
@@ -65,14 +66,18 @@ class BreedingCog(commands.GroupCog, name='Mating',group_name='mating'):
         """.acceptPairing <ticket_id> moves a ticket from pending state to active and
         performs the mating."""
         ticket = database_methods.get_ticket_from_db(ticket_id)
+        print("Stop 1")
         if ticket.other_user() != ctx.message.author.id:
             msg = "You do not have permission to modify this ticket."
         elif ticket.status != Constants.TICKET_STATUS[2]:
             msg = f"This ticket is in {ticket.status} and cannot be modified."
         else:
             ticket = support_functions.enact_breeding(ticket)
+            print("Stop 2")
             database_methods.update_ticket_in_db(ticket)
+            print("Stop 3")
             await support_functions.send_ticket_to_channel(self.client,ticket)
+            print("Stop 4")
             msg = f"Ticket {ticket.id} has been accepted.  Status is now {ticket.status}"
         await ctx.send(msg)
 
