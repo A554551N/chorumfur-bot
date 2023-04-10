@@ -59,6 +59,9 @@ class CreaturesCog(commands.GroupCog, name='Chorumfur Management',group_name='ch
             await ctx.send("You may only free chorumfurs from your own lair.")
         else:
             creature_to_free.owner = 0
+            creature_to_free.available_to_breed=False
+            creature_to_free.last_forage = None
+            creature_to_free.is_active = False
         if database_methods.update_creature(creature_to_free):
             await ctx.send(f"{creature_to_free.name} takes one look back at the lair before "\
                   "setting out on its own into the brush.")
