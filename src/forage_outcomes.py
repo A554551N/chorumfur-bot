@@ -188,7 +188,7 @@ event_special_events = {
     "when suddenly, the blossoms of the trees begin falling in the wind.  They look "\
     "up, just in time to dive out of the way as a stone falls from the sky and "\
     "bounces where their head had just been."\
-    "You gain one **Spring Blossom Palette Rock",
+    "You gain one **Spring Blossom Palette Rock**",
     'item',
     ItemReward(39,1)) : ".0625",
     EventMessage("A fluffy squirrel like creature bounds out of the trees tackling "\
