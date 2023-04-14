@@ -100,7 +100,18 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
     async def addItemToInv(self,ctx,item_id_to_add,user_id = None,quantity=1):
         """adds an item to a given users inventory with a given quantity.
         If no user ID is specified, items will be given to the user who invoked the command.
-        If a quantity is not specified, it will add 1."""
+        If a quantity is not specified, it will add 1.
+        
+        Parameters
+        ----------
+        item_id : int
+            The item_id to add
+        user_id : string
+            user_id (as an @ mention)
+        quantity : int
+            number of items to add
+        """
+        
         if user_id is None:
             user_id = ctx.message.author.id
         else:
@@ -148,6 +159,8 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
             await ctx.send("Ticket already has a status of Complete, cannot advance.")
         else:
             status_code += 1
+            if ticket.type == 'modification' and ticket.status == Constants.TICKET_STATUS[4]:
+                status_code = 6
             ticket.status = Constants.TICKET_STATUS[status_code]
             database_methods.update_ticket_status(ticket)
             await ctx.send(f"Ticket {ticket.id} updated to status {ticket.status}")
@@ -203,7 +216,8 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
             new_owner = support_functions.strip_mention_format(new_owner)
         ticket = support_functions.create_breeding_ticket(requesting_user_id=new_owner,
                                        creature_a_id=creature_a_id,
-                                       creature_b_id=creature_b_id)
+                                       creature_b_id=creature_b_id,
+                                       item_to_use=None)
         support_functions.enact_breeding(ticket,is_admin=True)
         ticket.id = database_methods.add_ticket_to_db(ticket)
         await support_functions.send_ticket_to_channel(self.client,ticket)
@@ -227,9 +241,9 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
     async def giveBirth(self,ctx,ticket_id):
         """Takes in a Ticket ID and updates the createDate of pups on the ticket."""
         ticket = database_methods.get_ticket_from_db(ticket_id)
-        for pup in ticket.pups:
+        for pup_id in ticket.pups:
             # leaving this here through next breeding in case any pups are still on old model
-            # new_pup = database_methods.get_creature_from_db(pup.creatureId)
+            pup = database_methods.get_creature_from_db(pup_id)
             pup.createDate = datetime.today()
             pup.owner = ticket.requestor.userId
             database_methods.update_creature(pup)
@@ -256,18 +270,46 @@ class AdminCog(commands.GroupCog, name='Admin Tools', group_name='admin'):
             completed_tickets = []
             completed_pups = 0
             for ticket in tickets:
+                print(ticket.pups)
                 list_of_pups = database_methods.get_multiple_creatures_from_db(ticket.pups)
                 for pup in list_of_pups:
                     pup.createDate = datetime.today()
                     pup.owner = ticket.requestor.userId
+                    print(pup.name)
                     completed_pups += 1
                     database_methods.update_creature(pup)
+                    print('update successful')
                 completed_tickets.append(ticket.id)
                 ticket.update_ticket_status(6)
                 database_methods.update_ticket_status(ticket)
             await ctx.send(f"Tickets {completed_tickets} have been birthed.\nA total of {completed_pups} were born.")
         else:
             await ctx.send("No tickets appear to be ready for breeding or an error has occurred.")
+
+    @commands.command()
+    @is_guild_owner_or_bot_admin()
+    async def resetCrystal(self,ctx,user_to_reset=None):
+        """Resets a given user's mating crystal.  If no user is specified, resets own crystal.
+        
+        Parameters
+        ---------
+        user_to_reset: string
+            @ mentioned user to reset
+        """
+
+        if not user_to_reset:
+            user_to_reset = ctx.message.author.id
+        else:
+            user_to_reset = support_functions.strip_mention_format(user_to_reset)
+        user = database_methods.get_user_from_db(user_to_reset) or None
+        try:
+            user.lastBreed = None
+            database_methods.update_user_last_breed(user)
+            await ctx.send('User crystal updated.')
+        except AttributeError:
+            await ctx.send('An error occurred with your request, most likely the user'\
+                           'targeted was not found.')
+        
 
     @commands.command()
     @is_guild_owner_or_bot_admin()

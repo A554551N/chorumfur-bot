@@ -1,7 +1,7 @@
 class Constants:
     DATETIMEFORMAT = '''%Y-%m-%d %H:%M:%S.%f'''
     DATEONLYFORMAT = '%Y-%m-%d'
-    VERSION = 'v0.3.12'
+    VERSION = 'v0.4.4'
     CRYSTAL_CHARGE_DAYS = 18
     FORAGE_COOLDOWN_HOURS = 6
     DEFAULT_TRAITS_DICT = {
@@ -128,8 +128,8 @@ class Constants:
     TICKET_STATUS = ['On Hold',
                      'New',
                      'Awaiting Confirmation',
-                     'Breeding Pending',
-                     'Breeding in Progress',
+                     'Ticket Pending',
+                     'Ticket in Progress',
                      'Ready to Birth',
                      'Complete',
                      'Rejected']

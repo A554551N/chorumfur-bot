@@ -16,7 +16,7 @@ class CreaturesCog(commands.GroupCog, name='Chorumfur Management',group_name='ch
             print(creature_parents)
             if creature_parents:
                 requested_creature.parents = creature_parents
-            if requested_creature.owner not in (0,1):
+            if requested_creature.owner not in (0,1,2):
                 user = self.client.get_user(requested_creature.owner)
                 requested_creature.ownerName = user.name
             returned_values = requested_creature.outputCreature()
@@ -50,6 +50,23 @@ class CreaturesCog(commands.GroupCog, name='Chorumfur Management',group_name='ch
             await ctx.send("Creature has been given to requested user.")
         else:
             await ctx.send("An error has occurred, your creature has not been transferred.")
+
+
+    @commands.command(aliases=('release',))
+    async def releaseCreature(self,ctx,creature_id):
+        creature_to_free = database_methods.get_creature_from_db(creature_id)
+        if creature_to_free.owner != ctx.message.author.id:
+            await ctx.send("You may only free chorumfurs from your own lair.")
+        else:
+            creature_to_free.owner = 0
+            creature_to_free.available_to_breed=False
+            creature_to_free.last_forage = None
+            creature_to_free.is_active = False
+        if database_methods.update_creature(creature_to_free):
+            await ctx.send(f"{creature_to_free.name} takes one look back at the lair before "\
+                  "setting out on its own into the brush.")
+        else:
+            await ctx.send("An error has occurred, your creature has not been release.")
 
     @commands.command(aliases=['lair'])
     async def showLair(self,ctx,user_to_show = None):
