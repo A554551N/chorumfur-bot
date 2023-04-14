@@ -29,7 +29,7 @@ class BreedingCog(commands.GroupCog, name='Mating',group_name='mating'):
         await ctx.send(f"Ticket #{ticket.id} has been submitted for "\
                        f"mating with a status of {ticket.status}")
 
-    @commands.command()
+    # @commands.command()
     async def mate(self,ctx,creature_a_id,creature_b_id):
         """Submit a mating request in format .mate <creature_a> <creature_b>"""
         breed_request=support_functions.create_breeding_ticket(requesting_user_id=ctx.message.author.id,
